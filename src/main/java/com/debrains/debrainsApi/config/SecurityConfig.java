@@ -1,6 +1,5 @@
 package com.debrains.debrainsApi.config;
 
-import com.debrains.debrainsApi.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.context.annotation.Bean;

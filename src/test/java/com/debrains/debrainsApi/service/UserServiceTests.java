@@ -31,8 +31,4 @@ public class UserServiceTests {
         log.info("email: " + email);
     }
 
-    @Test
-    public void login() {
-
-    }
 }
