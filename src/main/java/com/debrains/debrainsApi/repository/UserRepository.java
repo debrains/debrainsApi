@@ -7,10 +7,14 @@ import org.springframework.data.jpa.repository.Query;
 
 import java.util.Optional;
 
-public interface UserRepository extends JpaRepository<User, String> {
+public interface UserRepository extends JpaRepository<User, Long> {
 
-    @EntityGraph(attributePaths = {"roleSet"}, type = EntityGraph.EntityGraphType.LOAD)
+    @EntityGraph(attributePaths = {"role"}, type = EntityGraph.EntityGraphType.LOAD)
     @Query("select u from User u where u.fromSocial = :social and u.email = :email")
-    Optional<User> findByEmail(String email, boolean social);
+    Optional<User> findByUsername(String email, boolean social);
+
+    Optional<User> findByEmail(String email);
+
+    Optional<User> findByNickname(String email);
 
 }

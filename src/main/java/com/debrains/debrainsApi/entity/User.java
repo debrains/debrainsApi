@@ -1,10 +1,13 @@
 package com.debrains.debrainsApi.entity;
 
 import lombok.*;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
+import java.util.Collection;
 import java.util.HashSet;
-import java.util.Set;
 
 @Getter
 @ToString
@@ -13,21 +16,70 @@ import java.util.Set;
 @Builder
 @Entity
 @Table(name = "user_table")
-public class User extends BaseEntity {
+public class User extends BaseEntity implements UserDetails {
+
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Column(unique = true, nullable = false)
     private String email;
 
+    @Column(nullable = false)
     private String password;
 
-    private String name;
+    @Column(unique = true, nullable = false)
+    private String nickname;
 
+    @Column(columnDefinition = "boolean default false")
     private boolean fromSocial;
 
-    @ElementCollection(fetch = FetchType.LAZY)
-    @Builder.Default
-    private Set<UserRole> roleSet = new HashSet<>();
+    @Enumerated(EnumType.STRING)
+    private UserRole role;
 
-    public void addUserRole(UserRole userRole) {
-        roleSet.add(userRole);
+    @Builder
+    public User(String email, String password, String nickname, boolean fromSocial, UserRole role) {
+        this.email = email;
+        this.password = password;
+        this.nickname = nickname;
+        this.fromSocial = fromSocial;
+        this.role = role;
+    }
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        Collection<GrantedAuthority> auth = new HashSet<>();
+        auth.add(new SimpleGrantedAuthority(role.toString()));
+        return auth;
+    }
+
+    @Override
+    public String getPassword() {
+        return password;
+    }
+
+    @Override
+    public String getUsername() {
+        return email;
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true;
     }
 }

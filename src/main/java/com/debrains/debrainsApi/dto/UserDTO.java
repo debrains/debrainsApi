@@ -1,12 +1,22 @@
 package com.debrains.debrainsApi.dto;
 
-import lombok.*;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.Setter;
 
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
 @Getter
 @Setter
+@Builder
 public class UserDTO {
-    private Long id;
+
+    private String email;
+
+    private String password;
+
+    private String nickname;
+
+    private boolean fromSocial;
+
+    private String role;
+
 }
