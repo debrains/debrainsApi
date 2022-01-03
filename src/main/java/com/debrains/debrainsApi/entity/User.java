@@ -20,7 +20,7 @@ public class User extends BaseEntity implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long id; 
 
     @Column(unique = true, nullable = false)
     private String email;
@@ -29,18 +29,10 @@ public class User extends BaseEntity implements UserDetails {
     private String password;
 
     @Column(unique = true, nullable = false)
-    private String nickname;
+    private String name;
 
     @Enumerated(EnumType.STRING)
     private UserRole role;
-
-    @Builder
-    public User(String email, String password, String nickname, UserRole role) {
-        this.email = email;
-        this.password = password;
-        this.nickname = nickname;
-        this.role = role;
-    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
