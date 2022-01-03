@@ -31,23 +31,15 @@ public class User extends BaseEntity implements UserDetails {
     @Column(unique = true, nullable = false)
     private String nickname;
 
-    @Column(columnDefinition = "boolean default false")
-    private boolean fromSocial;
-
     @Enumerated(EnumType.STRING)
     private UserRole role;
 
-    @Column(columnDefinition = "boolean default false")
-    private boolean emailAuth;
-
     @Builder
-    public User(String email, String password, String nickname, boolean fromSocial, UserRole role, boolean emailAuth) {
+    public User(String email, String password, String nickname, UserRole role) {
         this.email = email;
         this.password = password;
         this.nickname = nickname;
-        this.fromSocial = fromSocial;
         this.role = role;
-        this.emailAuth = emailAuth;
     }
 
     @Override
@@ -85,9 +77,5 @@ public class User extends BaseEntity implements UserDetails {
     @Override
     public boolean isEnabled() {
         return true;
-    }
-
-    public void emailVerifiedSuccess() {
-        this.emailAuth = true;
     }
 }

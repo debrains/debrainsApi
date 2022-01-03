@@ -14,21 +14,4 @@ public class UserServiceTests {
     @Autowired
     private UserService userService;
 
-    @Test
-    public void register() {
-
-        User user = User.builder()
-                .email("user1@gmail.com")
-                .password("1111")
-                .nickname("test")
-                .fromSocial(false)
-                .role(UserRole.USER)
-                .build();
-
-        System.out.println(user.toString());
-
-        String email = userService.register(userService.entityToDTO(user));
-        log.info("email: " + email);
-    }
-
 }

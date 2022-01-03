@@ -10,14 +10,7 @@ import java.util.Optional;
 public interface UserRepository extends JpaRepository<User, Long> {
 
     @EntityGraph(attributePaths = {"role"}, type = EntityGraph.EntityGraphType.LOAD)
-    @Query("select u from User u where u.fromSocial = :social and u.email = :email")
-    Optional<User> findByUsername(String email, boolean social);
-
-    Optional<User> findByEmail(String email);
-
-    Optional<User> findByNickname(String email);
-
-    @Query("select u from User u where u.email = :email and u.emailAuth = true")
-    Optional<User> findByEmailAuth(String email);
+    @Query("select u from User u where u.email = :email")
+    Optional<User> findByUsername(String email);
 
 }
