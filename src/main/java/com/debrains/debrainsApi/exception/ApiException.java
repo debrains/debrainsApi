@@ -1,14 +1,14 @@
 package com.debrains.debrainsApi.exception;
 
-import com.debrains.debrainsApi.common.exception.ExceptionType;
+import com.debrains.debrainsApi.common.ResponseCode;
 import lombok.Getter;
 
 @Getter
 public class ApiException extends RuntimeException {
-    private ExceptionType error;
+    private ResponseCode response;
 
-    public ApiException(ExceptionType e) {
+    public ApiException(ResponseCode e) {
         super(e.getMessage());
-        this.error = e;
+        this.response = e;
     }
 }

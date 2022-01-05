@@ -2,7 +2,7 @@ package com.debrains.debrainsApi.service;
 
 import com.debrains.debrainsApi.dto.UserDTO;
 import com.debrains.debrainsApi.entity.User;
-import com.debrains.debrainsApi.entity.UserRole;
+import com.debrains.debrainsApi.common.UserRole;
 import com.debrains.debrainsApi.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -22,7 +22,7 @@ public class UserService implements UserDetailsService {
 
         log.info("SecurityUserDetailsService loadUserByUsername: " + username);
 
-        return userRepository.findByUsername(username)
+        return userRepository.findByEmail(username)
                 .orElseThrow(() -> new UsernameNotFoundException("Check Email or Social"));
     }
 

@@ -1,5 +1,6 @@
 package com.debrains.debrainsApi.entity;
 
+import com.debrains.debrainsApi.common.UserRole;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -37,7 +38,7 @@ public class User extends BaseEntity implements UserDetails {
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         Collection<GrantedAuthority> auth = new HashSet<>();
-        auth.add(new SimpleGrantedAuthority(role.toString()));
+        auth.add(new SimpleGrantedAuthority(role.getRole()));
         return auth;
     }
 
