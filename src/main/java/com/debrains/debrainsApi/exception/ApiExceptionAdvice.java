@@ -15,8 +15,8 @@ public class ApiExceptionAdvice {
         return ResponseEntity
                 .status(e.getResponse().getStatus())
                 .body(ResponseDTO.builder()
-                        .resCode(e.getResponse().getCode())
-                        .resMessage(e.getResponse().getMessage())
+                        .code(e.getResponse().getCode())
+                        .message(e.getResponse().getMessage())
                         .build());
     }
 

@@ -2,6 +2,7 @@ plugins {
 	id 'org.springframework.boot' version '2.5.8'
 	id 'io.spring.dependency-management' version '1.0.11.RELEASE'
 	id "com.ewerk.gradle.plugins.querydsl" version "1.0.10"
+	id "org.asciidoctor.convert" version "1.5.9.2"
 	id 'java'
 }
 
@@ -26,21 +27,25 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation 'org.springframework.boot:spring-boot-starter-validation'
 	implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
+	implementation 'org.springframework.boot:spring-boot-starter-hateoas'
 	implementation 'org.springframework.boot:spring-boot-test'
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
-	runtimeOnly 'org.mariadb.jdbc:mariadb-java-client'
 	compileOnly 'org.projectlombok:lombok'
 	annotationProcessor 'org.projectlombok:lombok'
+	implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity5'
+	implementation 'org.thymeleaf.extras:thymeleaf-extras-java8time'
+	runtimeOnly 'org.mariadb.jdbc:mariadb-java-client'
 	runtimeOnly 'com.h2database:h2'
 	implementation 'com.querydsl:querydsl-jpa'
 	implementation 'io.jsonwebtoken:jjwt:0.9.1'
-	implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity5'
-	implementation 'org.thymeleaf.extras:thymeleaf-extras-java8time'
+	implementation 'org.modelmapper:modelmapper:3.0.0'
 
 	testCompileOnly 'org.projectlombok:lombok'
 	testAnnotationProcessor 'org.projectlombok:lombok'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'org.springframework.security:spring-security-test'
+	asciidoctor 'org.springframework.restdocs:spring-restdocs-asciidoctor'
+	testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
 }
 
 test {
@@ -66,4 +71,26 @@ configurations {
 
 compileQuerydsl {
 	options.annotationProcessorPath = configurations.querydsl
+}
+
+
+// Spring REST Docs
+ext {
+	snippetsDir = file('build/generated-snippets')
+}
+
+test {
+	outputs.dir snippetsDir
+}
+
+asciidoctor {
+	inputs.dir snippetsDir
+	dependsOn test
+}
+
+bootJar {
+	dependsOn asciidoctor
+	from ("${asciidoctor.outputDir}/html5") {
+		into 'static/docs'
+	}
 }

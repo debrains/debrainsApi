@@ -4,16 +4,13 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.ToString;
 
+import java.util.List;
+
 @Getter
 @ToString
-public class ResponseDTO {
-
-    private String resCode;
-    private String resMessage;
-
-    @Builder
-    public ResponseDTO(String resCode, String resMessage) {
-        this.resCode = resCode;
-        this.resMessage = resMessage;
-    }
+@Builder
+public class ResponseDTO<T> {
+    private String code;
+    private String message;
+    private List<T> data;
 }
