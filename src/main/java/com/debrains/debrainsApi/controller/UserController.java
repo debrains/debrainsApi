@@ -1,25 +1,31 @@
 package com.debrains.debrainsApi.controller;
 
-import com.debrains.debrainsApi.common.ResponseCode;
-import com.debrains.debrainsApi.dto.ResponseDTO;
-import com.debrains.debrainsApi.dto.UserDTO;
-import com.debrains.debrainsApi.service.UserService;
+import com.debrains.debrainsApi.entity.User;
+import com.debrains.debrainsApi.repository.UserRepository;
+import com.debrains.debrainsApi.security.CurrentUser;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Log4j2
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/auth")
+@RequestMapping("/user")
 public class UserController {
 
-    private final UserService userService;
+    private final UserRepository userRepository;
+
+    @GetMapping("/me")
+    @PreAuthorize("hasRole('USER')")
+    public User getCurrentUser(@CurrentUser UserDetails user) {
+        System.out.println(user);
+        Long id = Long.valueOf(user.getUsername());
+        return userRepository.findById(id).orElseThrow(() -> new IllegalStateException("n"));
+    }
 
 
 }
