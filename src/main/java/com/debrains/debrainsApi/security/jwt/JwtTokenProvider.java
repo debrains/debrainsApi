@@ -1,6 +1,5 @@
 package com.debrains.debrainsApi.security.jwt;
 
-import com.debrains.debrainsApi.dto.UserDTO;
 import com.debrains.debrainsApi.security.CustomUserDetails;
 import io.jsonwebtoken.*;
 import lombok.extern.log4j.Log4j2;
@@ -23,22 +22,31 @@ import java.util.stream.Collectors;
 public class JwtTokenProvider {
 
     private final String SECRET_KEY;
-    private final Long EXPIRE_LENGTH;
+    private final Long ACCESS_TOKEN_EXPIRE_LENGTH = 1000L * 60;
+    private final Long REFRESH_TOKEN_EXPIRE_LENGTH = 1000L * 60 * 2;
     private final String AUTHORITIES_KEY = "role";
 
-    public JwtTokenProvider(@Value("${app.auth.token.secret-key}")String secretKey, @Value("${app.auth.token.expire-length}")Long expireLength) {
+    public JwtTokenProvider(@Value("${app.auth.token.secret-key}")String secretKey) {
         this.SECRET_KEY = Base64.getEncoder().encodeToString(secretKey.getBytes());
-        this.EXPIRE_LENGTH = expireLength;
     }
 
-    public String createToken(Authentication authentication) {
+    public TokenDTO createToken(Authentication authentication) {
+        String accessToken = createAccessToken(authentication);
+        String refreshToken = createRefreshToken();
+
+        return TokenDTO.builder()
+                .accessToken(accessToken)
+                .refreshToken(refreshToken)
+                .build();
+    }
+
+    public String createAccessToken(Authentication authentication) {
         Date now = new Date();
-        Date validity = new Date(now.getTime() + EXPIRE_LENGTH);
+        Date validity = new Date(now.getTime() + ACCESS_TOKEN_EXPIRE_LENGTH);
 
         CustomUserDetails user = (CustomUserDetails) authentication.getPrincipal();
 
         String userId = user.getName();
-//        String email = authentication.getName();
         String role = authentication.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)
                 .collect(Collectors.joining(","));
@@ -53,17 +61,26 @@ public class JwtTokenProvider {
                 .compact();
     }
 
-    public Authentication getAuthentication(String token) {
-        Claims claims = Jwts.parser()
-                .setSigningKey(SECRET_KEY)
-                .parseClaimsJws(token)
-                .getBody();
+    public String createRefreshToken() {
+        Date now = new Date();
+        Date validity = new Date(now.getTime() + REFRESH_TOKEN_EXPIRE_LENGTH);
+
+        return Jwts.builder()
+                .signWith(SignatureAlgorithm.HS512, SECRET_KEY)
+                .setIssuer("debrains")
+                .setIssuedAt(now)
+                .setExpiration(validity)
+                .compact();
+    }
+
+    public Authentication getAuthentication(String accessToken) {
+        Claims claims = parseClaims(accessToken);
 
         Collection<? extends GrantedAuthority> authorities =
                 Arrays.stream(claims.get(AUTHORITIES_KEY).toString().split(","))
                 .map(SimpleGrantedAuthority::new).collect(Collectors.toList());
 
-        User principal = new User(claims.getSubject(), "", authorities);
+        CustomUserDetails principal = new CustomUserDetails(Long.valueOf(claims.getSubject()), "", authorities);
 
         return new UsernamePasswordAuthenticationToken(principal, "", authorities);
     }
@@ -73,7 +90,7 @@ public class JwtTokenProvider {
             Jwts.parser().setSigningKey(SECRET_KEY).parseClaimsJws(token);
             return true;
         } catch (ExpiredJwtException e) {
-            log.info("만료된 JWT 서명입니다.");
+            log.info("만료된 JWT 토큰입니다.");
         } catch (UnsupportedJwtException e) {
             log.info("지원되지 않는 JWT 토큰입니다.");
         } catch (IllegalStateException e) {
@@ -81,4 +98,13 @@ public class JwtTokenProvider {
         }
         return false;
     }
+
+    private Claims parseClaims(String accessToken) {
+        try {
+            return Jwts.parser().setSigningKey(SECRET_KEY).parseClaimsJws(accessToken).getBody();
+        } catch (ExpiredJwtException e) {
+            return e.getClaims();
+        }
+    }
+
 }

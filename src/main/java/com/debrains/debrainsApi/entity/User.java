@@ -41,4 +41,6 @@ public class User extends BaseEntity {
     private String githubUrl;
     private String blogUrl;
     private String snsUrl;
+
+    private String refreshToken;
 }

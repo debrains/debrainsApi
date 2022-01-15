@@ -3,6 +3,7 @@ package com.debrains.debrainsApi.controller;
 import com.debrains.debrainsApi.entity.User;
 import com.debrains.debrainsApi.repository.UserRepository;
 import com.debrains.debrainsApi.security.CurrentUser;
+import com.debrains.debrainsApi.security.CustomUserDetails;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -21,10 +22,8 @@ public class UserController {
 
     @GetMapping("/me")
     @PreAuthorize("hasRole('USER')")
-    public User getCurrentUser(@CurrentUser UserDetails user) {
-        System.out.println(user);
-        Long id = Long.valueOf(user.getUsername());
-        return userRepository.findById(id).orElseThrow(() -> new IllegalStateException("n"));
+    public User getCurrentUser(@CurrentUser CustomUserDetails user) {
+        return userRepository.findById(user.getId()).orElseThrow(() -> new IllegalStateException("n"));
     }
 
 
