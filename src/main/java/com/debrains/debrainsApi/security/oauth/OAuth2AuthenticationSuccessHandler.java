@@ -1,10 +1,7 @@
 package com.debrains.debrainsApi.security.oauth;
 
 import com.debrains.debrainsApi.exception.BadRequestException;
-import com.debrains.debrainsApi.repository.UserRepository;
-import com.debrains.debrainsApi.security.CustomUserDetails;
 import com.debrains.debrainsApi.security.jwt.JwtTokenProvider;
-import com.debrains.debrainsApi.security.jwt.TokenDTO;
 import com.debrains.debrainsApi.util.CookieUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -33,7 +30,6 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
     private String redirectUri;
     private final JwtTokenProvider tokenProvider;
     private final CookieAuthorizationRequestRepository authorizationRequestRepository;
-    private final UserRepository userRepository;
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
@@ -56,20 +52,12 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
         }
         String targetUrl = redirectUri.orElse(getDefaultTargetUrl());
 
-        TokenDTO tokens = tokenProvider.createToken(authentication);
-        saveRefreshToken(authentication, tokens.getRefreshToken());
+        String accessToken = tokenProvider.createAccessToken(authentication);
+        tokenProvider.createRefreshToken(authentication, response);
 
         return UriComponentsBuilder.fromUriString(targetUrl)
-                .queryParam("accessToken", tokens.getAccessToken())
-                .queryParam("refreshToken", tokens.getRefreshToken())
+                .queryParam("accessToken", accessToken)
                 .build().toUriString();
-    }
-
-    private void saveRefreshToken(Authentication authentication, String refreshToken) {
-        CustomUserDetails user = (CustomUserDetails) authentication.getPrincipal();
-        Long id = Long.valueOf(user.getName());
-
-        userRepository.updateRefreshToken(id, refreshToken);
     }
 
     protected void clearAuthenticationAttributes(HttpServletRequest request, HttpServletResponse response) {
