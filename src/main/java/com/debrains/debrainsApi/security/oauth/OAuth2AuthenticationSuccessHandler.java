@@ -17,6 +17,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.net.URI;
+import java.util.List;
 import java.util.Optional;
 
 import static com.debrains.debrainsApi.security.oauth.CookieAuthorizationRequestRepository.REDIRECT_URI_PARAM_COOKIE_NAME;
@@ -27,7 +28,7 @@ import static com.debrains.debrainsApi.security.oauth.CookieAuthorizationRequest
 public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
 
     @Value("${app.oauth2.authorizedRedirectUris}")
-    private String redirectUri;
+    private List<String> redirectUris;
     private final JwtTokenProvider tokenProvider;
     private final CookieAuthorizationRequestRepository authorizationRequestRepository;
 
@@ -67,12 +68,15 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
 
     private boolean isAuthorizedRedirectUri(String uri) {
         URI clientRedirectUri = URI.create(uri);
-        URI authorizedUri = URI.create(redirectUri);
 
-        if (authorizedUri.getHost().equalsIgnoreCase(clientRedirectUri.getHost())
-            && authorizedUri.getPort() == clientRedirectUri.getPort()) {
-            return true;
+        for (String redirectUri : redirectUris) {
+            URI authorizedUri = URI.create(redirectUri);
+            if (authorizedUri.getHost().equalsIgnoreCase(clientRedirectUri.getHost())
+                    && authorizedUri.getPort() == clientRedirectUri.getPort()) {
+                return true;
+            }
         }
+
         return false;
     }
 }

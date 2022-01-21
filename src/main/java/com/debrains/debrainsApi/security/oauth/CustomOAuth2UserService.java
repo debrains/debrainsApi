@@ -48,6 +48,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
                 throw new OAuthProcessingException("Wrong Match Auth Provider");
             }
 
+
         } else {
             user = createUser(userInfo, authProvider);
         }
@@ -61,6 +62,8 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
                 .role(UserRole.USER)
                 .state(UserState.ACT)
                 .authProvider(authProvider)
+                .blogUrl(userInfo.getBlogUrl())
+                .githubUrl(userInfo.getGithubUrl())
                 .build();
         return userRepository.save(user);
     }
