@@ -20,4 +20,7 @@ public class UserDTO {
     private String blogUrl;
     private String snsUrl;
 
+    private String icon;
+    private Integer tier;
+    private Long exp;
 }

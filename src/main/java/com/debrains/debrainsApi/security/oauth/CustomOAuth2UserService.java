@@ -3,8 +3,10 @@ package com.debrains.debrainsApi.security.oauth;
 import com.debrains.debrainsApi.common.AuthProvider;
 import com.debrains.debrainsApi.common.UserRole;
 import com.debrains.debrainsApi.common.UserState;
+import com.debrains.debrainsApi.entity.Profile;
 import com.debrains.debrainsApi.entity.User;
 import com.debrains.debrainsApi.exception.OAuthProcessingException;
+import com.debrains.debrainsApi.repository.ProfileRepository;
 import com.debrains.debrainsApi.repository.UserRepository;
 import com.debrains.debrainsApi.security.CustomUserDetails;
 import com.debrains.debrainsApi.security.oauth.user.OAuth2UserInfo;
@@ -24,6 +26,7 @@ import java.util.Optional;
 public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 
     private final UserRepository userRepository;
+    private final ProfileRepository profileRepository;
 
     @Override
     public OAuth2User loadUser(OAuth2UserRequest oAuth2UserRequest) throws OAuth2AuthenticationException {
@@ -64,8 +67,17 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
                 .authProvider(authProvider)
                 .blogUrl(userInfo.getBlogUrl())
                 .githubUrl(userInfo.getGithubUrl())
+                .tier(1)
+                .exp(0L)
                 .build();
-        return userRepository.save(user);
+        User save = userRepository.save(user);
+
+        Profile profile = Profile.builder()
+                .user(user)
+                .build();
+        profileRepository.save(profile);
+
+        return save;
     }
 
 }

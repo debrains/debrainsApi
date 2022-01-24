@@ -20,7 +20,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     @Transactional
     @Modifying
-    @Query("UPDATE User u SET u.refreshToken=:token WHERE u.id=:id")
+    @Query("UPDATE User u SET u.refreshToken=:token, u.lastLoginDate=current_timestamp WHERE u.id=:id")
     void updateRefreshToken(@Param("id") Long id, @Param("token") String token);
 
 }

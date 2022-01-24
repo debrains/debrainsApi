@@ -9,6 +9,7 @@ import com.debrains.debrainsApi.security.oauth.OAuth2AuthenticationFailureHandle
 import com.debrains.debrainsApi.security.oauth.OAuth2AuthenticationSuccessHandler;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -36,15 +37,16 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     public void configure(WebSecurity web) throws Exception {
-        web.ignoring().antMatchers("/h2-console/**", "/favicon.ico");
+        web.ignoring().requestMatchers(PathRequest.toStaticResources().atCommonLocations())
+                .antMatchers("/h2-console/**", "/favicon.ico");
+
     }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
-                .antMatchers("/h2-console/**").permitAll()
                 .antMatchers("/oauth2/**", "/auth/**").permitAll()
-                .antMatchers("/admin/**").hasRole("ADMIN")
+                .antMatchers("/root/**").hasRole("ADMIN")
                 .anyRequest().authenticated();
 
         http.cors()                     // CORS on

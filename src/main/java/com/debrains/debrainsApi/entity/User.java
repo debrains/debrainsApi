@@ -4,8 +4,10 @@ import com.debrains.debrainsApi.common.AuthProvider;
 import com.debrains.debrainsApi.common.UserRole;
 import com.debrains.debrainsApi.common.UserState;
 import lombok.*;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 
 @Getter
 @ToString
@@ -25,6 +27,7 @@ public class User extends BaseEntity {
     @Column(unique = true)
     private String name;
 
+    @Column(length = 2000)
     private String description;
 
     private String img;
@@ -41,6 +44,13 @@ public class User extends BaseEntity {
     private String githubUrl;
     private String blogUrl;
     private String snsUrl;
+
+    private String icon;
+    private Integer tier;
+    private Long exp;
+    private String memo;
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    private LocalDateTime lastLoginDate;
 
     private String refreshToken;
 }

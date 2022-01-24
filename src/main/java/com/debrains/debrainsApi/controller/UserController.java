@@ -1,7 +1,6 @@
 package com.debrains.debrainsApi.controller;
 
 import com.debrains.debrainsApi.entity.User;
-import com.debrains.debrainsApi.repository.UserRepository;
 import com.debrains.debrainsApi.security.CurrentUser;
 import com.debrains.debrainsApi.security.CustomUserDetails;
 import com.debrains.debrainsApi.service.UserService;
