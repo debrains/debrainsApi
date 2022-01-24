@@ -46,6 +46,13 @@ dependencies {
 	testImplementation 'org.springframework.security:spring-security-test'
 	asciidoctor 'org.springframework.restdocs:spring-restdocs-asciidoctor'
 	testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
+
+	// JUnit4 추가
+	testImplementation("org.junit.vintage:junit-vintage-engine") {
+		exclude group: "org.hamcrest", module: "hamcrest-core"
+	}
+	testImplementation group: 'pl.pragmatists', name: 'JUnitParams', version: '1.1.1'
+
 }
 
 test {

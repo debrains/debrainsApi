@@ -44,6 +44,7 @@ public class TilController {
         }
 
         Til til = modelMapper.map(tilDTO, Til.class);
+        til.totalCrtCount();
         Til newTil = tilRepository.save(til);
         URI createdUri = linkTo(TilController.class).slash(newTil.getId()).toUri();
 

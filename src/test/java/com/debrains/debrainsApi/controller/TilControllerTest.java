@@ -41,8 +41,8 @@ class TilControllerTest {
                 .memberId(1L)
                 .subject("TIL subject1 입니다.")
                 .description("TIL description1 입니다")
-                .startDate(Date.valueOf(LocalDate.of(2022, 1, 30)))
-                .endDate(Date.valueOf(LocalDate.of(2022, 6, 30)))
+                .startDate(LocalDate.of(2022, 1, 30))
+                .endDate(LocalDate.of(2022, 2, 3))
                 .cycleStatus(CycleStatus.WEEK.toString())
                 .cycleCnt(4)
                 .build();
@@ -77,8 +77,8 @@ class TilControllerTest {
                 .memberId(1L)
                 .subject("TIL subject1 입니다.")
                 .description("TIL description1 입니다")
-                .startDate(Date.valueOf(LocalDate.of(2022, 1, 30)))
-                .endDate(Date.valueOf(LocalDate.of(2022, 6, 30)))
+                .startDate(LocalDate.of(2022, 1, 30))
+                .endDate(LocalDate.of(2022, 2, 20))
                 .cycleStatus(CycleStatus.WEEK.toString())
                 .cycleCnt(0)
                 .build();

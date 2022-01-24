@@ -4,7 +4,7 @@ import com.sun.istack.NotNull;
 import lombok.*;
 
 import javax.validation.constraints.NotEmpty;
-import java.util.Date;
+import java.time.LocalDate;
 
 @Builder
 @AllArgsConstructor
@@ -13,16 +13,16 @@ import java.util.Date;
 @ToString
 public class TilDTO {
 
-//    @NotEmpty
+    //    @NotEmpty
     private Long memberId;
     @NotEmpty
     private String subject;
     @NotEmpty
     private String description;
     @NotNull
-    private Date startDate;
+    private LocalDate startDate;
     @NotNull
-    private Date endDate;
+    private LocalDate endDate;
     @NotNull
     private String cycleStatus;
     private int cycleCnt;

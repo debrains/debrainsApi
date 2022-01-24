@@ -3,6 +3,8 @@ package com.debrains.debrainsApi.entity;
 import lombok.*;
 
 import javax.persistence.*;
+import java.time.LocalDate;
+import java.time.Period;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -32,11 +34,11 @@ public class Til extends BaseEntity {
     @Column(length = 2000)
     private String description;
 
-    @Temporal(TemporalType.DATE)
-    private Date startDate;
+    @Column(columnDefinition = "DATE")
+    private LocalDate startDate;
 
-    @Temporal(TemporalType.DATE)
-    private Date endDate;
+    @Column(columnDefinition = "DATE")
+    private LocalDate endDate;
 
     @Enumerated(EnumType.STRING)
     private CycleStatus cycleStatus = CycleStatus.EVERYDAY;
@@ -52,4 +54,45 @@ public class Til extends BaseEntity {
     @Column(nullable = false, columnDefinition = "boolean default false")
     private boolean expired;
 
+    /**
+     * 총 인증 횟수
+     * */
+    public void totalCrtCount() {
+
+        Period period = (Period.between(startDate, endDate));
+        int diffDate = period.getDays() + 1;
+
+        if (this.cycleStatus.equals(CycleStatus.EVERYDAY)) {
+            this.totalCnt = diffDate;
+        } else {
+            int tempCycleCnt = (diffDate / 7) * this.cycleCnt;
+            if ((diffDate % 7) > this.cycleCnt) {
+                this.totalCnt = tempCycleCnt + this.cycleCnt;
+            } else {
+                this.totalCnt = tempCycleCnt + (diffDate % 7);
+            }
+        }
+    }
+
+    /**
+     * TIL 유효한지 확인
+     * TODO:: 목록 출력할 때 확인하여 업데이트(낱개, 리스트)
+     * */
+    public void expiredCheck(){
+        LocalDate now = LocalDate.now();
+        if(this.endDate.isBefore(now)){
+            this.expired = true;
+        }
+    }
+
+    /**
+     * 인증 횟수 추가/감소
+     * */
+    public void addCrtCnt(){
+        this.crtCnt += 1;
+    }
+
+    public void removeCrtCnt(){
+        this.crtCnt -= 1;
+    }
 }

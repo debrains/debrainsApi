@@ -5,20 +5,24 @@ import com.debrains.debrainsApi.entity.CycleStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 @Component
 public class TilValidator {
 
     public void validate(TilDTO tilDTO, Errors errors) {
 
-        Date endDate = tilDTO.getEndDate();
-        if (endDate.before(tilDTO.getStartDate())) {
+        LocalDate now = LocalDate.now();
+        LocalDate endDate = tilDTO.getEndDate();
+        if (endDate.isBefore(tilDTO.getStartDate())) {
             errors.rejectValue("endDate", "wrongValue", "EndDate is wrong.");
             errors.rejectValue("startDate", "wrongValue", "StartDate is wrong.");
         }
 
-        System.out.println(tilDTO.getCycleStatus().equals(CycleStatus.WEEK.toString()));
+        if (endDate.isBefore(now)) {
+            errors.rejectValue("endDate", "wrongValue", "EndDate is wrong.");
+        }
+
         if (tilDTO.getCycleStatus().equals(CycleStatus.WEEK.toString()) && tilDTO.getCycleCnt() < 1) {
             errors.rejectValue("cycleCnt", "wrongValue", "CycleCnt is wrong.");
         }
