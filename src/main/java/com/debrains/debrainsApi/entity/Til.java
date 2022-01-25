@@ -25,8 +25,8 @@ public class Til extends BaseEntity {
 
     // USER 들어가야 함
 
-    @OneToMany(mappedBy = "til")
-    private List<TilCrt> tilCrts = new ArrayList<>();
+    /*@OneToMany(mappedBy = "til")
+    private List<TilCrt> tilCrts = new ArrayList<>();*/
 
     @Column(nullable = false)
     private String subject;
