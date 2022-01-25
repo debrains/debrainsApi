@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+  <th:block th:replace="fragments/header::header"></th:block>
+</head>
+<body id="page-top">
+<div id="wrapper">
+  <div th:replace="fragments/sidebar::sidebar"></div>
+
+  <div class="d-flex flex-column" id="content-wrapper">
+    <!-- Main Content -->
+    <div id="content">
+      <div th:replace="fragments/topbar::topbar"></div>
+      <div layout:fragment="content"></div>
+    </div>
+  </div>
+</div>
+
+<th:block th:replace="fragments/script::script"></th:block>
+
+<th:block layout:fragment="javascript"></th:block>
+
+
+</body>
+</html>
