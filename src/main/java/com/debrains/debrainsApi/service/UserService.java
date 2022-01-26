@@ -1,15 +1,10 @@
 package com.debrains.debrainsApi.service;
 
-import com.debrains.debrainsApi.repository.UserRepository;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.log4j.Log4j2;
-import org.springframework.stereotype.Service;
+import com.debrains.debrainsApi.dto.UserInfoDTO;
 
-@Log4j2
-@RequiredArgsConstructor
-@Service
-public class UserService {
+public interface UserService {
 
-    private final UserRepository userRepository;
+    UserInfoDTO getUserInfo(Long id);
 
+    void updateUserInfo(UserInfoDTO dto);
 }
