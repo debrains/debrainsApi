@@ -56,7 +56,7 @@ class TilControllerTest {
                 .cycleCnt(4)
                 .build();
 
-        mockMvc.perform(post("/api/tils/")
+        mockMvc.perform(post("/tils/")
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaTypes.HAL_JSON)
                 .content(objectMapper.writeValueAsString(tilDTO)))
@@ -117,7 +117,7 @@ class TilControllerTest {
     public void createTil_Bad_Request_Empty_Input() throws Exception {
         TilDTO tilDTO = TilDTO.builder().build();
 
-        mockMvc.perform(post("/api/tils/")
+        mockMvc.perform(post("/tils/")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(tilDTO)))
                 .andExpect(status().isBadRequest())
@@ -137,7 +137,7 @@ class TilControllerTest {
                 .cycleCnt(0)
                 .build();
 
-        mockMvc.perform(post("/api/tils/")
+        mockMvc.perform(post("/tils/")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(tilDTO)))
                 .andExpect(status().isBadRequest())

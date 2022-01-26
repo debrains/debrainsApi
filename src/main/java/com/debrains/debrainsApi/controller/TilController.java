@@ -24,7 +24,7 @@ import java.net.URI;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 
 @Controller
-@RequestMapping(value = "/api/tils", produces = MediaTypes.HAL_JSON_VALUE)
+@RequestMapping(value = "/tils", produces = MediaTypes.HAL_JSON_VALUE)
 @RequiredArgsConstructor
 @Log4j2
 public class TilController {
