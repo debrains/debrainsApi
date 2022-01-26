@@ -6,7 +6,7 @@ import javax.persistence.*;
 
 @Getter
 @ToString
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Builder
 @Entity
@@ -15,10 +15,10 @@ public class Skill {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(unique = true)
-    private String name;
-
     private Integer category;
     private Integer seq;
+
+    @Column(unique = true)
+    private String name;
 
 }

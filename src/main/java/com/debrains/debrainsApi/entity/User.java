@@ -3,6 +3,8 @@ package com.debrains.debrainsApi.entity;
 import com.debrains.debrainsApi.common.AuthProvider;
 import com.debrains.debrainsApi.common.UserRole;
 import com.debrains.debrainsApi.common.UserState;
+import com.debrains.debrainsApi.dto.UserDTO;
+import com.debrains.debrainsApi.dto.UserInfoDTO;
 import lombok.*;
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -11,7 +13,7 @@ import java.time.LocalDateTime;
 
 @Getter
 @ToString
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Builder
 @Entity
@@ -21,7 +23,7 @@ public class User extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(unique = true, nullable = false)
+    @Column(unique = true, nullable = false, updatable = false)
     private String email;
 
     @Column(unique = true)
@@ -53,4 +55,18 @@ public class User extends BaseEntity {
     private LocalDateTime lastLoginDate;
 
     private String refreshToken;
+
+
+
+    /*
+    * 개인정보 수정
+    */
+    public void updateUserInfo(UserInfoDTO dto) {
+        this.name = dto.getName();
+        this.description = dto.getDescription();
+        this.img = dto.getImg();
+        this.githubUrl = dto.getGithubUrl();
+        this.blogUrl = dto.getBlogUrl();
+        this.snsUrl = dto.getSnsUrl();
+    }
 }
