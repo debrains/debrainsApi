@@ -3,7 +3,6 @@ package com.debrains.debrainsApi.entity;
 import com.debrains.debrainsApi.common.AuthProvider;
 import com.debrains.debrainsApi.common.UserRole;
 import com.debrains.debrainsApi.common.UserState;
-import com.debrains.debrainsApi.dto.UserDTO;
 import com.debrains.debrainsApi.dto.UserInfoDTO;
 import lombok.*;
 import org.springframework.format.annotation.DateTimeFormat;

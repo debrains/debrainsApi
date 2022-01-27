@@ -1,29 +1,34 @@
 package com.debrains.debrainsApi.dto;
 
-import com.sun.istack.NotNull;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
+import org.springframework.format.annotation.DateTimeFormat;
 
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Data
+@Getter
+@Setter
 @ToString
 public class TilDTO {
 
     //    @NotEmpty
     private Long memberId;
-    @NotEmpty
+    @NotBlank
     private String subject;
-    @NotEmpty
+    @NotBlank
     private String description;
+
     @NotNull
-    private LocalDate startDate;
-    @NotNull
-    private LocalDate endDate;
-    @NotNull
+    @JsonFormat(pattern = "yyyy-MM-dd")
+    private LocalDate startDate, endDate;
+
+    @NotBlank
     private String cycleStatus;
     private int cycleCnt;
 }

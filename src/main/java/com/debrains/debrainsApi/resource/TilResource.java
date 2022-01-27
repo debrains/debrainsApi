@@ -1,4 +1,4 @@
-package com.debrains.debrainsApi.common;
+package com.debrains.debrainsApi.resource;
 
 import com.debrains.debrainsApi.controller.TilController;
 import com.debrains.debrainsApi.entity.Til;

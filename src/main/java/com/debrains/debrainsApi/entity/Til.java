@@ -14,7 +14,6 @@ import java.util.List;
 @NoArgsConstructor
 @Builder
 @Getter
-@Setter
 @ToString
 public class Til extends BaseEntity {
 
