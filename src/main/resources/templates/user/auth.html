@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+<script>
+    let query = window.location.search;
+    let param = new URLSearchParams(query);
+    let token = param.get('accessToken');
+
+    if (token) {
+        localStorage.setItem("accessToken", token);
+    }
+    location.href = "/root/user";
+</script>
+</body>
+</html>

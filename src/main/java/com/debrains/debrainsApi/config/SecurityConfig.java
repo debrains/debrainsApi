@@ -38,13 +38,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     public void configure(WebSecurity web) throws Exception {
         web.ignoring().requestMatchers(PathRequest.toStaticResources().atCommonLocations())
-                .antMatchers("/h2-console/**");
+                .antMatchers("/h2-console/**", "/vendor/**", "/img/**");
     }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
-                .antMatchers("/oauth2/**", "/auth/**").permitAll()
+                .antMatchers("/oauth2/**", "/auth/**", "/root/login").permitAll()
                 .antMatchers("/root/**").hasRole("ADMIN")
                 .anyRequest().authenticated();
 
