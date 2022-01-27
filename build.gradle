@@ -40,6 +40,7 @@ dependencies {
 	implementation 'com.querydsl:querydsl-jpa'
 	implementation 'io.jsonwebtoken:jjwt:0.9.1'
 	implementation 'org.modelmapper:modelmapper:3.0.0'
+	implementation 'nz.net.ultraq.thymeleaf:thymeleaf-layout-dialect:2.3.0'
 
 	testCompileOnly 'org.projectlombok:lombok'
 	testAnnotationProcessor 'org.projectlombok:lombok'
