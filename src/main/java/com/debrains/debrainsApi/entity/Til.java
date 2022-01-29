@@ -4,10 +4,7 @@ import lombok.*;
 
 import javax.persistence.*;
 import java.time.LocalDate;
-import java.time.Period;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.time.temporal.ChronoUnit;
 
 @Entity
 @AllArgsConstructor
@@ -58,8 +55,8 @@ public class Til extends BaseEntity {
      * */
     public void totalCrtCount() {
 
-        Period period = (Period.between(startDate, endDate));
-        int diffDate = period.getDays() + 1;
+        long diff = ChronoUnit.DAYS.between(startDate, endDate);
+        int diffDate = (int) (diff) + 1;
 
         if (this.cycleStatus.equals(CycleStatus.EVERYDAY)) {
             this.totalCnt = diffDate;
