@@ -28,6 +28,7 @@ public enum ErrorCode {
     CYCLE_KIND_WRONG(HttpStatus.BAD_REQUEST, "TI01", "인증주기가 잘못됐습니다."),
     CYCLE_CNT_WRONG(HttpStatus.BAD_REQUEST, "TI02", "반복횟수가 잘못됐습니다."),
     TIL_EXPIRED(HttpStatus.BAD_REQUEST, "TI03", "만료된 TIL은 수정할 수 없습니다."),
+    TIL_NOT_FOUND(HttpStatus.NOT_FOUND, "TI04", "존재하지 않는 TIL입니다."),
 
     // TIL_CRT
     DENIED_TIL(HttpStatus.NOT_ACCEPTABLE, "TC01", "관리자에 의해 취소된 인증입니다."),
