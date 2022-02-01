@@ -5,6 +5,8 @@ import lombok.*;
 import javax.persistence.*;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @AllArgsConstructor
@@ -19,10 +21,12 @@ public class Til extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    // USER 들어가야 함
+    /*@ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private User user;*/
 
-    /*@OneToMany(mappedBy = "til")
-    private List<TilCrt> tilCrts = new ArrayList<>();*/
+    @OneToMany(mappedBy = "til")
+    private List<TilCrt> tilCrts = new ArrayList<>();
 
     @Column(nullable = false)
     private String subject;

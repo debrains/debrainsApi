@@ -79,4 +79,22 @@ public class TilController {
         return ResponseEntity.ok(tilResource);
     }
 
+    @PutMapping("/{id}")
+    public ResponseEntity updateTil(@PathVariable Long id, @RequestBody @Validated TilDTO tilDTO) {
+        Optional<Til> optionalTil = tilRepository.findById(id);
+        if (optionalTil.isEmpty()) {
+            throw new ApiException(ErrorCode.TIL_NOT_FOUND);
+        }
+
+        Til existingTil = optionalTil.get();
+        modelMapper.map(tilDTO, existingTil);
+
+        Til savedTil = tilRepository.save(existingTil);
+
+        TilResource tilResource = new TilResource(savedTil);
+        tilResource.add(Link.of("/docs/index.html#resources-tils-update").withRel("profile"));
+
+        return ResponseEntity.ok(tilResource);
+    }
+
 }

@@ -17,8 +17,8 @@ import java.time.LocalDate;
 @ToString
 public class TilDTO {
 
-    //    @NotEmpty
-    private Long memberId;
+//    @NotBlank
+    private Long userId;
     @NotBlank
     private String subject;
     @NotBlank

@@ -9,6 +9,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -28,8 +29,7 @@ import static org.springframework.restdocs.hypermedia.HypermediaDocumentation.li
 import static org.springframework.restdocs.hypermedia.HypermediaDocumentation.links;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -48,13 +48,16 @@ class TilControllerTest {
     ObjectMapper objectMapper;
 
     @Autowired
+    ModelMapper modelMapper;
+
+    @Autowired
     TilRepository tilRepository;
 
     @Test
     @DisplayName("TIL생성_성공")
     public void createTil() throws Exception {
         TilDTO tilDTO = TilDTO.builder()
-                .memberId(1L)
+                .userId(1L)
                 .subject("TIL subject1 입니다.")
                 .description("TIL description1 입니다")
                 .startDate(LocalDate.of(2022, 1, 30))
@@ -85,7 +88,7 @@ class TilControllerTest {
                                 headerWithName(HttpHeaders.CONTENT_TYPE).description("content type")
                         ),
                         requestFields(
-                                fieldWithPath("memberId").description("member id of new til"),
+                                fieldWithPath("userId").description("user id of new til"),
                                 fieldWithPath("subject").description("subject of new til"),
                                 fieldWithPath("description").description("description of new til"),
                                 fieldWithPath("startDate").description("start date of new til"),
@@ -98,10 +101,9 @@ class TilControllerTest {
                                 headerWithName(HttpHeaders.CONTENT_TYPE).description("content type")
                         ),
                         responseFields(
-                                /*fieldWithPath("tilId").description("til id"),
-                                fieldWithPath("memberId").description("member id of new til"),*/
                                 fieldWithPath("id").description("id"),
                                 fieldWithPath("subject").description("제목"),
+                                fieldWithPath("tilCrts").description("인증"),
                                 fieldWithPath("description").description("상세내용"),
                                 fieldWithPath("startDate").description("시작날짜"),
                                 fieldWithPath("endDate").description("종료날짜"),
@@ -136,7 +138,7 @@ class TilControllerTest {
     @DisplayName("TIL생성_잘못된_값_에러")
     public void createTil_Bad_Request_Wrong_Input() throws Exception {
         TilDTO tilDTO = TilDTO.builder()
-                .memberId(1L)
+                .userId(1L)
                 .subject("TIL subject1 입니다.")
                 .description("TIL description1 입니다")
                 .startDate(LocalDate.of(2022, 1, 30))
@@ -216,6 +218,7 @@ class TilControllerTest {
     @DisplayName("기존의 til을 하나 조회하기")
     public void getTile() throws Exception {
         Til til = generateTil(1);
+        System.out.println(til.getId());
 
         mockMvc.perform(get("/tils/{id}", til.getId()))
                 .andDo(print())
@@ -233,6 +236,28 @@ class TilControllerTest {
         mockMvc.perform(get("/tils/123456"))
                 .andDo(print())
                 .andExpect(status().isNotFound());
+    }
+
+    @Test
+    @DisplayName("til 수정")
+    public void updateTil() throws Exception {
+        // Given
+        Til til = generateTil(1);
+        TilDTO tilDTO = modelMapper.map(til, TilDTO.class);
+        String tilSubject = "Updated Til";
+        tilDTO.setSubject(tilSubject);
+
+        // When & Then
+        mockMvc.perform(put("/tils/{id}", til.getId())
+                .contentType(MediaType.APPLICATION_JSON) // 내가 보내는 데이터의 타입을 알려줌
+                .accept(MediaTypes.HAL_JSON)
+                .content(objectMapper.writeValueAsString(tilDTO)))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("subject").exists())
+                .andExpect(header().string(HttpHeaders.CONTENT_TYPE, MediaTypes.HAL_JSON_VALUE))
+                .andExpect(jsonPath("_links.self").exists())
+                .andDo(document("update-til"));
     }
 
     private Til generateTil(int index) {
