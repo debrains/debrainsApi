@@ -39,6 +39,9 @@ public class TilController {
 
     private final TilValidator tilValidator;
 
+    /**
+     * til 생성
+     * */
     @PostMapping
     public ResponseEntity createTil(@RequestBody @Validated TilDTO tilDTO) {
         tilValidator.validateDate(tilDTO);
@@ -56,6 +59,9 @@ public class TilController {
         return ResponseEntity.created(createdUri).body(tilResource);
     }
 
+    /**
+     * til 리스트 조회
+     * */
     @GetMapping
     public ResponseEntity queryTil(Pageable pageable, PagedResourcesAssembler<Til> assembler) {
 
@@ -66,6 +72,9 @@ public class TilController {
         return ResponseEntity.ok(pagedResource);
     }
 
+    /**
+     * til 상세 조회
+     * */
     @GetMapping("/{id}")
     public ResponseEntity getTil(@PathVariable Long id) {
         Optional<Til> optionalTil = tilRepository.findById(id);
@@ -79,7 +88,10 @@ public class TilController {
         return ResponseEntity.ok(tilResource);
     }
 
-    @PutMapping("/{id}")
+    /**
+     * til 수정
+     * */
+    @PatchMapping("/{id}")
     public ResponseEntity updateTil(@PathVariable Long id, @RequestBody @Validated TilDTO tilDTO) {
         Optional<Til> optionalTil = tilRepository.findById(id);
         if (optionalTil.isEmpty()) {

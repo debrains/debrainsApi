@@ -10,7 +10,7 @@ import java.util.Date;
 @NoArgsConstructor
 @Builder
 @Getter
-@ToString
+@ToString(exclude = "til")
 public class TilCrt extends BaseEntity {
 
     @Id

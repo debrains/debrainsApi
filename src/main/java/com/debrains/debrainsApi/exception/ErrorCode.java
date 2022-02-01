@@ -20,6 +20,7 @@ public enum ErrorCode {
     ENDDATE_BEFORE_STARTDATE(HttpStatus.BAD_REQUEST, "DA01", "종료일이 시작일보다 빠를 수 없습니다."),
     ENDDATE_BEFORE_NOW(HttpStatus.BAD_REQUEST, "DA02", "종료일이 현재보다 빠를 수 없습니다."),
     ENDTIME_BEFORE_STARTTIME(HttpStatus.BAD_REQUEST, "DA03", "종료시간이 시작시간보다 빠를 수 없습니다."),
+    NOW_BEFORE_STARTDATE(HttpStatus.BAD_REQUEST, "DA04", "시작일이 현재 날짜보다 늦습니다."),
 
     // USER
     FOUND_NAME(HttpStatus.CONFLICT, "US01", "이미 존재하는 닉네임입니다."),

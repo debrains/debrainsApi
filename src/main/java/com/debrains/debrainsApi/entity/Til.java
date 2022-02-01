@@ -23,10 +23,10 @@ public class Til extends BaseEntity {
 
     /*@ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
-    private User user;*/
+    private User user;
 
     @OneToMany(mappedBy = "til")
-    private List<TilCrt> tilCrts = new ArrayList<>();
+    private List<TilCrt> tilCrts = new ArrayList<>();*/
 
     @Column(nullable = false)
     private String subject;

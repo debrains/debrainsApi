@@ -60,8 +60,8 @@ class TilControllerTest {
                 .userId(1L)
                 .subject("TIL subject1 입니다.")
                 .description("TIL description1 입니다")
-                .startDate(LocalDate.of(2022, 1, 30))
-                .endDate(LocalDate.of(2022, 2, 3))
+                .startDate(LocalDate.of(2022, 2, 28))
+                .endDate(LocalDate.of(2022, 4, 3))
                 .cycleStatus(CycleStatus.WEEK.toString())
                 .cycleCnt(4)
                 .build();
@@ -103,7 +103,6 @@ class TilControllerTest {
                         responseFields(
                                 fieldWithPath("id").description("id"),
                                 fieldWithPath("subject").description("제목"),
-                                fieldWithPath("tilCrts").description("인증"),
                                 fieldWithPath("description").description("상세내용"),
                                 fieldWithPath("startDate").description("시작날짜"),
                                 fieldWithPath("endDate").description("종료날짜"),
@@ -158,15 +157,15 @@ class TilControllerTest {
     @DisplayName("til리스트 조회하기")
     public void queryTils() throws Exception {
         //Given
-        /*IntStream.range(0, 30).forEach(i -> {
+        IntStream.range(0, 30).forEach(i -> {
             generateTil(i);
-        });*/
+        });
 
         //When & Then
         mockMvc.perform(get("/tils")
-                .param("page", "1")
+                .param("page", "1") // page는 0부터 시작
                 .param("size", "10")
-                .param("sort", "subject,DESC")
+                .param("sort", "id,DESC")
         )
                 .andDo(print())
                 .andExpect(status().isOk())
@@ -216,9 +215,10 @@ class TilControllerTest {
 
     @Test
     @DisplayName("기존의 til을 하나 조회하기")
-    public void getTile() throws Exception {
-        Til til = generateTil(1);
-        System.out.println(til.getId());
+    public void getTil() throws Exception {
+        Til til = Til.builder()
+                .id(12L)
+                .build();
 
         mockMvc.perform(get("/tils/{id}", til.getId()))
                 .andDo(print())
@@ -248,7 +248,7 @@ class TilControllerTest {
         tilDTO.setSubject(tilSubject);
 
         // When & Then
-        mockMvc.perform(put("/tils/{id}", til.getId())
+        mockMvc.perform(patch("/tils/{id}", til.getId())
                 .contentType(MediaType.APPLICATION_JSON) // 내가 보내는 데이터의 타입을 알려줌
                 .accept(MediaTypes.HAL_JSON)
                 .content(objectMapper.writeValueAsString(tilDTO)))
@@ -270,6 +270,7 @@ class TilControllerTest {
                 .cycleStatus(CycleStatus.WEEK)
                 .cycleCnt(4)
                 .build();
+        til.totalCrtCount();
         return tilRepository.save(til);
     }
 }
