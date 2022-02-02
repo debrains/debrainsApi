@@ -54,9 +54,17 @@ public class Til extends BaseEntity {
     @Column(nullable = false, columnDefinition = "boolean default false")
     private boolean expired;
 
+    public void changeSubject(String subject) {
+        this.subject = subject;
+    }
+
+    public void changeDescription(String description) {
+        this.description = description;
+    }
+
     /**
      * 총 인증 횟수
-     * */
+     */
     public void totalCrtCount() {
 
         long diff = ChronoUnit.DAYS.between(startDate, endDate);
@@ -77,22 +85,22 @@ public class Til extends BaseEntity {
     /**
      * TIL 유효한지 확인
      * TODO:: 목록 출력할 때 확인하여 업데이트(낱개, 리스트)
-     * */
-    public void expiredCheck(){
+     */
+    public void expiredCheck() {
         LocalDate now = LocalDate.now();
-        if(this.endDate.isBefore(now)){
+        if (this.endDate.isBefore(now)) {
             this.expired = true;
         }
     }
 
     /**
      * 인증 횟수 추가/감소
-     * */
-    public void addCrtCnt(){
+     */
+    public void addCrtCnt() {
         this.crtCnt += 1;
     }
 
-    public void removeCrtCnt(){
+    public void removeCrtCnt() {
         this.crtCnt -= 1;
     }
 }

@@ -41,7 +41,7 @@ public class TilController {
 
     /**
      * til 생성
-     * */
+     */
     @PostMapping
     public ResponseEntity createTil(@RequestBody @Validated TilDTO tilDTO) {
         tilValidator.validateDate(tilDTO);
@@ -61,7 +61,7 @@ public class TilController {
 
     /**
      * til 리스트 조회
-     * */
+     */
     @GetMapping
     public ResponseEntity queryTil(Pageable pageable, PagedResourcesAssembler<Til> assembler) {
 
@@ -74,7 +74,7 @@ public class TilController {
 
     /**
      * til 상세 조회
-     * */
+     */
     @GetMapping("/{id}")
     public ResponseEntity getTil(@PathVariable Long id) {
         Optional<Til> optionalTil = tilRepository.findById(id);
@@ -90,18 +90,10 @@ public class TilController {
 
     /**
      * til 수정
-     * */
+     */
     @PatchMapping("/{id}")
-    public ResponseEntity updateTil(@PathVariable Long id, @RequestBody @Validated TilDTO tilDTO) {
-        Optional<Til> optionalTil = tilRepository.findById(id);
-        if (optionalTil.isEmpty()) {
-            throw new ApiException(ErrorCode.TIL_NOT_FOUND);
-        }
-
-        Til existingTil = optionalTil.get();
-        modelMapper.map(tilDTO, existingTil);
-
-        Til savedTil = tilRepository.save(existingTil);
+    public ResponseEntity updateTil(@PathVariable Long id, @RequestBody TilDTO tilDTO) {
+        Til savedTil = tilService.updateTil(id, tilDTO);
 
         TilResource tilResource = new TilResource(savedTil);
         tilResource.add(Link.of("/docs/index.html#resources-tils-update").withRel("profile"));
@@ -109,4 +101,20 @@ public class TilController {
         return ResponseEntity.ok(tilResource);
     }
 
+    /**
+     * til 삭제
+     */
+    @DeleteMapping("/{id}")
+    public ResponseEntity deleteTil(@PathVariable Long id) {
+        Optional<Til> optionalTil = tilRepository.findById(id);
+        if (optionalTil.isEmpty()) {
+            throw new ApiException(ErrorCode.TIL_NOT_FOUND);
+        }
+
+        tilRepository.delete(optionalTil.get());
+        TilResource tilResource = new TilResource(optionalTil.get());
+        tilResource.add(Link.of("/docs/index.html#resources-tils-delete").withRel("profile"));
+
+        return ResponseEntity.ok(tilResource);
+    }
 }

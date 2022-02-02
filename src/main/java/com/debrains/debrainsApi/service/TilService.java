@@ -6,4 +6,6 @@ import com.debrains.debrainsApi.entity.Til;
 public interface TilService {
 
     TilDTO createTil(TilDTO tilDTO);
+
+    Til updateTil(Long id, TilDTO tilDTO);
 }
