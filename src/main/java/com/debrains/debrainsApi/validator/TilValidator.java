@@ -13,8 +13,14 @@ public class TilValidator {
 
     public void validateDate(TilDTO tilDTO) {
         LocalDate now = LocalDate.now();
+        LocalDate startDate = tilDTO.getStartDate();
         LocalDate endDate = tilDTO.getEndDate();
-        if (endDate.isBefore(tilDTO.getStartDate())) {
+
+        if(startDate.isBefore(now)){
+            throw new ApiException(ErrorCode.NOW_BEFORE_STARTDATE);
+        }
+
+        if (endDate.isBefore(startDate)) {
             throw new ApiException(ErrorCode.ENDDATE_BEFORE_STARTDATE);
         }
 

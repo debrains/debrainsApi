@@ -4,9 +4,8 @@ import lombok.*;
 
 import javax.persistence.*;
 import java.time.LocalDate;
-import java.time.Period;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 @Entity
@@ -22,9 +21,11 @@ public class Til extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    // USER 들어가야 함
+    /*@ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private User user;
 
-    /*@OneToMany(mappedBy = "til")
+    @OneToMany(mappedBy = "til")
     private List<TilCrt> tilCrts = new ArrayList<>();*/
 
     @Column(nullable = false)
@@ -53,13 +54,21 @@ public class Til extends BaseEntity {
     @Column(nullable = false, columnDefinition = "boolean default false")
     private boolean expired;
 
+    public void changeSubject(String subject) {
+        this.subject = subject;
+    }
+
+    public void changeDescription(String description) {
+        this.description = description;
+    }
+
     /**
      * 총 인증 횟수
-     * */
+     */
     public void totalCrtCount() {
 
-        Period period = (Period.between(startDate, endDate));
-        int diffDate = period.getDays() + 1;
+        long diff = ChronoUnit.DAYS.between(startDate, endDate);
+        int diffDate = (int) (diff) + 1;
 
         if (this.cycleStatus.equals(CycleStatus.EVERYDAY)) {
             this.totalCnt = diffDate;
@@ -76,22 +85,22 @@ public class Til extends BaseEntity {
     /**
      * TIL 유효한지 확인
      * TODO:: 목록 출력할 때 확인하여 업데이트(낱개, 리스트)
-     * */
-    public void expiredCheck(){
+     */
+    public void expiredCheck() {
         LocalDate now = LocalDate.now();
-        if(this.endDate.isBefore(now)){
+        if (this.endDate.isBefore(now)) {
             this.expired = true;
         }
     }
 
     /**
      * 인증 횟수 추가/감소
-     * */
-    public void addCrtCnt(){
+     */
+    public void addCrtCnt() {
         this.crtCnt += 1;
     }
 
-    public void removeCrtCnt(){
+    public void removeCrtCnt() {
         this.crtCnt -= 1;
     }
 }
