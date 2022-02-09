@@ -3,14 +3,15 @@ package com.debrains.debrainsApi.entity;
 import lombok.*;
 
 import javax.persistence.*;
-import java.util.Date;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
 @Getter
-@ToString(exclude = "til")
+@ToString
 public class TilCrt extends BaseEntity {
 
     @Id
@@ -24,22 +25,22 @@ public class TilCrt extends BaseEntity {
 
     private String file;
 
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date startTime;
+    @Column(columnDefinition = "TIMESTAMP")
+    private LocalDateTime startTime;
 
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date endTime;
+    @Column(columnDefinition = "TIMESTAMP")
+    private LocalDateTime endTime;
 
-    @Temporal(TemporalType.TIME)
-    private Date watchTime;
+    @Column(columnDefinition = "TIME")
+    private LocalTime watchTime;
 
     @Column(length = 2000)
     private String description;
 
-    @Column(nullable = false, columnDefinition = "boolean default false")
+    @Column(columnDefinition = "boolean default true")
     private boolean open;
 
-    @Column(nullable = false, columnDefinition = "boolean default false")
+    @Column(columnDefinition = "boolean default false")
     private boolean denied;
 
 }

@@ -25,7 +25,7 @@ public class Til extends BaseEntity {
     @JoinColumn(name = "user_id")
     private User user;
 
-    @OneToMany(mappedBy = "til")
+    @OneToMany(mappedBy = "til", cascade = CascadeType.ALL)
     private List<TilCrt> tilCrts = new ArrayList<>();*/
 
     @Column(nullable = false)
@@ -41,7 +41,7 @@ public class Til extends BaseEntity {
     private LocalDate endDate;
 
     @Enumerated(EnumType.STRING)
-    private CycleStatus cycleStatus = CycleStatus.EVERYDAY;
+    private CycleStatus cycleStatus;
 
     private int cycleCnt;
 

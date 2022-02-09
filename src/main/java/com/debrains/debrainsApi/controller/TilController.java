@@ -1,11 +1,11 @@
 package com.debrains.debrainsApi.controller;
 
-import com.debrains.debrainsApi.exception.ApiException;
-import com.debrains.debrainsApi.exception.ErrorCode;
-import com.debrains.debrainsApi.resource.TilResource;
 import com.debrains.debrainsApi.dto.TilDTO;
 import com.debrains.debrainsApi.entity.Til;
+import com.debrains.debrainsApi.exception.ApiException;
+import com.debrains.debrainsApi.exception.ErrorCode;
 import com.debrains.debrainsApi.repository.TilRepository;
+import com.debrains.debrainsApi.resource.TilResource;
 import com.debrains.debrainsApi.service.TilService;
 import com.debrains.debrainsApi.validator.TilValidator;
 import lombok.RequiredArgsConstructor;
@@ -14,6 +14,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PagedResourcesAssembler;
+import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.Link;
 import org.springframework.hateoas.MediaTypes;
 import org.springframework.http.ResponseEntity;
@@ -24,6 +25,7 @@ import java.net.URI;
 import java.util.Optional;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @RestController
 @RequestMapping(value = "/tils", produces = MediaTypes.HAL_JSON_VALUE)
@@ -50,13 +52,16 @@ public class TilController {
         til.totalCrtCount();
         Til newTil = tilRepository.save(til);
         var selfLinkBuilder = linkTo(TilController.class).slash(newTil.getId());
-        URI createdUri = selfLinkBuilder.toUri();
-        TilResource tilResource = new TilResource(til);
-        tilResource.add(linkTo(TilController.class).withRel("query-tils"));
-        tilResource.add(selfLinkBuilder.withRel("update-til"));
-        tilResource.add(Link.of("/docs/index.html#resources-tils-create").withRel("profile"));
 
-        return ResponseEntity.created(createdUri).body(tilResource);
+        EntityModel<Til> resource = EntityModel.of(newTil);
+        URI createdUri = selfLinkBuilder.toUri();
+        resource.add(linkTo(TilController.class).withSelfRel());
+        resource.add(linkTo(TilController.class).withRel("query-tils"));
+        resource.add(linkTo(methodOn(TilController.class).updateTil(newTil.getId(), tilDTO)).withRel("update-til"));
+//        resource.add(selfLinkBuilder.withRel("update-til"));
+        resource.add(Link.of("/docs/index.html#resources-tils-create").withRel("profile"));
+
+        return ResponseEntity.created(createdUri).body(resource);
     }
 
     /**
