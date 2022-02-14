@@ -22,7 +22,8 @@ public enum ErrorCode {
     ENDTIME_BEFORE_STARTTIME(HttpStatus.BAD_REQUEST, "DA03", "종료시간이 시작시간보다 빠를 수 없습니다."),
 
     // USER
-    FOUND_NAME(HttpStatus.CONFLICT, "US01", "이미 존재하는 닉네임입니다."),
+    USER_NOT_FOUND(HttpStatus.NOT_FOUND, "US01", "존재하지 않는 회원입니다."),
+    FOUND_NAME(HttpStatus.CONFLICT, "US02", "이미 존재하는 닉네임입니다."),
 
     // TIL
     CYCLE_KIND_WRONG(HttpStatus.BAD_REQUEST, "TI01", "인증주기가 잘못됐습니다."),
@@ -39,8 +40,9 @@ public enum ErrorCode {
     ENDED_STUDY(HttpStatus.BAD_REQUEST, "ST03", "종료된 스터디입니다."),
     DELETED_STUDY(HttpStatus.BAD_REQUEST, "ST04", "종료된 스터디입니다."),
 
-    // BOARD
-    UNOPENED_BOARD(HttpStatus.FORBIDDEN, "TC02", "비공개 게시글입니다.");
+    // SUPPORT
+    UNOPENED_CONTENT(HttpStatus.FORBIDDEN, "SU01", "비공개 게시글입니다."),
+    NOT_FOUND_CONTENT(HttpStatus.NOT_FOUND, "SU02", "존재하지 않는 게시글입니다.");
 
 
     private final HttpStatus status;

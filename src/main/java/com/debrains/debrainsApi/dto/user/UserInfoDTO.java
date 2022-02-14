@@ -1,4 +1,4 @@
-package com.debrains.debrainsApi.dto;
+package com.debrains.debrainsApi.dto.user;
 
 import lombok.*;
 

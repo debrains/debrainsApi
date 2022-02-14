@@ -1,9 +1,10 @@
 package com.debrains.debrainsApi.entity;
 
 import com.debrains.debrainsApi.common.AuthProvider;
+import com.debrains.debrainsApi.common.Tier;
 import com.debrains.debrainsApi.common.UserRole;
 import com.debrains.debrainsApi.common.UserState;
-import com.debrains.debrainsApi.dto.UserInfoDTO;
+import com.debrains.debrainsApi.dto.user.UserInfoDTO;
 import lombok.*;
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -11,7 +12,7 @@ import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Getter
-@ToString
+@ToString(exclude = "profile")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Builder
@@ -55,6 +56,8 @@ public class User extends BaseEntity {
 
     private String refreshToken;
 
+    @OneToOne(mappedBy = "user")
+    private Profile profile;
 
 
     /*
@@ -68,4 +71,29 @@ public class User extends BaseEntity {
         this.blogUrl = dto.getBlogUrl();
         this.snsUrl = dto.getSnsUrl();
     }
+
+    public void changeRole(UserRole role) {
+        this.role = role;
+    }
+
+    public void changeState(UserState state) {
+        this.state = state;
+    }
+
+    /*
+    * 경험치 부여 및 티어 변경
+    */
+    public void calExp(Long exp) {
+        this.exp += exp;
+        promotion(this.exp);
+    }
+
+    public void promotion(Long exp) {
+        for (Tier tier : Tier.values()) {
+            if (exp >= tier.getStart() && exp <= tier.getEnd()) {
+                this.tier = tier.getLevel();
+            }
+        }
+    }
+
 }

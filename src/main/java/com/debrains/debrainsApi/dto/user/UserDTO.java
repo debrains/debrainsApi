@@ -1,6 +1,8 @@
-package com.debrains.debrainsApi.dto;
+package com.debrains.debrainsApi.dto.user;
 
 import lombok.*;
+
+import java.time.LocalDateTime;
 
 @Builder
 @AllArgsConstructor
@@ -23,4 +25,6 @@ public class UserDTO {
     private String icon;
     private Integer tier;
     private Long exp;
+    private String memo;
+    private LocalDateTime lastLoginDate;
 }

@@ -50,10 +50,11 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
             if (authProvider != user.getAuthProvider()) {
                 throw new OAuthProcessingException("Wrong Match Auth Provider");
             }
-
+            log.info(user.getEmail() + " 로그인!");
 
         } else {
             user = createUser(userInfo, authProvider);
+            log.info(user.getEmail() + " 가입 완료!");
         }
         return CustomUserDetails.create(user, oAuth2User.getAttributes());
     }

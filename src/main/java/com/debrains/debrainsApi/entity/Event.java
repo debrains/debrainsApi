@@ -10,15 +10,20 @@ import javax.persistence.*;
 @AllArgsConstructor
 @Builder
 @Entity
-public class Skill {
+public class Event {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String category;
-    private Integer seq;
+    @Column(nullable = false)
+    private String title;
 
-    @Column(unique = true)
-    private String name;
+    @Column(length = 2000)
+    private String content;
 
+    @Builder.Default
+    private boolean open = true;
+    @Builder.Default
+    private boolean ended = false;
+    private Integer viewCnt;
 }
