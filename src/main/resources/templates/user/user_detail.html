@@ -1,6 +1,6 @@
 <!DOCTYPE html>
-<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      layout:decorate="~{layout}">
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:th="http://www.thymeleaf.org"
+      layout:decorate="~{fragments/layout}">
 
 <!-- Begin Page Content -->
 <div class="container-fluid" layout:fragment="content">
@@ -12,10 +12,70 @@
 
   <div class="row">
 
-    <div class="col-lg-6">
+    <div class="col-lg-8">
+      <form>
+        <div class="form-group row">
+          <label for="email" class="col-sm-2 col-form-label">Email</label>
+          <div class="col-sm-10">
+            <input type="text" readonly class="form-control-plaintext" id="email"
+                   th:value="${user.getEmail()}">
+          </div>
+
+          <label for="username" class="col-sm-2 col-form-label">Name</label>
+          <div class="col-sm-10">
+            <input type="text" readonly class="form-control-plaintext" id="username"
+                   th:value="${user.getName()}">
+          </div>
+
+          <label for="provider" class="col-sm-2 col-form-label">가입경로</label>
+          <div class="col-sm-10">
+            <input type="text" readonly class="form-control-plaintext" id="provider"
+                   th:value="Google">
+          </div>
+
+          <label for="blog" class="col-sm-2 col-form-label">블로그 주소</label>
+          <div class="col-sm-10">
+            <input type="text" readonly class="form-control-plaintext" id="blog"
+                   th:value="${user.getBlogUrl()}">
+          </div>
+
+          <label for="github" class="col-sm-2 col-form-label">Github 주소</label>
+          <div class="col-sm-10">
+            <input type="text" readonly class="form-control-plaintext" id="github"
+                   th:value="${user.getGithubUrl()}">
+          </div>
+
+          <label for="sns" class="col-sm-2 col-form-label">sns 주소</label>
+          <div class="col-sm-10">
+            <input type="text" readonly class="form-control-plaintext" id="sns"
+                   th:value="${user.getSnsUrl()}">
+          </div>
+
+          <label for="description" class="col-sm-2 col-form-label">소개</label>
+          <div class="col-sm-10">
+            <input type="text" readonly class="form-control-plaintext" id="description"
+                   th:value="${user.getDescription()}">
+          </div>
+        </div>
+
+
+
+
+     <!--   <div class="form-group">
+          <label for="description">소개</label>
+          <input type="text" class="form-control" id="description" th:value="${user.get().getName()}">
+        </div>-->
+
+
+        <div class="form-check">
+          <input type="checkbox" class="form-check-input" id="exampleCheck1">
+          <label class="form-check-label" for="exampleCheck1">Check me out</label>
+        </div>
+        <button type="submit" class="btn btn-primary">Submit</button>
+      </form>
 
       <!-- Default Card Example -->
-      <div class="card mb-4">
+      <!--<div class="card mb-4">
         <div class="card-header">
           회원 상세
         </div>
@@ -25,7 +85,7 @@
         </div>
       </div>
 
-      <!-- Basic Card Example -->
+      &lt;!&ndash; Basic Card Example &ndash;&gt;
       <div class="card shadow mb-4">
         <div class="card-header py-3">
           <h6 class="m-0 font-weight-bold text-primary">Basic Card Example</h6>
@@ -35,15 +95,15 @@
           utility classes. By using utility classes, the style of the card component can be
           easily modified with no need for any custom CSS!
         </div>
-      </div>
+      </div>-->
 
     </div>
 
-    <div class="col-lg-6">
+    <!--<div class="col-lg-6">
 
-      <!-- Dropdown Card Example -->
+      &lt;!&ndash; Dropdown Card Example &ndash;&gt;
       <div class="card shadow mb-4">
-        <!-- Card Header - Dropdown -->
+        &lt;!&ndash; Card Header - Dropdown &ndash;&gt;
         <div
             class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
           <h6 class="m-0 font-weight-bold text-primary">Dropdown Card Example</h6>
@@ -52,7 +112,7 @@
                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
               <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
             </a>
-            <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in"
+            <div class="dropdown-menu dropdown-menu-right shadow animated&#45;&#45;fade-in"
                  aria-labelledby="dropdownMenuLink">
               <div class="dropdown-header">Dropdown Header:</div>
               <a class="dropdown-item" href="#">Action</a>
@@ -62,7 +122,7 @@
             </div>
           </div>
         </div>
-        <!-- Card Body -->
+        &lt;!&ndash; Card Body &ndash;&gt;
         <div class="card-body">
           Dropdown menus can be placed in the card header in order to extend the functionality
           of a basic card. In this dropdown card example, the Font Awesome vertical ellipsis
@@ -70,14 +130,14 @@
         </div>
       </div>
 
-      <!-- Collapsable Card Example -->
+      &lt;!&ndash; Collapsable Card Example &ndash;&gt;
       <div class="card shadow mb-4">
-        <!-- Card Header - Accordion -->
+        &lt;!&ndash; Card Header - Accordion &ndash;&gt;
         <a href="#collapseCardExample" class="d-block card-header py-3" data-toggle="collapse"
            role="button" aria-expanded="true" aria-controls="collapseCardExample">
           <h6 class="m-0 font-weight-bold text-primary">Collapsable Card Example</h6>
         </a>
-        <!-- Card Content - Collapse -->
+        &lt;!&ndash; Card Content - Collapse &ndash;&gt;
         <div class="collapse show" id="collapseCardExample">
           <div class="card-body">
             This is a collapsable card example using Bootstrap's built in collapse
@@ -87,7 +147,7 @@
         </div>
       </div>
 
-    </div>
+    </div>-->
 
   </div>
 
