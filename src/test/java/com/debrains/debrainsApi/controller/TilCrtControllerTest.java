@@ -17,6 +17,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.hateoas.MediaTypes;
 import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,6 +26,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -56,21 +58,27 @@ public class TilCrtControllerTest {
         // Given
         Til til = createTil();
 
+        MockMultipartFile files = getFiles();
         TilCrtDTO tilCrtDTO = TilCrtDTO.builder()
                 .tilId(til.getId())
                 .description("인증 설명입니다.")
-                .file("ddd")
-                .startTime(LocalDateTime.of(2022, 2, 10, 10, 48, 11))
-                .endTime(LocalDateTime.of(2022, 2, 10, 15, 48, 11))
+                .startTime(LocalDateTime.now())
+                .endTime(LocalDateTime.now().plusHours(4))
                 .watchTime(LocalTime.of(5, 0, 0))
                 .open(true)
                 .build();
 
+        MockMultipartFile metadata = new MockMultipartFile("tilCrtDTO", "tilCrtDTO",
+                MediaType.APPLICATION_JSON_VALUE, objectMapper.writeValueAsString(tilCrtDTO).getBytes());
+
         // When, Then
-        mockMvc.perform(post("/til-crts/")
-                .contentType(MediaType.APPLICATION_JSON)
+        mockMvc.perform(multipart("/til-crts/")
+                .file(files)
+                .file(metadata)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .contentType(MediaType.MULTIPART_FORM_DATA_VALUE)
                 .accept(MediaTypes.HAL_JSON)
-                .content(objectMapper.writeValueAsString(tilCrtDTO)))
+                .characterEncoding("UTF-8"))
                 .andDo(print())
                 .andExpect(status().isCreated());
     }
@@ -124,18 +132,18 @@ public class TilCrtControllerTest {
 
     }
 
-    /*public MockMultipartFile getFiles() {
+    public MockMultipartFile getFiles() {
 
-        return new MockMultipartFile("test1", "test1.PNG", MediaType.IMAGE_PNG_VALUE, "test1".getBytes());
-    }*/
+        return new MockMultipartFile("files", "test1.PNG", MediaType.IMAGE_PNG_VALUE, "test1".getBytes());
+    }
 
     private Til createTil() {
 
         Til til = Til.builder()
                 .subject("TIL subject1 입니다.")
                 .description("TIL description1 입니다")
-                .startDate(LocalDate.of(2022, 1, 30))
-                .endDate(LocalDate.of(2022, 2, 3))
+                .startDate(LocalDate.now())
+                .endDate(LocalDate.now().plusMonths(4))
                 .cycleStatus(CycleStatus.WEEK)
                 .cycleCnt(4)
                 .build();

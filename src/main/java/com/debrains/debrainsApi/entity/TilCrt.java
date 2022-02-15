@@ -1,5 +1,6 @@
 package com.debrains.debrainsApi.entity;
 
+import com.debrains.debrainsApi.dto.FileDTO;
 import lombok.*;
 
 import javax.persistence.*;
@@ -11,6 +12,7 @@ import java.time.LocalTime;
 @NoArgsConstructor
 @Builder
 @Getter
+@Setter
 @ToString
 public class TilCrt extends BaseEntity {
 
@@ -23,7 +25,9 @@ public class TilCrt extends BaseEntity {
     @JoinColumn(name = "til_id")
     private Til til;
 
-    private String file;
+    private String filePath;
+    private String fileName;
+    private String oriFileName;
 
     @Column(columnDefinition = "TIMESTAMP")
     private LocalDateTime startTime;
@@ -42,5 +46,11 @@ public class TilCrt extends BaseEntity {
 
     @Column(columnDefinition = "boolean default false")
     private boolean denied;
+
+    public void createFile(FileDTO fileDTO) {
+        this.filePath = fileDTO.getFilePath();
+        this.fileName = fileDTO.getFileName();
+        this.oriFileName = fileDTO.getOriFileName();
+    }
 
 }

@@ -60,8 +60,8 @@ class TilControllerTest {
                 .userId(1L)
                 .subject("TIL subject1 입니다.")
                 .description("TIL description1 입니다")
-                .startDate(LocalDate.of(2022, 2, 28))
-                .endDate(LocalDate.of(2022, 4, 3))
+                .startDate(LocalDate.now())
+                .endDate(LocalDate.now().plusWeeks(8))
                 .cycleStatus(CycleStatus.WEEK.toString())
                 .cycleCnt(4)
                 .build();
@@ -157,7 +157,7 @@ class TilControllerTest {
     @DisplayName("til리스트 조회하기")
     public void queryTils() throws Exception {
         //Given
-        IntStream.range(0, 30).forEach(i -> {
+        IntStream.range(0, 5).forEach(i -> {
             generateTil(i);
         });
 
@@ -263,10 +263,10 @@ class TilControllerTest {
     private Til generateTil(int index) {
 
         Til til = Til.builder()
-                .subject("TIL subject1 입니다.")
-                .description("TIL description1 입니다")
-                .startDate(LocalDate.of(2022, 1, 30))
-                .endDate(LocalDate.of(2022, 2, 3))
+                .subject("TIL subject 입니다.")
+                .description("TIL description 입니다")
+                .startDate(LocalDate.now())
+                .endDate(LocalDate.now().plusWeeks(8))
                 .cycleStatus(CycleStatus.WEEK)
                 .cycleCnt(4)
                 .build();

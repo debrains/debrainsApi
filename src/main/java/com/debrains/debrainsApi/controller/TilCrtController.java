@@ -2,6 +2,7 @@ package com.debrains.debrainsApi.controller;
 
 import com.debrains.debrainsApi.dto.TilCrtDTO;
 import com.debrains.debrainsApi.entity.TilCrt;
+import com.debrains.debrainsApi.service.FileService;
 import com.debrains.debrainsApi.service.TilCrtService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -12,9 +13,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestPart;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.net.URI;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
@@ -27,10 +30,14 @@ public class TilCrtController {
 
     private final TilCrtService tilCrtService;
 
-    @PostMapping
-    public ResponseEntity createTilCrts(@RequestBody @Validated TilCrtDTO tilCrtDTO) {
+    private final FileService fileService;
 
-        TilCrt newTilCrt = tilCrtService.createTilCrts(tilCrtDTO);
+    @PostMapping
+    public ResponseEntity createTilCrts(@RequestPart(value = "files", required = false) MultipartFile files,
+                                        @RequestPart(value = "tilCrtDTO") @Validated TilCrtDTO tilCrtDTO)
+            throws IllegalStateException, IOException {
+
+        TilCrt newTilCrt = tilCrtService.createTilCrts(tilCrtDTO, files);
         var selfLinkBuilder = linkTo(TilCrtController.class).slash(newTilCrt.getId());
 
         EntityModel<TilCrt> resource = EntityModel.of(newTilCrt);
