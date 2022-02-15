@@ -1,5 +1,6 @@
 package com.debrains.debrainsApi.entity;
 
+import com.debrains.debrainsApi.dto.user.ProfileDTO;
 import lombok.*;
 
 import javax.persistence.*;
@@ -19,8 +20,17 @@ public class Profile extends BaseEntity {
     @JoinColumn(name = "user_id")
     private User user;
 
-    private Integer purpose;
+    private String purpose;
     private String skills;
 
+
+    public void updateProfile(ProfileDTO dto) {
+        this.purpose = dto.getPurpose();
+        if (dto.getSkills() != null) {
+            this.skills = String.join(",", dto.getSkills());
+        } else {
+            this.skills = "";
+        }
+    }
 
 }
