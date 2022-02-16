@@ -3,15 +3,13 @@ package com.debrains.debrainsApi.controller;
 import com.debrains.debrainsApi.common.RestDocsConfigurate;
 import com.debrains.debrainsApi.common.WithAuthUser;
 import com.debrains.debrainsApi.config.SecurityConfig;
-import com.debrains.debrainsApi.dto.EventDTO;
-import com.debrains.debrainsApi.dto.NoticeDTO;
-import com.debrains.debrainsApi.dto.QnaDTO;
-import com.debrains.debrainsApi.dto.QnaFormDTO;
+import com.debrains.debrainsApi.dto.*;
 import com.debrains.debrainsApi.hateoas.EventConverter;
 import com.debrains.debrainsApi.hateoas.NoticeConverter;
 import com.debrains.debrainsApi.hateoas.QnaConverter;
 import com.debrains.debrainsApi.security.jwt.JwtAuthenticationFilter;
 import com.debrains.debrainsApi.service.SupportService;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -169,12 +167,12 @@ class SupportControllerTest {
         List<EventDTO> eventList = new ArrayList<>();
 
         for (long i=1L; i < 3L; i++) {
-            EventDTO notice = EventDTO.builder()
+            EventDTO event = EventDTO.builder()
                     .id(i)
                     .title("event title " + i)
                     .content("event content " + i)
                     .build();
-            eventList.add(notice);
+            eventList.add(event);
         }
         given(supportService.getEventList()).willReturn(eventList);
 
@@ -185,6 +183,7 @@ class SupportControllerTest {
                 .andExpect(header().string(HttpHeaders.CONTENT_TYPE, MediaTypes.HAL_JSON_VALUE))
                 .andExpect(jsonPath("$..title").exists())
                 .andExpect(jsonPath("$..content").exists())
+                .andExpect(jsonPath("_links.self").exists())
                 .andDo(print())
                 .andDo(document("get-eventList",
                         links(
@@ -347,7 +346,7 @@ class SupportControllerTest {
                                 fieldWithPath("userId").description("user id number"),
                                 fieldWithPath("title").description("qna title"),
                                 fieldWithPath("content").description("qna content")
-                                ),
+                        ),
                         responseHeaders(
                                 headerWithName(HttpHeaders.LOCATION).description("location header"),
                                 headerWithName(HttpHeaders.CONTENT_TYPE).description("content type")
@@ -365,5 +364,30 @@ class SupportControllerTest {
                 ));
         verify(supportService).saveQna(any());
 
+    }
+
+    @Test
+    @DisplayName("스킬 추가 요청")
+    @WithAuthUser
+    void requestSkill() throws Exception {
+        // given
+        SkillReqDTO dto = SkillReqDTO.builder()
+                .request("Backend - JAVA 추가 바랍니다")
+                .build();
+
+        mvc.perform(post("/support/skill")
+                        .with(csrf())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(dto)))
+                .andExpect(status().isOk())
+                .andDo(print())
+                .andDo(document("request-skill",
+                        requestHeaders(
+                                headerWithName(HttpHeaders.CONTENT_TYPE).description("content type")
+                        ),
+                        requestFields(
+                                fieldWithPath("request").description("skill request")
+                        )
+                ));
     }
 }
