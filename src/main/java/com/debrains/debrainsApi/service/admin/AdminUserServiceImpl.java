@@ -2,6 +2,7 @@ package com.debrains.debrainsApi.service.admin;
 
 import com.debrains.debrainsApi.common.UserState;
 import com.debrains.debrainsApi.dto.user.UserDTO;
+import com.debrains.debrainsApi.dto.user.UserInfoDTO;
 import com.debrains.debrainsApi.entity.User;
 import com.debrains.debrainsApi.exception.ApiException;
 import com.debrains.debrainsApi.exception.ErrorCode;
@@ -44,5 +45,12 @@ public class AdminUserServiceImpl implements AdminUserService{
 
         UserDTO user = toDtoUser(userInfo);
         return user;
+    }
+
+    @Override
+    @Transactional
+    public void updateUserInfo(UserDTO dto) {
+        User user = adminUserRepository.getById(dto.getId());
+        user.updateAdminUserInfo(dto);
     }
 }

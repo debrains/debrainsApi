@@ -13,142 +13,134 @@
   <div class="row">
 
     <div class="col-lg-8">
-      <form>
+      <form action="/root/user" method="post">
+        <input type="hidden" name="id" th:value="${user.getId()}">
         <div class="form-group row">
           <label for="email" class="col-sm-2 col-form-label">Email</label>
           <div class="col-sm-10">
-            <input type="text" readonly class="form-control-plaintext" id="email"
+            <input type="text" readonly class="form-control-plaintext" id="email" name="email"
                    th:value="${user.getEmail()}">
           </div>
-
-          <label for="username" class="col-sm-2 col-form-label">Name</label>
+        </div>
+        <div class="form-group row">
+          <label for="name" class="col-sm-2 col-form-label">Name</label>
           <div class="col-sm-10">
-            <input type="text" readonly class="form-control-plaintext" id="username"
+            <input type="text" readonly class="form-control-plaintext" id="name" name="name"
                    th:value="${user.getName()}">
           </div>
-
+        </div>
+        <div class="form-group row">
           <label for="provider" class="col-sm-2 col-form-label">가입경로</label>
           <div class="col-sm-10">
-            <input type="text" readonly class="form-control-plaintext" id="provider"
-                   th:value="Google">
+            <input type="text" readonly class="form-control-plaintext" id="provider" name="authProvider"
+                   th:value="${user.getAuthProvider()}">
           </div>
+        </div>
 
-          <label for="blog" class="col-sm-2 col-form-label">블로그 주소</label>
+        <div class="form-group row">
+          <label for="exp" class="col-sm-2 col-form-label">exp</label>
           <div class="col-sm-10">
-            <input type="text" readonly class="form-control-plaintext" id="blog"
-                   th:value="${user.getBlogUrl()}">
+            <input type="text" readonly class="form-control-plaintext" id="exp" name="exp"
+                   th:value="${user.getExp()} ? ${user.getExp()} : '0'">
           </div>
+        </div>
 
-          <label for="github" class="col-sm-2 col-form-label">Github 주소</label>
+        <div class="form-group row">
+          <label for="blog" class="col-sm-2 col-form-label">blog 주소</label>
           <div class="col-sm-10">
-            <input type="text" readonly class="form-control-plaintext" id="github"
-                   th:value="${user.getGithubUrl()}">
+            <input type="text" readonly class="form-control-plaintext" id="blog" name="blogUrl"
+                   th:value="${user.getBlogUrl()} ? ${user.getBlogUrl()} : '-'">
           </div>
-
+        </div>
+        <div class="form-group row">
+          <label for="github" class="col-sm-2 col-form-label">github 주소</label>
+          <div class="col-sm-10">
+            <input type="text" readonly class="form-control-plaintext" id="github" name="githubUrl"
+                   th:value="${user.getGithubUrl()} ? ${user.getGithubUrl()} : '-'">
+          </div>
+        </div>
+        <div class="form-group row">
           <label for="sns" class="col-sm-2 col-form-label">sns 주소</label>
           <div class="col-sm-10">
-            <input type="text" readonly class="form-control-plaintext" id="sns"
-                   th:value="${user.getSnsUrl()}">
+            <input type="text" readonly class="form-control-plaintext" id="sns" name="snsUrl"
+                   th:value="${user.getSnsUrl()} ? ${user.getSnsUrl()} : '-'">
           </div>
-
+        </div>
+        <div class="form-group row">
           <label for="description" class="col-sm-2 col-form-label">소개</label>
           <div class="col-sm-10">
-            <input type="text" readonly class="form-control-plaintext" id="description"
-                   th:value="${user.getDescription()}">
+            <textarea readonly class="form-control-plaintext" id="description" name="description"
+                      th:text="${user.getDescription()} ? ${user.getDescription()} : '-'"></textarea>
           </div>
         </div>
 
-
-
-
-     <!--   <div class="form-group">
-          <label for="description">소개</label>
-          <input type="text" class="form-control" id="description" th:value="${user.get().getName()}">
-        </div>-->
-
-
-        <div class="form-check">
-          <input type="checkbox" class="form-check-input" id="exampleCheck1">
-          <label class="form-check-label" for="exampleCheck1">Check me out</label>
+        <div class="form-group row">
+          <label for="tier" class="col-sm-2 col-form-label">티어</label>
+          <div class="col-sm-10">
+            <select class="custom-select" th:value="${user.getTier()}" id="tier" name="tier">
+              <option th:selected="${user.getTier()} == 'NONE'" disabled>---</option>
+              <option th:value="1" th:text="BRONZE" th:selected="${user.getTier()} == 1"></option>
+              <option th:value="2" th:text="SILVER" th:selected="${user.getTier()} == 2 "></option>
+              <option th:value="3" th:text="GOLD" th:selected="${user.getTier()} == 3"></option>
+              <option th:value="4" th:text="PLATINUM" th:selected="${user.getTier()} == 4"></option>
+              <option th:value="5" th:text="DIAMOND" th:selected="${user.getTier()} == 5"></option>
+              <option th:value="6" th:text="MASTER" th:selected="${user.getTier()} == 6"></option>
+              <option th:value="7" th:text="GRANDMASTER" th:selected="${user.getTier()} == 7"></option>
+              <option th:value="8" th:text="CHALLENGE" th:selected="${user.getTier()} == 8"></option>
+            </select>
+          </div>
         </div>
-        <button type="submit" class="btn btn-primary">Submit</button>
+
+        <div class="form-group row">
+          <label for="state" class="col-sm-2 col-form-label">상태</label>
+          <div class="col-sm-10">
+            <select class="custom-select" th:value="${user.getState()}" id="state" name="state">
+              <option th:selected="${user.getState()} == 'NONE'" disabled>---</option>
+              <option th:value="ACT" th:text="사용중" th:selected="${user.getState()} == 'ACT'"></option>
+              <option th:value="STOP" th:text="중지" th:selected="${user.getState()} == 'STOP'"></option>
+              <option th:value="DEL" th:text="탈퇴" th:selected="${user.getState()} == 'DEL'"></option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group row">
+          <label for="role" class="col-sm-2 col-form-label">권한</label>
+          <div class="col-sm-10">
+            <select class="custom-select" th:value="${user.getRole()}" id="role" name="role">
+              <option th:value="ADMIN" th:text="ADMIN" th:selected="${user.getRole()} == 'ADMIN'"></option>
+              <option th:value="USER" th:text="USER" th:selected="${user.getRole()} == 'USER'"></option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group row">
+          <label for="memo" class="col-sm-2 col-form-label">관리자 메모</label>
+          <div class="col-sm-10">
+            <textarea class="form-control" id="memo" name="memo"
+                      th:text="${user.getMemo()} ? ${user.getMemo()} : '-'"></textarea>
+          </div>
+        </div>
+
+        <div class="form-group row">
+          <label for="regDate" class="col-sm-2 col-form-label">가입일</label>
+          <div class="col-sm-10">
+            <input type="text" readonly class="form-control-plaintext" id="regDate"
+                   th:value="${#temporals.format(user.getRegDate(), 'yyyy-MM-dd HH:mm:ss')}">
+          </div>
+        </div>
+
+        <div class="form-group row">
+          <label for="lastLoginDate" class="col-sm-2 col-form-label">마지막 로그인</label>
+          <div class="col-sm-10">
+            <input type="text" readonly class="form-control-plaintext" id="lastLoginDate"
+                   th:value="${#temporals.format(user.getLastLoginDate(), 'yyyy-MM-dd HH:mm:ss')}">
+          </div>
+        </div>
+        <div class="form-group row">
+          <button type="submit" class="btn btn-primary">수정</button>
+        </div>
       </form>
-
-      <!-- Default Card Example -->
-      <!--<div class="card mb-4">
-        <div class="card-header">
-          회원 상세
-        </div>
-        <div class="card-body">
-          This card uses Bootstrap's default styling with no utility classes added. Global
-          styles are the only things modifying the look and feel of this default card example.
-        </div>
-      </div>
-
-      &lt;!&ndash; Basic Card Example &ndash;&gt;
-      <div class="card shadow mb-4">
-        <div class="card-header py-3">
-          <h6 class="m-0 font-weight-bold text-primary">Basic Card Example</h6>
-        </div>
-        <div class="card-body">
-          The styling for this basic card example is created by using default Bootstrap
-          utility classes. By using utility classes, the style of the card component can be
-          easily modified with no need for any custom CSS!
-        </div>
-      </div>-->
-
     </div>
-
-    <!--<div class="col-lg-6">
-
-      &lt;!&ndash; Dropdown Card Example &ndash;&gt;
-      <div class="card shadow mb-4">
-        &lt;!&ndash; Card Header - Dropdown &ndash;&gt;
-        <div
-            class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-          <h6 class="m-0 font-weight-bold text-primary">Dropdown Card Example</h6>
-          <div class="dropdown no-arrow">
-            <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink"
-               data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-              <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
-            </a>
-            <div class="dropdown-menu dropdown-menu-right shadow animated&#45;&#45;fade-in"
-                 aria-labelledby="dropdownMenuLink">
-              <div class="dropdown-header">Dropdown Header:</div>
-              <a class="dropdown-item" href="#">Action</a>
-              <a class="dropdown-item" href="#">Another action</a>
-              <div class="dropdown-divider"></div>
-              <a class="dropdown-item" href="#">Something else here</a>
-            </div>
-          </div>
-        </div>
-        &lt;!&ndash; Card Body &ndash;&gt;
-        <div class="card-body">
-          Dropdown menus can be placed in the card header in order to extend the functionality
-          of a basic card. In this dropdown card example, the Font Awesome vertical ellipsis
-          icon in the card header can be clicked on in order to toggle a dropdown menu.
-        </div>
-      </div>
-
-      &lt;!&ndash; Collapsable Card Example &ndash;&gt;
-      <div class="card shadow mb-4">
-        &lt;!&ndash; Card Header - Accordion &ndash;&gt;
-        <a href="#collapseCardExample" class="d-block card-header py-3" data-toggle="collapse"
-           role="button" aria-expanded="true" aria-controls="collapseCardExample">
-          <h6 class="m-0 font-weight-bold text-primary">Collapsable Card Example</h6>
-        </a>
-        &lt;!&ndash; Card Content - Collapse &ndash;&gt;
-        <div class="collapse show" id="collapseCardExample">
-          <div class="card-body">
-            This is a collapsable card example using Bootstrap's built in collapse
-            functionality. <strong>Click on the card header</strong> to see the card body
-            collapse and expand!
-          </div>
-        </div>
-      </div>
-
-    </div>-->
-
   </div>
 
 </div>

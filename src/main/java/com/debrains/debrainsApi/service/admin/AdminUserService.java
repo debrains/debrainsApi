@@ -27,6 +27,10 @@ public interface AdminUserService{
 
     UserDTO findById(Long id);
 
+    void updateUserInfo(UserDTO dto);
+
+
+
     default UserDTO toDtoUser(User user) {
         return UserDTO.builder()
                 .id(user.getId())
@@ -41,8 +45,10 @@ public interface AdminUserService{
                 .tier(user.getTier())
                 .memo(user.getMemo())
                 .role(user.getRole().getRole())
-                .state(user.getState().getDescription())
+                .state(user.getState().getState())
                 .lastLoginDate(user.getLastLoginDate())
+                .regDate(user.getRegDate())
+                .authProvider(user.getAuthProvider().name())
                 .build();
     }
 }

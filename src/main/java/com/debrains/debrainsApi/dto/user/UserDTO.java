@@ -1,5 +1,7 @@
 package com.debrains.debrainsApi.dto.user;
 
+import com.debrains.debrainsApi.common.AuthProvider;
+import com.debrains.debrainsApi.common.UserState;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -26,5 +28,7 @@ public class UserDTO {
     private Integer tier;
     private Long exp;
     private String memo;
+    private String authProvider;
     private LocalDateTime lastLoginDate;
+    private LocalDateTime regDate;
 }
