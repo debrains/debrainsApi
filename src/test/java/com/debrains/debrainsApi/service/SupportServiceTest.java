@@ -1,16 +1,11 @@
 package com.debrains.debrainsApi.service;
 
-import com.debrains.debrainsApi.dto.NoticeDTO;
-import com.debrains.debrainsApi.dto.QnaDTO;
-import com.debrains.debrainsApi.dto.QnaFormDTO;
-import com.debrains.debrainsApi.dto.EventDTO;
-import com.debrains.debrainsApi.entity.Event;
-import com.debrains.debrainsApi.entity.Notice;
-import com.debrains.debrainsApi.entity.Qna;
-import com.debrains.debrainsApi.entity.User;
+import com.debrains.debrainsApi.dto.*;
+import com.debrains.debrainsApi.entity.*;
 import com.debrains.debrainsApi.repository.EventRepository;
 import com.debrains.debrainsApi.repository.NoticeRepository;
 import com.debrains.debrainsApi.repository.QnaRepository;
+import com.debrains.debrainsApi.repository.SkillReqRepository;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -44,6 +39,8 @@ class SupportServiceTest {
     private EventRepository eventRepository;
     @Mock
     private QnaRepository qnaRepository;
+    @Mock
+    private SkillReqRepository skillReqRepository;
     @Mock
     private ModelMapper modelMapper;
 
@@ -261,5 +258,61 @@ class SupportServiceTest {
         Optional<Qna> getQna = qnaRepository.findById(id);
         assertThat(getQna.get().getAnswer()).isEqualTo(answer);
         verify(qnaRepository, times(2)).findById(any());
+    }
+
+    @Test
+    @DisplayName("스킬추가 요청 리스트")
+    void getSkillReqList() {
+        // given
+        SkillReqDTO dto = SkillReqDTO.builder()
+                .request("Backend - JAVA 추가 바랍니다")
+                .build();
+
+        SkillReq entity = SkillReq.builder()
+                .id(1L)
+                .request("Backend - JAVA 추가 바랍니다")
+                .build();
+        List<SkillReq> list = List.of(entity);
+
+        given(skillReqRepository.findAll()).willReturn(list);
+        given(modelMapper.map(any(), any())).willReturn(dto);
+
+        // when
+        List<SkillReqDTO> skillReqList = supportService.getSkillReqList();
+
+        // then
+        assertThat(skillReqList).size().isEqualTo(1);
+        verify(skillReqRepository).findAll();
+
+    }
+
+    @Test
+    @DisplayName("스킬추가 요청")
+    void saveSkillReq() {
+        // given
+        SkillReqDTO dto = SkillReqDTO.builder()
+                .request("Backend - JAVA 추가 바랍니다")
+                .build();
+
+        SkillReq entity = SkillReq.builder()
+                .id(1L)
+                .request("Backend - JAVA 추가 바랍니다")
+                .build();
+
+        given(skillReqRepository.save(any())).willReturn(entity);
+
+        // when
+        supportService.saveSkillReq(dto);
+
+        // then
+        verify(skillReqRepository).save(any());
+    }
+
+    @Test
+    @DisplayName("스킬추가 요청 삭제")
+    void deleteSkillReq() {
+        Long id = 1L;
+        supportService.deleteSkillReq(id);
+        verify(skillReqRepository).deleteById(any());
     }
 }

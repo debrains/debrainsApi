@@ -1,9 +1,6 @@
 package com.debrains.debrainsApi.controller;
 
-import com.debrains.debrainsApi.dto.NoticeDTO;
-import com.debrains.debrainsApi.dto.QnaDTO;
-import com.debrains.debrainsApi.dto.QnaFormDTO;
-import com.debrains.debrainsApi.dto.EventDTO;
+import com.debrains.debrainsApi.dto.*;
 import com.debrains.debrainsApi.hateoas.EventConverter;
 import com.debrains.debrainsApi.hateoas.NoticeConverter;
 import com.debrains.debrainsApi.hateoas.QnaConverter;
@@ -94,6 +91,11 @@ public class SupportController {
         resource.add(selfLinkBuilder.withRel("create"));
 
         return ResponseEntity.created(createdUri).body(resource);
+    }
 
+    @PostMapping("/skill")
+    public ResponseEntity requestSkill(@RequestBody @Validated SkillReqDTO dto) {
+        supportService.saveSkillReq(dto);
+        return ResponseEntity.ok().build();
     }
 }

@@ -75,6 +75,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 
         Profile profile = Profile.builder()
                 .user(user)
+                .skills("")
                 .build();
         profileRepository.save(profile);
 
