@@ -5,7 +5,6 @@ import com.debrains.debrainsApi.entity.Til;
 import com.debrains.debrainsApi.exception.ApiException;
 import com.debrains.debrainsApi.exception.ErrorCode;
 import com.debrains.debrainsApi.repository.TilRepository;
-import com.debrains.debrainsApi.resource.TilResource;
 import com.debrains.debrainsApi.service.TilService;
 import com.debrains.debrainsApi.validator.TilValidator;
 import lombok.RequiredArgsConstructor;
@@ -17,6 +16,7 @@ import org.springframework.data.web.PagedResourcesAssembler;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.Link;
 import org.springframework.hateoas.MediaTypes;
+import org.springframework.hateoas.PagedModel;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -58,7 +58,6 @@ public class TilController {
         resource.add(linkTo(TilController.class).withSelfRel());
         resource.add(linkTo(TilController.class).withRel("query-tils"));
         resource.add(linkTo(methodOn(TilController.class).updateTil(newTil.getId(), tilDTO)).withRel("update-til"));
-//        resource.add(selfLinkBuilder.withRel("update-til"));
         resource.add(Link.of("/docs/index.html#resources-tils-create").withRel("profile"));
 
         return ResponseEntity.created(createdUri).body(resource);
@@ -68,13 +67,14 @@ public class TilController {
      * til 리스트 조회
      */
     @GetMapping
-    public ResponseEntity queryTil(Pageable pageable, PagedResourcesAssembler<Til> assembler) {
+    public ResponseEntity<PagedModel<EntityModel<Til>>> queryTil(Pageable pageable,
+                                                                 PagedResourcesAssembler<Til> assembler) {
 
         Page<Til> page = tilRepository.findAll(pageable);
-        var pagedResource = assembler.toModel(page, e -> new TilResource(e));
-        pagedResource.add(Link.of("/docs/index.html#resources-tils-list").withRel("profile"));
+        PagedModel<EntityModel<Til>> resource = assembler.toModel(page);
+        resource.add(Link.of("/docs/index.html#resources-tils-list").withRel("profile"));
 
-        return ResponseEntity.ok(pagedResource);
+        return ResponseEntity.ok(resource);
     }
 
     /**
@@ -88,9 +88,10 @@ public class TilController {
         }
 
         Til til = optionalTil.get();
-        TilResource tilResource = new TilResource(til);
-        tilResource.add(Link.of("/docs/index.html#resources-tils-get").withRel("profile"));
-        return ResponseEntity.ok(tilResource);
+        EntityModel<Til> resource = EntityModel.of(til);
+        resource.add(linkTo(TilController.class).withSelfRel());
+        resource.add(Link.of("/docs/index.html#resources-tils-get").withRel("profile"));
+        return ResponseEntity.ok(resource);
     }
 
     /**
@@ -98,12 +99,17 @@ public class TilController {
      */
     @PatchMapping("/{id}")
     public ResponseEntity updateTil(@PathVariable Long id, @RequestBody TilDTO tilDTO) {
+        Optional<Til> optionalTil = tilRepository.findById(id);
+        if (optionalTil.isEmpty()) {
+            throw new ApiException(ErrorCode.TIL_NOT_FOUND);
+        }
         Til savedTil = tilService.updateTil(id, tilDTO);
 
-        TilResource tilResource = new TilResource(savedTil);
-        tilResource.add(Link.of("/docs/index.html#resources-tils-update").withRel("profile"));
+        EntityModel<Til> resource = EntityModel.of(savedTil);
+        resource.add(linkTo(TilController.class).withSelfRel());
+        resource.add(Link.of("/docs/index.html#resources-tils-update").withRel("profile"));
 
-        return ResponseEntity.ok(tilResource);
+        return ResponseEntity.ok(resource);
     }
 
     /**
@@ -117,9 +123,10 @@ public class TilController {
         }
 
         tilRepository.delete(optionalTil.get());
-        TilResource tilResource = new TilResource(optionalTil.get());
-        tilResource.add(Link.of("/docs/index.html#resources-tils-delete").withRel("profile"));
+        EntityModel<Til> resource = EntityModel.of(optionalTil.get());
+        resource.add(linkTo(TilController.class).withSelfRel());
+        resource.add(Link.of("/docs/index.html#resources-tils-delete").withRel("profile"));
 
-        return ResponseEntity.ok(tilResource);
+        return ResponseEntity.ok(resource);
     }
 }

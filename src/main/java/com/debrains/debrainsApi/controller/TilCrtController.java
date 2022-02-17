@@ -2,23 +2,29 @@ package com.debrains.debrainsApi.controller;
 
 import com.debrains.debrainsApi.dto.TilCrtDTO;
 import com.debrains.debrainsApi.entity.TilCrt;
+import com.debrains.debrainsApi.exception.ApiException;
+import com.debrains.debrainsApi.exception.ErrorCode;
+import com.debrains.debrainsApi.repository.TilCrtRepository;
 import com.debrains.debrainsApi.service.FileService;
 import com.debrains.debrainsApi.service.TilCrtService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PagedResourcesAssembler;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.Link;
 import org.springframework.hateoas.MediaTypes;
+import org.springframework.hateoas.PagedModel;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestPart;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.net.URI;
+import java.util.Optional;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 
@@ -30,8 +36,11 @@ public class TilCrtController {
 
     private final TilCrtService tilCrtService;
 
-    private final FileService fileService;
+    private final TilCrtRepository tilCrtRepository;
 
+    /**
+     * til 인증 생성
+     * */
     @PostMapping
     public ResponseEntity createTilCrts(@RequestPart(value = "files", required = false) MultipartFile files,
                                         @RequestPart(value = "tilCrtDTO") @Validated TilCrtDTO tilCrtDTO)
@@ -49,4 +58,75 @@ public class TilCrtController {
 
         return ResponseEntity.created(createdUri).body(resource);
     }
+
+    /**
+     * til 인증 리스트 조회
+     * */
+    @GetMapping
+    public ResponseEntity<PagedModel<EntityModel<TilCrt>>> queryTilCrts(Pageable pageable,
+                                                                        PagedResourcesAssembler<TilCrt> assembler) {
+
+        Page<TilCrt> page = tilCrtRepository.findAll(pageable);
+
+        PagedModel<EntityModel<TilCrt>> resource = assembler.toModel(page);
+        resource.add(Link.of("/docs/index.html#resources-til-crts-list").withRel("profile"));
+
+        return ResponseEntity.ok(resource);
+    }
+
+    /**
+     * til 인증 상세 조회
+     * */
+    @GetMapping("/{id}")
+    public ResponseEntity getTilCrt(@PathVariable Long id) {
+
+        Optional<TilCrt> optionalTilCrt = tilCrtRepository.findById(id);
+        if (optionalTilCrt.isEmpty()) {
+            throw new ApiException(ErrorCode.TILCRT_NOT_FOUND);
+        }
+
+        TilCrt tilCrt = optionalTilCrt.get();
+        EntityModel<TilCrt> resource = EntityModel.of(tilCrt);
+        resource.add(linkTo(TilCrtController.class).withSelfRel());
+        resource.add(Link.of("/docs/index.html#resources-til-crts-get").withRel("profile"));
+        return ResponseEntity.ok(resource);
+    }
+
+    /**
+     * til 인증 수정
+     * */
+    @PatchMapping("/{id}")
+    public ResponseEntity updateTilCrt(@PathVariable Long id, @RequestBody TilCrtDTO tilCrtDTO) {
+        Optional<TilCrt> optionalTilCrt = tilCrtRepository.findById(id);
+        if (optionalTilCrt.isEmpty()) {
+            throw new ApiException(ErrorCode.TILCRT_NOT_FOUND);
+        }
+
+        TilCrt savedTilCrt = tilCrtService.updateTilCrt(id, tilCrtDTO);
+
+        EntityModel<TilCrt> resource = EntityModel.of(savedTilCrt);
+        resource.add(linkTo(TilCrtController.class).withSelfRel());
+        resource.add(Link.of("/docs/index.html#resources-til-crts-update").withRel("profile"));
+
+        return ResponseEntity.ok(resource);
+    }
+
+    /**
+     * til 인증 삭제
+     * */
+    @DeleteMapping("/{id}")
+    public ResponseEntity deleteTilCrt(@PathVariable Long id) {
+        Optional<TilCrt> optionalTilCrt = tilCrtRepository.findById(id);
+        if (optionalTilCrt.isEmpty()) {
+            throw new ApiException(ErrorCode.TILCRT_NOT_FOUND);
+        }
+
+        tilCrtRepository.delete(optionalTilCrt.get());
+        EntityModel<TilCrt> resource = EntityModel.of(optionalTilCrt.get());
+        resource.add(linkTo(TilCrtController.class).withSelfRel());
+        resource.add(Link.of("/docs/index.html#resources-til-crts-delete").withRel("profile"));
+
+        return ResponseEntity.ok(resource);
+    }
+
 }

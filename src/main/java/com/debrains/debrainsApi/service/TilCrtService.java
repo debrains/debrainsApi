@@ -7,4 +7,6 @@ import org.springframework.web.multipart.MultipartFile;
 public interface TilCrtService {
 
     TilCrt createTilCrts(TilCrtDTO tilCrtDTO, MultipartFile files);
+
+    TilCrt updateTilCrt(Long id, TilCrtDTO tilCrtDTO);
 }

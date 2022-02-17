@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.swing.text.html.Option;
 import java.util.Optional;
 
 @Service
@@ -44,6 +45,16 @@ public class TilCrtServiceImpl implements TilCrtService {
         TilCrt tilCrt = modelMapper.map(tilCrtDTO, TilCrt.class);
 
         tilCrt.createFile(fileDTO);
+
+        return tilCrtRepository.save(tilCrt);
+    }
+
+    @Override
+    public TilCrt updateTilCrt(Long id, TilCrtDTO tilCrtDTO) {
+        Optional<TilCrt> optionalTilCrt = tilCrtRepository.findById(id);
+
+        TilCrt tilCrt = optionalTilCrt.get();
+        tilCrt.changeTilCrt(tilCrtDTO);
 
         return tilCrtRepository.save(tilCrt);
     }

@@ -1,6 +1,7 @@
 package com.debrains.debrainsApi.entity;
 
 import com.debrains.debrainsApi.dto.FileDTO;
+import com.debrains.debrainsApi.dto.TilCrtDTO;
 import lombok.*;
 
 import javax.persistence.*;
@@ -51,6 +52,12 @@ public class TilCrt extends BaseEntity {
         this.filePath = fileDTO.getFilePath();
         this.fileName = fileDTO.getFileName();
         this.oriFileName = fileDTO.getOriFileName();
+    }
+
+    public void changeTilCrt(TilCrtDTO tilCrtDTO) {
+        this.startTime = tilCrtDTO.getStartTime();
+        this.endTime = tilCrtDTO.getEndTime();
+        this.description = tilCrtDTO.getDescription();
     }
 
 }

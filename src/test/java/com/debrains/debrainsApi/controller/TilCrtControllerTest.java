@@ -4,6 +4,8 @@ import com.debrains.debrainsApi.common.RestDocsConfigurate;
 import com.debrains.debrainsApi.dto.TilCrtDTO;
 import com.debrains.debrainsApi.entity.CycleStatus;
 import com.debrains.debrainsApi.entity.Til;
+import com.debrains.debrainsApi.entity.TilCrt;
+import com.debrains.debrainsApi.repository.TilCrtRepository;
 import com.debrains.debrainsApi.repository.TilRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.DisplayName;
@@ -16,6 +18,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.hateoas.MediaTypes;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
@@ -25,11 +28,11 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.stream.IntStream;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
@@ -50,6 +53,9 @@ public class TilCrtControllerTest {
 
     @Autowired
     TilRepository tilRepository;
+
+    @Autowired
+    TilCrtRepository tilCrtRepository;
 
     @Test
     @DisplayName("TIL인증_생성")
@@ -104,13 +110,34 @@ public class TilCrtControllerTest {
     @Test
     @DisplayName("til_인증_조회")
     public void queryTilCrts() throws Exception {
+        IntStream.range(0, 23).forEach(i -> {
+            createTilCrt(i);
+        });
 
+        mockMvc.perform(get("/til-crts/")
+                .param("page", "1") // page는 0부터 시작
+                .param("size", "10")
+                .param("sort", "id,DESC")
+        )
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("page").exists())
+                .andExpect(jsonPath("_embedded.tilCrtList[0]._links.self").exists())
+                .andExpect(jsonPath("_links.self").exists())
+                .andExpect(jsonPath("_links.profile").exists());
     }
 
     @Test
     @DisplayName("til_인증_상세보기")
     public void getTilCrts() throws Exception {
+        TilCrt tilCrt = createTilCrt(1);
 
+        mockMvc.perform(get("/til-crts/{id}", tilCrt.getId()))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("id").exists())
+                .andExpect(jsonPath("_links.self").exists())
+                .andExpect(jsonPath("_links.profile").exists());
     }
 
 
@@ -123,7 +150,22 @@ public class TilCrtControllerTest {
     @Test
     @DisplayName("til_인증_수정")
     public void updateTilCrts() throws Exception {
+        TilCrt tilCrt = createTilCrt(1);
 
+        TilCrtDTO tilCrtDTO = modelMapper.map(tilCrt, TilCrtDTO.class);
+
+        String description = "수정된 til 인증입니다.";
+        tilCrtDTO.setDescription(description);
+
+        mockMvc.perform(patch("/til-crts/{id}", tilCrt.getId())
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaTypes.HAL_JSON)
+                .content(objectMapper.writeValueAsString(tilCrtDTO)))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("description").exists())
+                .andExpect(header().string(HttpHeaders.CONTENT_TYPE, MediaTypes.HAL_JSON_VALUE))
+                .andExpect(jsonPath("_links.self").exists());
     }
 
     @Test
@@ -133,12 +175,10 @@ public class TilCrtControllerTest {
     }
 
     public MockMultipartFile getFiles() {
-
         return new MockMultipartFile("files", "test1.PNG", MediaType.IMAGE_PNG_VALUE, "test1".getBytes());
     }
 
     private Til createTil() {
-
         Til til = Til.builder()
                 .subject("TIL subject1 입니다.")
                 .description("TIL description1 입니다")
@@ -149,5 +189,20 @@ public class TilCrtControllerTest {
                 .build();
         til.totalCrtCount();
         return tilRepository.save(til);
+    }
+
+    private TilCrt createTilCrt(int index) {
+        Til til = createTil();
+
+        TilCrt tilCrt = TilCrt.builder()
+                .til(til)
+                .description("TIL 인증 description" + index + " 입니다")
+                .startTime(LocalDateTime.now())
+                .endTime(LocalDateTime.now().plusHours(4))
+                .watchTime(LocalTime.of(5, 0, 0))
+                .open(true)
+                .build();
+
+        return tilCrtRepository.save(tilCrt);
     }
 }

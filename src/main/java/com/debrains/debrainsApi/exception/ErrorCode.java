@@ -34,6 +34,7 @@ public enum ErrorCode {
     // TIL_CRT
     DENIED_TIL(HttpStatus.NOT_ACCEPTABLE, "TC01", "관리자에 의해 취소된 인증입니다."),
     UNOPENED_TIL(HttpStatus.FORBIDDEN, "TC02", "비공개된 인증입니다."),
+    TILCRT_NOT_FOUND(HttpStatus.NOT_FOUND, "TC03", "존재하지 않는 인증입니다."),
 
     // STUDY
     STUDY_TYPE_WRONG(HttpStatus.BAD_REQUEST, "ST01", "스터디 종류가 잘못됐습니다."),
