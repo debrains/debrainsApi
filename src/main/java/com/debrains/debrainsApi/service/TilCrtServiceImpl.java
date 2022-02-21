@@ -14,7 +14,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.swing.text.html.Option;
 import java.util.Optional;
 
 @Service
@@ -50,13 +49,31 @@ public class TilCrtServiceImpl implements TilCrtService {
     }
 
     @Override
-    public TilCrt updateTilCrt(Long id, TilCrtDTO tilCrtDTO) {
+    public TilCrt updateTilCrt(Long id, TilCrtDTO tilCrtDTO, MultipartFile files) {
         Optional<TilCrt> optionalTilCrt = tilCrtRepository.findById(id);
 
         TilCrt tilCrt = optionalTilCrt.get();
+
+        if (files != null && !files.isEmpty()) {
+            fileService.delete(tilCrt.getFilePath(), tilCrt.getFileName());
+            FileDTO fileDTO = fileService.store(files);
+            tilCrt.createFile(fileDTO);
+        }
+
         tilCrt.changeTilCrt(tilCrtDTO);
 
         return tilCrtRepository.save(tilCrt);
+    }
+
+    @Override
+    public void deleteTilCrt(TilCrt tilCrt) {
+        Optional<Til> optionalTil = tilRepository.findById(tilCrt.getTil().getId());
+        Til til = optionalTil.get();
+
+        fileService.delete(tilCrt.getFilePath(), tilCrt.getFileName());
+        tilCrtRepository.delete(tilCrt);
+
+        til.removeCrtCnt();
     }
 
 }

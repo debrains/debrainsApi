@@ -2,10 +2,12 @@ package com.debrains.debrainsApi.controller;
 
 import com.debrains.debrainsApi.dto.TilDTO;
 import com.debrains.debrainsApi.entity.Til;
+import com.debrains.debrainsApi.entity.TilCrt;
 import com.debrains.debrainsApi.exception.ApiException;
 import com.debrains.debrainsApi.exception.ErrorCode;
 import com.debrains.debrainsApi.repository.TilRepository;
 import com.debrains.debrainsApi.service.TilService;
+import com.debrains.debrainsApi.util.PagedModelUtil;
 import com.debrains.debrainsApi.validator.TilValidator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -71,7 +73,8 @@ public class TilController {
                                                                  PagedResourcesAssembler<Til> assembler) {
 
         Page<Til> page = tilRepository.findAll(pageable);
-        PagedModel<EntityModel<Til>> resource = assembler.toModel(page);
+        PagedModel<EntityModel<Til>> resource = PagedModelUtil.getEntityModels(assembler, page,
+                linkTo(TilController.class), Til::getId);
         resource.add(Link.of("/docs/index.html#resources-tils-list").withRel("profile"));
 
         return ResponseEntity.ok(resource);

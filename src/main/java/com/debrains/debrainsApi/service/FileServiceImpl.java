@@ -5,9 +5,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Service;
-import org.springframework.util.FileSystemUtils;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
@@ -93,8 +93,10 @@ public class FileServiceImpl implements FileService {
     }
 
     @Override
-    public void delete(String filename) {
-        // 파일 하나씩 지우는거 구현
-        FileSystemUtils.deleteRecursively(Paths.get(uploadPath).toFile());
+    public void delete(String filepath, String filename) {
+        File file = new File(filepath + File.separator + filename);
+        if (file != null && file.exists()) {
+            file.delete();
+        }
     }
 }

@@ -35,8 +35,9 @@ public class FileController {
     }
 
     @PostMapping(value = "delete")
-    public ResponseEntity<String> delete(@RequestParam(value = "filename") String filename) {
-        fileService.delete(filename);
+    public ResponseEntity<String> delete(@RequestParam(value = "filepath") String filepath,
+                                         @RequestParam(value = "filename") String filename) {
+        fileService.delete(filepath, filename);
         return new ResponseEntity<>("", HttpStatus.OK);
     }
 }

@@ -1,6 +1,7 @@
 package com.debrains.debrainsApi.controller;
 
 import com.debrains.debrainsApi.common.RestDocsConfigurate;
+import com.debrains.debrainsApi.dto.FileDTO;
 import com.debrains.debrainsApi.dto.TilCrtDTO;
 import com.debrains.debrainsApi.entity.CycleStatus;
 import com.debrains.debrainsApi.entity.Til;
@@ -18,7 +19,6 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.hateoas.MediaTypes;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
@@ -32,7 +32,8 @@ import java.util.stream.IntStream;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
@@ -148,8 +149,42 @@ public class TilCrtControllerTest {
     }
 
     @Test
-    @DisplayName("til_인증_수정")
-    public void updateTilCrts() throws Exception {
+    @DisplayName("til_인증_수정_파일O")
+    public void updateTilCrts_existFile() throws Exception {
+
+        // Given
+        TilCrt tilCrt = createTilCrt(1);
+        MockMultipartFile files = getFiles();
+
+        TilCrtDTO tilCrtDTO = modelMapper.map(tilCrt, TilCrtDTO.class);
+
+        String description = "수정된 til 인증입니다.";
+        tilCrtDTO.setDescription(description);
+
+        MockMultipartFile metadata = new MockMultipartFile("tilCrtDTO", "tilCrtDTO",
+                MediaType.APPLICATION_JSON_VALUE, objectMapper.writeValueAsString(tilCrtDTO).getBytes());
+
+        // When, Then
+        mockMvc.perform(multipart("/til-crts/{id}", tilCrt.getId())
+                .file(files)
+                .file(metadata)
+                .with(request -> {
+                    request.setMethod("PATCH");
+                    return request;
+                })
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .contentType(MediaType.MULTIPART_FORM_DATA_VALUE)
+                .accept(MediaTypes.HAL_JSON)
+                .characterEncoding("UTF-8"))
+                .andDo(print())
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    @DisplayName("til_인증_수정_파일X")
+    public void updateTilCrts_not_existFile() throws Exception {
+
+        // Given
         TilCrt tilCrt = createTilCrt(1);
 
         TilCrtDTO tilCrtDTO = modelMapper.map(tilCrt, TilCrtDTO.class);
@@ -157,15 +192,22 @@ public class TilCrtControllerTest {
         String description = "수정된 til 인증입니다.";
         tilCrtDTO.setDescription(description);
 
-        mockMvc.perform(patch("/til-crts/{id}", tilCrt.getId())
-                .contentType(MediaType.APPLICATION_JSON)
+        MockMultipartFile metadata = new MockMultipartFile("tilCrtDTO", "tilCrtDTO",
+                MediaType.APPLICATION_JSON_VALUE, objectMapper.writeValueAsString(tilCrtDTO).getBytes());
+
+        // When, Then
+        mockMvc.perform(multipart("/til-crts/{id}", tilCrt.getId())
+                .file(metadata)
+                .with(request -> {
+                    request.setMethod("PATCH");
+                    return request;
+                })
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .contentType(MediaType.MULTIPART_FORM_DATA_VALUE)
                 .accept(MediaTypes.HAL_JSON)
-                .content(objectMapper.writeValueAsString(tilCrtDTO)))
+                .characterEncoding("UTF-8"))
                 .andDo(print())
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("description").exists())
-                .andExpect(header().string(HttpHeaders.CONTENT_TYPE, MediaTypes.HAL_JSON_VALUE))
-                .andExpect(jsonPath("_links.self").exists());
+                .andExpect(status().isOk());
     }
 
     @Test
@@ -202,6 +244,14 @@ public class TilCrtControllerTest {
                 .watchTime(LocalTime.of(5, 0, 0))
                 .open(true)
                 .build();
+
+        FileDTO fileDTO = FileDTO.builder()
+                .filePath("/usr/local/files")
+                .fileName("test" + index)
+                .oriFileName("test" + index + ".PNG")
+                .build();
+
+        tilCrt.createFile(fileDTO);
 
         return tilCrtRepository.save(tilCrt);
     }

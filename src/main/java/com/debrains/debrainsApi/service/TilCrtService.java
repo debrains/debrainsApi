@@ -8,5 +8,7 @@ public interface TilCrtService {
 
     TilCrt createTilCrts(TilCrtDTO tilCrtDTO, MultipartFile files);
 
-    TilCrt updateTilCrt(Long id, TilCrtDTO tilCrtDTO);
+    TilCrt updateTilCrt(Long id, TilCrtDTO tilCrtDTO, MultipartFile files);
+
+    void deleteTilCrt(TilCrt tilCrt);
 }
