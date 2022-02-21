@@ -1,16 +1,20 @@
 package com.debrains.debrainsApi.entity;
 
+import com.debrains.debrainsApi.dto.FileDTO;
+import com.debrains.debrainsApi.dto.TilCrtDTO;
 import lombok.*;
 
 import javax.persistence.*;
-import java.util.Date;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
 @Getter
-@ToString(exclude = "til")
+@Setter
+@ToString
 public class TilCrt extends BaseEntity {
 
     @Id
@@ -22,24 +26,38 @@ public class TilCrt extends BaseEntity {
     @JoinColumn(name = "til_id")
     private Til til;
 
-    private String file;
+    private String filePath;
+    private String fileName;
+    private String oriFileName;
 
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date startTime;
+    @Column(columnDefinition = "TIMESTAMP")
+    private LocalDateTime startTime;
 
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date endTime;
+    @Column(columnDefinition = "TIMESTAMP")
+    private LocalDateTime endTime;
 
-    @Temporal(TemporalType.TIME)
-    private Date watchTime;
+    @Column(columnDefinition = "TIME")
+    private LocalTime watchTime;
 
     @Column(length = 2000)
     private String description;
 
-    @Column(nullable = false, columnDefinition = "boolean default false")
+    @Column(columnDefinition = "boolean default true")
     private boolean open;
 
-    @Column(nullable = false, columnDefinition = "boolean default false")
+    @Column(columnDefinition = "boolean default false")
     private boolean denied;
+
+    public void createFile(FileDTO fileDTO) {
+        this.filePath = fileDTO.getFilePath();
+        this.fileName = fileDTO.getFileName();
+        this.oriFileName = fileDTO.getOriFileName();
+    }
+
+    public void changeTilCrt(TilCrtDTO tilCrtDTO) {
+        this.startTime = tilCrtDTO.getStartTime();
+        this.endTime = tilCrtDTO.getEndTime();
+        this.description = tilCrtDTO.getDescription();
+    }
 
 }
