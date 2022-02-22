@@ -1,65 +1,68 @@
 <!DOCTYPE html>
-<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      layout:decorate="~{layout}">
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:th="http://www.thymeleaf.org"
+      layout:decorate="~{fragments/layout}">
 
 <!-- Begin Page Content -->
 <div class="container-fluid" layout:fragment="content">
+
   <!-- Page Heading -->
-  <h1 class="h3 mb-2 text-gray-800">공지사항 상세</h1>
-  <p class="mb-4">DataTables is a third party plugin that is used to generate the demo table below.
-    For more information about DataTables, please visit the <a target="_blank"
-                                                               href="https://datatables.net">official DataTables
-      documentation</a>.</p>
+  <div class="d-sm-flex align-items-center justify-content-between mb-4">
+    <h1 class="h3 mb-0 text-gray-800">공지사항 상세</h1>
+  </div>
 
-  <!-- DataTales Example -->
-  <div class="card shadow mb-4">
-    <div class="card-header py-3">
-      <h6 class="m-0 font-weight-bold text-primary">DataTables Example</h6>
-    </div>
-    <div class="card-body">
-      <div class="table-responsive">
-        <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
-          <thead>
-          <tr>
-            <th>Name</th>
-            <th>Position</th>
-            <th>Office</th>
-            <th>Age</th>
-            <th>Start date</th>
-            <th>Salary</th>
-          </tr>
-          </thead>
-          <tbody>
-          <tr>
-            <td><a href="/auth/userDetail">Tiger Nixon</a></td>
-            <td>System Architect</td>
-            <td>Edinburgh</td>
-            <td>61</td>
-            <td>2011/04/25</td>
-            <td>$320,800</td>
-          </tr>
-          <tr>
-            <td>Garrett Winters</td>
-            <td>Accountant</td>
-            <td>Tokyo</td>
-            <td>63</td>
-            <td>2011/07/25</td>
-            <td>$170,750</td>
-          </tr>
-          <tr>
-            <td>Ashton Cox</td>
-            <td>Junior Technical Author</td>
-            <td>San Francisco</td>
-            <td>66</td>
-            <td>2009/01/12</td>
-            <td>$86,000</td>
-          </tr>
+  <div class="row">
 
-          </tbody>
-        </table>
-      </div>
+    <div class="col-lg-8">
+      <form action="/root/support/notice" method="post">
+        <input type="hidden" name="id" th:value="${notice.getId()}">
+        <div class="form-group row">
+          <label for="title" class="col-sm-2 col-form-label">제목</label>
+          <div class="col-sm-10">
+            <input type="text" class="form-control" id="title" name="title"
+                   th:value="${notice.getTitle()}">
+          </div>
+        </div>
+
+        <div class="form-group row">
+          <label for="content" class="col-sm-2 col-form-label">내용</label>
+          <div class="col-sm-10">
+            <textarea class="form-control" id="content" name="content"
+                      th:text="${notice.getContent()} ? ${notice.getContent()} : '-'"></textarea>
+          </div>
+        </div>
+
+        <div class="form-group row">
+          <label for="open" class="col-sm-2 col-form-label">공개유무</label>
+          <div class="col-sm-10">
+            <select class="custom-select" th:value="${notice.getOpen()}" id="open" name="open">
+              <option th:value="0" th:text="비공개" th:selected="!${notice.getOpen()}"></option>
+              <option th:value="1" th:text="공개" th:selected="${notice.getOpen()}"></option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group row">
+          <label for="viewCnt" class="col-sm-2 col-form-label">조회수</label>
+          <div class="col-sm-10">
+            <input type="text" readonly class="form-control-plaintext" id="viewCnt"
+                   th:value="${notice.getViewCnt()}">
+          </div>
+        </div>
+
+        <div class="form-group row">
+          <label for="regDate" class="col-sm-2 col-form-label">작성일</label>
+          <div class="col-sm-10">
+            <input type="text" readonly class="form-control-plaintext" id="regDate"
+                   th:value="${#temporals.format(notice.getRegDate(), 'yyyy-MM-dd HH:mm:ss')}">
+          </div>
+        </div>
+        <div class="form-group row">
+          <button type="submit" class="btn btn-primary">수정</button>
+        </div>
+      </form>
     </div>
   </div>
+
 </div>
 <a class="scroll-to-top rounded" href="#page-top">
   <i class="fas fa-angle-up"></i>
@@ -79,11 +82,11 @@
       <div class="modal-body">Select "Logout" below if you are ready to end your current session.</div>
       <div class="modal-footer">
         <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
-        <a class="btn btn-primary" href="../login.html">Logout</a>
+        <a class="btn btn-primary" href="login.html">Logout</a>
       </div>
     </div>
   </div>
 </div>
-<!-- Bootstrap core JavaScript-->
+
 
 </html>
