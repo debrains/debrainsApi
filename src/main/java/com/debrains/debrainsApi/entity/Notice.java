@@ -37,6 +37,6 @@ public class Notice extends BaseEntity{
         this.title = dto.getTitle();
         this.content = dto.getContent();
         this.open = dto.getOpen();
-        this.viewCnt = dto.getViewCnt();
+        this.top = dto.getTop();
     }
 }

@@ -45,6 +45,12 @@ public class AdminSupportServiceImpl implements AdminSupportService {
         notice.updateAdminNoticeInfo(dto);
     }
 
+    @Override
+    public Long saveNotice(NoticeDTO dto) {
+        Notice entity = modelMapper.map(dto, Notice.class);
+        return adminNoticeRepository.save(entity).getId();
+    }
+
   /*  @Override
     public void save(NoticeDTO noticeDto) {
         adminNoticeRepository.save(toNoticeDto(noticeDto));

@@ -17,6 +17,7 @@ public class NoticeDTO {
     private String content;
     private int viewCnt;
     private Boolean open;
+    private Boolean top;
 
     private LocalDateTime regDate;
 }

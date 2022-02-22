@@ -26,4 +26,5 @@ public interface AdminSupportService {
     }
 
 
+    Long saveNotice(NoticeDTO dto);
 }

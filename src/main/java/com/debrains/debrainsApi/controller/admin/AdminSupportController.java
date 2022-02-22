@@ -5,13 +5,11 @@ import com.debrains.debrainsApi.service.admin.AdminSupportService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 @Controller
 @RequiredArgsConstructor
@@ -21,7 +19,7 @@ public class AdminSupportController {
     private final AdminSupportService adminSupportService;
 
     @GetMapping("/notice")
-    public String noticeListPage(@PageableDefault(page = 0, size = 10, sort = "id") Pageable pageable, Model model) {
+    public String noticeListPage(@PageableDefault(page = 0, size = 10, sort = "id", direction = Sort.Direction.DESC) Pageable pageable, Model model) {
         Page<NoticeDTO> page = adminSupportService.findAll(pageable);
         model.addAttribute("noticeList", page);
         return "support/notice_list";
@@ -31,6 +29,17 @@ public class AdminSupportController {
     public String updateNoticeInfo(NoticeDTO dto) {
         adminSupportService.updateAdminNoticeInfo(dto);
         return "redirect:/root/support/notice/" + dto.getId();
+    }
+
+    @GetMapping("/notice/create")
+    public String saveNoticePage() {
+        return "support/notice_write";
+    }
+
+    @PostMapping("/notice/create")
+    public String saveNotice(NoticeDTO dto) {
+        adminSupportService.saveNotice(dto);
+        return "redirect:/root/support/notice";
     }
 
     @GetMapping("/notice/{id}")
