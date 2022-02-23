@@ -1,20 +1,18 @@
 package com.debrains.debrainsApi.service.admin;
 
+import com.debrains.debrainsApi.dto.EventDTO;
 import com.debrains.debrainsApi.dto.NoticeDTO;
-import com.debrains.debrainsApi.dto.user.UserDTO;
+import com.debrains.debrainsApi.entity.Event;
 import com.debrains.debrainsApi.entity.Notice;
-import com.debrains.debrainsApi.entity.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 public interface AdminSupportService {
-    Page<NoticeDTO> findAll(Pageable pageable);
+    Page<NoticeDTO> findNoticeAll(Pageable pageable);
 
-    NoticeDTO findById(Long id);
+    NoticeDTO findNoticeById(Long id);
 
     void updateAdminNoticeInfo(NoticeDTO dto);
-
-//    void save(NoticeDTO notice);
 
     default NoticeDTO toDtoNotice(Notice notice) {
         return NoticeDTO.builder()
@@ -25,6 +23,15 @@ public interface AdminSupportService {
                 .build();
     }
 
-
     Long saveNotice(NoticeDTO dto);
+
+    Page<EventDTO> findEventAll(Pageable pageable);
+
+    void save(EventDTO event);
+
+    void updateAdminEventInfo(EventDTO dto);
+
+    EventDTO findEventById(Long id);
+
+    Long saveEvent(EventDTO dto);
 }

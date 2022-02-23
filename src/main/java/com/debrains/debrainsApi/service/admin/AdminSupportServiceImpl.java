@@ -1,9 +1,10 @@
 package com.debrains.debrainsApi.service.admin;
 
+import com.debrains.debrainsApi.dto.EventDTO;
 import com.debrains.debrainsApi.dto.NoticeDTO;
-import com.debrains.debrainsApi.dto.user.UserInfoDTO;
+import com.debrains.debrainsApi.entity.Event;
 import com.debrains.debrainsApi.entity.Notice;
-import com.debrains.debrainsApi.entity.User;
+import com.debrains.debrainsApi.repository.admin.AdminEventRepository;
 import com.debrains.debrainsApi.repository.admin.AdminNoticeRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -13,6 +14,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Optional;
+
 @Log4j2
 @RequiredArgsConstructor
 @Service
@@ -20,18 +23,19 @@ import org.springframework.transaction.annotation.Transactional;
 public class AdminSupportServiceImpl implements AdminSupportService {
 
     private final AdminNoticeRepository adminNoticeRepository;
+    private final AdminEventRepository adminEventRepository;
     private final ModelMapper modelMapper;
 
 
     @Override
-    public Page<NoticeDTO> findAll(Pageable pageable) {
+    public Page<NoticeDTO> findNoticeAll(Pageable pageable) {
         Page<NoticeDTO> noticeList = adminNoticeRepository.findAll(pageable)
                 .map(notice -> modelMapper.map(notice, NoticeDTO.class));
         return noticeList;
     }
 
     @Override
-    public NoticeDTO findById(Long id) {
+    public NoticeDTO findNoticeById(Long id) {
         Notice noticeInfo = adminNoticeRepository.findById(id)
                 .orElseThrow();
 
@@ -51,8 +55,30 @@ public class AdminSupportServiceImpl implements AdminSupportService {
         return adminNoticeRepository.save(entity).getId();
     }
 
-  /*  @Override
-    public void save(NoticeDTO noticeDto) {
-        adminNoticeRepository.save(toNoticeDto(noticeDto));
-    }*/
+    @Override
+    public Page<EventDTO> findEventAll(Pageable pageable) {
+        Page<EventDTO> eventList = adminEventRepository.findAll(pageable)
+                .map(event -> modelMapper.map(event, EventDTO.class));
+        return eventList;
+    }
+
+    @Override
+    public void updateAdminEventInfo(EventDTO dto) {
+        Event event = adminEventRepository.getById(dto.getId());
+        event.updateAdminEventInfo(dto);
+    }
+
+    @Override
+    public EventDTO findEventById(Long id) {
+        Event event = adminEventRepository.findById(id)
+                .orElseThrow();
+        EventDTO result = modelMapper.map(event, EventDTO.class);
+        return result;
+    }
+
+    @Override
+    public Long saveEvent(EventDTO dto) {
+        Event entity = modelMapper.map(dto, Event.class);
+        return adminEventRepository.save(entity).getId();
+    }
 }

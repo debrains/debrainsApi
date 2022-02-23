@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:th="http://www.thymeleaf.org"
+      layout:decorate="~{fragments/layout}">
+
+<!-- Begin Page Content -->
+<div class="container-fluid" layout:fragment="content">
+
+  <!-- Page Heading -->
+  <div class="d-sm-flex align-items-center justify-content-between mb-4">
+    <h1 class="h3 mb-0 text-gray-800">이벤트 상세</h1>
+  </div>
+
+  <div class="row">
+
+    <div class="col-lg-8">
+      <form action="/root/support/event" method="post">
+        <input type="hidden" name="id" th:value="${event.getId()}">
+        <div class="form-group row">
+          <label for="title" class="col-sm-2 col-form-label">제목</label>
+          <div class="col-sm-10">
+            <input type="text" class="form-control" id="title" name="title"
+                   th:value="${event.getTitle()}">
+          </div>
+        </div>
+
+        <div class="form-group row">
+          <label for="content" class="col-sm-2 col-form-label">내용</label>
+          <div class="col-sm-10">
+            <textarea class="form-control" id="content" name="content"
+                      th:text="${event.getContent()} ? ${event.getContent()} : '-'"></textarea>
+          </div>
+        </div>
+
+        <div class="form-group row">
+          <label for="open" class="col-sm-2 col-form-label">공개유무</label>
+          <div class="col-sm-10">
+            <select class="custom-select" th:value="${event.getOpen()}" id="open" name="open">
+              <option th:value="0" th:text="비공개" th:selected="!${event.getOpen()}"></option>
+              <option th:value="1" th:text="공개" th:selected="${event.getOpen()}"></option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group row">
+          <label for="ended" class="col-sm-2 col-form-label">진행상태</label>
+          <div class="col-sm-10">
+            <select class="custom-select" th:value="${event.getEnded()}" id="ended" name="ended">
+              <option th:value="0" th:text="진행중" th:selected="!${event.getEnded()}"></option>
+              <option th:value="1" th:text="종료" th:selected="${event.getEnded()}"></option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group row">
+          <label for="viewCnt" class="col-sm-2 col-form-label">조회수</label>
+          <div class="col-sm-10">
+            <input type="text" readonly class="form-control-plaintext" id="viewCnt"
+                   th:value="${event.getViewCnt()}">
+          </div>
+        </div>
+
+        <div class="form-group row">
+          <label for="regDate" class="col-sm-2 col-form-label">작성일</label>
+          <div class="col-sm-10">
+            <input type="text" readonly class="form-control-plaintext" id="regDate"
+                   th:value="${#temporals.format(event.getRegDate(), 'yyyy-MM-dd HH:mm:ss')}">
+          </div>
+        </div>
+        <div class="form-group row">
+          <button type="submit" class="btn btn-primary">수정</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+</div>
+<a class="scroll-to-top rounded" href="#page-top">
+  <i class="fas fa-angle-up"></i>
+</a>
+
+<!-- Logout Modal-->
+<div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Ready to Leave?</h5>
+        <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">×</span>
+        </button>
+      </div>
+      <div class="modal-body">Select "Logout" below if you are ready to end your current session.</div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
+        <a class="btn btn-primary" href="login.html">Logout</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+</html>
