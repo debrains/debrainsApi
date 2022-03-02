@@ -1,5 +1,6 @@
 package com.debrains.debrainsApi.entity;
 
+import com.debrains.debrainsApi.dto.QnaDTO;
 import lombok.*;
 
 import javax.persistence.*;
@@ -10,7 +11,7 @@ import javax.persistence.*;
 @AllArgsConstructor
 @Builder
 @Entity
-public class Qna {
+public class Qna extends BaseEntity{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -34,5 +35,10 @@ public class Qna {
 
     public void updateAnswer(String answer) {
         this.answer = answer;
+    }
+
+    public void updateAdminQnaInfo(QnaDTO dto) {
+        this.answer = dto.getAnswer();
+        this.completed = true;
     }
 }

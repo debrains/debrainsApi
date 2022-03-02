@@ -2,10 +2,13 @@ package com.debrains.debrainsApi.service.admin;
 
 import com.debrains.debrainsApi.dto.EventDTO;
 import com.debrains.debrainsApi.dto.NoticeDTO;
+import com.debrains.debrainsApi.dto.QnaDTO;
 import com.debrains.debrainsApi.entity.Event;
 import com.debrains.debrainsApi.entity.Notice;
+import com.debrains.debrainsApi.entity.Qna;
 import com.debrains.debrainsApi.repository.admin.AdminEventRepository;
 import com.debrains.debrainsApi.repository.admin.AdminNoticeRepository;
+import com.debrains.debrainsApi.repository.admin.AdminQnaRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.modelmapper.ModelMapper;
@@ -24,6 +27,7 @@ public class AdminSupportServiceImpl implements AdminSupportService {
 
     private final AdminNoticeRepository adminNoticeRepository;
     private final AdminEventRepository adminEventRepository;
+    private final AdminQnaRepository adminQnaRepository;
     private final ModelMapper modelMapper;
 
 
@@ -80,5 +84,26 @@ public class AdminSupportServiceImpl implements AdminSupportService {
     public Long saveEvent(EventDTO dto) {
         Event entity = modelMapper.map(dto, Event.class);
         return adminEventRepository.save(entity).getId();
+    }
+
+    @Override
+    public Page<QnaDTO> findQnaAll(Pageable pageable) {
+        Page<QnaDTO> qnaList = adminQnaRepository.findAll(pageable)
+                .map(qna -> modelMapper.map(qna, QnaDTO.class));
+        return qnaList;
+    }
+
+    @Override
+    public QnaDTO findQnaById(Long id) {
+        Qna qna = adminQnaRepository.findById(id)
+                .orElseThrow();
+        QnaDTO result = modelMapper.map(qna, QnaDTO.class);
+        return result;
+    }
+
+    @Override
+    public void updateAdminQnaInfo(QnaDTO dto) {
+        Qna qna = adminQnaRepository.getById(dto.getId());
+        qna.updateAdminQnaInfo(dto);
     }
 }

@@ -11,8 +11,4 @@ import java.util.Optional;
 
 @Repository
 public interface AdminEventRepository extends JpaRepository<Event, Long> {
-
-    Page<Event> findAll(Pageable pageable);
-
-    Optional<Event> findById(Long id);
 }

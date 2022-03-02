@@ -2,6 +2,7 @@ package com.debrains.debrainsApi.service.admin;
 
 import com.debrains.debrainsApi.dto.EventDTO;
 import com.debrains.debrainsApi.dto.NoticeDTO;
+import com.debrains.debrainsApi.dto.QnaDTO;
 import com.debrains.debrainsApi.entity.Event;
 import com.debrains.debrainsApi.entity.Notice;
 import org.springframework.data.domain.Page;
@@ -27,11 +28,15 @@ public interface AdminSupportService {
 
     Page<EventDTO> findEventAll(Pageable pageable);
 
-    void save(EventDTO event);
-
     void updateAdminEventInfo(EventDTO dto);
 
     EventDTO findEventById(Long id);
 
     Long saveEvent(EventDTO dto);
+
+    Page<QnaDTO> findQnaAll(Pageable pageable);
+
+    QnaDTO findQnaById(Long id);
+
+    void updateAdminQnaInfo(QnaDTO dto);
 }
