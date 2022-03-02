@@ -1,6 +1,5 @@
 package com.debrains.debrainsApi.entity;
 
-import com.debrains.debrainsApi.dto.FileDTO;
 import com.debrains.debrainsApi.dto.TilCrtDTO;
 import lombok.*;
 
@@ -26,17 +25,10 @@ public class TilCrt extends BaseEntity {
     @JoinColumn(name = "til_id")
     private Til til;
 
-    private String filePath;
-    private String fileName;
-    private String oriFileName;
-
-    @Column(columnDefinition = "TIMESTAMP")
     private LocalDateTime startTime;
 
-    @Column(columnDefinition = "TIMESTAMP")
     private LocalDateTime endTime;
 
-    @Column(columnDefinition = "TIME")
     private LocalTime watchTime;
 
     @Column(length = 2000)
@@ -47,12 +39,6 @@ public class TilCrt extends BaseEntity {
 
     @Column(columnDefinition = "boolean default false")
     private boolean denied;
-
-    public void createFile(FileDTO fileDTO) {
-        this.filePath = fileDTO.getFilePath();
-        this.fileName = fileDTO.getFileName();
-        this.oriFileName = fileDTO.getOriFileName();
-    }
 
     public void changeTilCrt(TilCrtDTO tilCrtDTO) {
         this.startTime = tilCrtDTO.getStartTime();

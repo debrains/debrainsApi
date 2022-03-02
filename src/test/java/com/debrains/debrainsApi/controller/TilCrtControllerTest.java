@@ -245,14 +245,6 @@ public class TilCrtControllerTest {
                 .open(true)
                 .build();
 
-        FileDTO fileDTO = FileDTO.builder()
-                .filePath("/usr/local/files")
-                .fileName("test" + index)
-                .oriFileName("test" + index + ".PNG")
-                .build();
-
-        tilCrt.createFile(fileDTO);
-
         return tilCrtRepository.save(tilCrt);
     }
 }

@@ -5,8 +5,6 @@ import lombok.*;
 import javax.persistence.*;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
 @AllArgsConstructor
@@ -41,7 +39,8 @@ public class Til extends BaseEntity {
     private LocalDate endDate;
 
     @Enumerated(EnumType.STRING)
-    private CycleStatus cycleStatus;
+    @Builder.Default
+    private CycleStatus cycleStatus = CycleStatus.EVERYDAY;
 
     private int cycleCnt;
 

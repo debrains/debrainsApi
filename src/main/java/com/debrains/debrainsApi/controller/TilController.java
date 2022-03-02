@@ -2,7 +2,6 @@ package com.debrains.debrainsApi.controller;
 
 import com.debrains.debrainsApi.dto.TilDTO;
 import com.debrains.debrainsApi.entity.Til;
-import com.debrains.debrainsApi.entity.TilCrt;
 import com.debrains.debrainsApi.exception.ApiException;
 import com.debrains.debrainsApi.exception.ErrorCode;
 import com.debrains.debrainsApi.repository.TilRepository;
@@ -24,7 +23,6 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
-import java.util.Optional;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
@@ -57,7 +55,7 @@ public class TilController {
 
         EntityModel<Til> resource = EntityModel.of(newTil);
         URI createdUri = selfLinkBuilder.toUri();
-        resource.add(linkTo(TilController.class).withSelfRel());
+        resource.add(linkTo(TilController.class).slash(newTil.getId()).withSelfRel());
         resource.add(linkTo(TilController.class).withRel("query-tils"));
         resource.add(linkTo(methodOn(TilController.class).updateTil(newTil.getId(), tilDTO)).withRel("update-til"));
         resource.add(Link.of("/docs/index.html#resources-tils-create").withRel("profile"));
@@ -85,12 +83,9 @@ public class TilController {
      */
     @GetMapping("/{id}")
     public ResponseEntity getTil(@PathVariable Long id) {
-        Optional<Til> optionalTil = tilRepository.findById(id);
-        if (optionalTil.isEmpty()) {
-            throw new ApiException(ErrorCode.TIL_NOT_FOUND);
-        }
+        Til til = tilRepository.findById(id)
+                .orElseThrow(() -> new ApiException(ErrorCode.TIL_NOT_FOUND));
 
-        Til til = optionalTil.get();
         EntityModel<Til> resource = EntityModel.of(til);
         resource.add(linkTo(TilController.class).withSelfRel());
         resource.add(Link.of("/docs/index.html#resources-tils-get").withRel("profile"));
@@ -102,10 +97,6 @@ public class TilController {
      */
     @PatchMapping("/{id}")
     public ResponseEntity updateTil(@PathVariable Long id, @RequestBody TilDTO tilDTO) {
-        Optional<Til> optionalTil = tilRepository.findById(id);
-        if (optionalTil.isEmpty()) {
-            throw new ApiException(ErrorCode.TIL_NOT_FOUND);
-        }
         Til savedTil = tilService.updateTil(id, tilDTO);
 
         EntityModel<Til> resource = EntityModel.of(savedTil);
@@ -120,13 +111,11 @@ public class TilController {
      */
     @DeleteMapping("/{id}")
     public ResponseEntity deleteTil(@PathVariable Long id) {
-        Optional<Til> optionalTil = tilRepository.findById(id);
-        if (optionalTil.isEmpty()) {
-            throw new ApiException(ErrorCode.TIL_NOT_FOUND);
-        }
+        Til til = tilRepository.findById(id)
+                .orElseThrow(() -> new ApiException(ErrorCode.TIL_NOT_FOUND));
 
-        tilRepository.delete(optionalTil.get());
-        EntityModel<Til> resource = EntityModel.of(optionalTil.get());
+        tilRepository.delete(til);
+        EntityModel<Til> resource = EntityModel.of(til);
         resource.add(linkTo(TilController.class).withSelfRel());
         resource.add(Link.of("/docs/index.html#resources-tils-delete").withRel("profile"));
 

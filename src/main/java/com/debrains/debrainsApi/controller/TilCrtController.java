@@ -1,12 +1,10 @@
 package com.debrains.debrainsApi.controller;
 
-import com.debrains.debrainsApi.dto.FileDTO;
 import com.debrains.debrainsApi.dto.TilCrtDTO;
 import com.debrains.debrainsApi.entity.TilCrt;
 import com.debrains.debrainsApi.exception.ApiException;
 import com.debrains.debrainsApi.exception.ErrorCode;
 import com.debrains.debrainsApi.repository.TilCrtRepository;
-import com.debrains.debrainsApi.service.FileService;
 import com.debrains.debrainsApi.service.TilCrtService;
 import com.debrains.debrainsApi.util.PagedModelUtil;
 import lombok.RequiredArgsConstructor;
@@ -26,7 +24,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.net.URI;
-import java.util.Optional;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 
@@ -40,8 +37,6 @@ public class TilCrtController {
 
     private final TilCrtRepository tilCrtRepository;
 
-    private final FileService fileService;
-
     /**
      * til 인증 생성
      */
@@ -50,12 +45,12 @@ public class TilCrtController {
                                         @RequestPart(value = "tilCrtDTO") @Validated TilCrtDTO tilCrtDTO)
             throws IllegalStateException, IOException {
 
-        TilCrt newTilCrt = tilCrtService.createTilCrts(tilCrtDTO, files);
+        TilCrt newTilCrt = tilCrtService.createTilCrts(tilCrtDTO);
         var selfLinkBuilder = linkTo(TilCrtController.class).slash(newTilCrt.getId());
 
         EntityModel<TilCrt> resource = EntityModel.of(newTilCrt);
         URI createdUri = selfLinkBuilder.toUri();
-        resource.add(linkTo(TilCrtController.class).withSelfRel());
+        resource.add(linkTo(TilCrtController.class).slash(newTilCrt.getId()).withSelfRel());
         resource.add(linkTo(TilCrtController.class).withRel("query-til-crts"));
         resource.add(selfLinkBuilder.withRel("update-til-crt"));
         resource.add(Link.of("/docs/index.html#resources-til-crts-create").withRel("profile"));
@@ -85,12 +80,9 @@ public class TilCrtController {
     @GetMapping("/{id}")
     public ResponseEntity getTilCrt(@PathVariable Long id) {
 
-        Optional<TilCrt> optionalTilCrt = tilCrtRepository.findById(id);
-        if (optionalTilCrt.isEmpty()) {
-            throw new ApiException(ErrorCode.TILCRT_NOT_FOUND);
-        }
+        TilCrt tilCrt = tilCrtRepository.findById(id)
+                .orElseThrow(() -> new ApiException(ErrorCode.TILCRT_NOT_FOUND));
 
-        TilCrt tilCrt = optionalTilCrt.get();
         EntityModel<TilCrt> resource = EntityModel.of(tilCrt);
         resource.add(linkTo(TilCrtController.class).withSelfRel());
         resource.add(Link.of("/docs/index.html#resources-til-crts-get").withRel("profile"));
@@ -105,12 +97,7 @@ public class TilCrtController {
                                        @RequestPart(value = "files", required = false) MultipartFile files,
                                        @RequestPart(value = "tilCrtDTO") @Validated TilCrtDTO tilCrtDTO) {
 
-        Optional<TilCrt> optionalTilCrt = tilCrtRepository.findById(id);
-        if (optionalTilCrt.isEmpty()) {
-            throw new ApiException(ErrorCode.TILCRT_NOT_FOUND);
-        }
-
-        TilCrt savedTilCrt = tilCrtService.updateTilCrt(id, tilCrtDTO, files);
+        TilCrt savedTilCrt = tilCrtService.updateTilCrt(id, tilCrtDTO);
 
         EntityModel<TilCrt> resource = EntityModel.of(savedTilCrt);
         resource.add(linkTo(TilCrtController.class).withSelfRel());
@@ -124,13 +111,11 @@ public class TilCrtController {
      */
     @DeleteMapping("/{id}")
     public ResponseEntity deleteTilCrt(@PathVariable Long id) {
-        Optional<TilCrt> optionalTilCrt = tilCrtRepository.findById(id);
-        if (optionalTilCrt.isEmpty()) {
-            throw new ApiException(ErrorCode.TILCRT_NOT_FOUND);
-        }
+        TilCrt tilCrt = tilCrtRepository.findById(id)
+                .orElseThrow(() -> new ApiException(ErrorCode.TILCRT_NOT_FOUND));
 
-        tilCrtService.deleteTilCrt(optionalTilCrt.get());
-        EntityModel<TilCrt> resource = EntityModel.of(optionalTilCrt.get());
+        tilCrtService.deleteTilCrt(tilCrt);
+        EntityModel<TilCrt> resource = EntityModel.of(tilCrt);
         resource.add(linkTo(TilCrtController.class).withSelfRel());
         resource.add(Link.of("/docs/index.html#resources-til-crts-delete").withRel("profile"));
 
