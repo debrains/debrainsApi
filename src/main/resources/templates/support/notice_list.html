@@ -43,7 +43,9 @@
             </li>
             <li th:each="page: ${#numbers.sequence(start, last)}"
                 th:class="${page == noticeList.number + 1} ? 'page-item active'">
-              <a class="page-link" th:text="${page}" th:href="@{/root/support/notice(page=${page}-1)}"></a>
+              <th:block th:if="${page}">
+                <a class="page-link" th:text="${page}" th:href="@{/root/support/notice(page=${page}-1)}"></a>
+              </th:block>
             </li>
             <li th:class="${noticeList.last} ? 'disabled'">
               <a th:href="${noticeList.last} ? '#' : @{/root/support/notice(page=${noticeList.number + 1})}"

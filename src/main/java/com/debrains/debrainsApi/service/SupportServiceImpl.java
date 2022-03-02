@@ -14,6 +14,8 @@ import com.debrains.debrainsApi.repository.SkillReqRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -60,6 +62,20 @@ public class SupportServiceImpl implements SupportService {
     }
 
     @Override
+    public Page<NoticeDTO> getAdminNoticeList(Pageable pageable) {
+        Page<NoticeDTO> noticeList = noticeRepository.findAll(pageable)
+                .map(notice -> modelMapper.map(notice, NoticeDTO.class));
+        return noticeList;
+    }
+
+    @Override
+    @Transactional
+    public void updateAdminNoticeInfo(NoticeDTO dto) {
+        Notice notice = noticeRepository.getById(dto.getId());
+        notice.updateAdminNoticeInfo(dto);
+    }
+
+    @Override
     public EventDTO getEvent(Long id) {
         Event entity = eventRepository.findById(id)
                 .orElseThrow(() -> new ApiException(ErrorCode.NOT_FOUND_CONTENT));
@@ -84,6 +100,20 @@ public class SupportServiceImpl implements SupportService {
     @Override
     public void deleteEvent(Long id) {
         eventRepository.deleteById(id);
+    }
+
+    @Override
+    public Page<EventDTO> getAdminEventList(Pageable pageable) {
+        Page<EventDTO> eventList = eventRepository.findAll(pageable)
+                .map(event -> modelMapper.map(event, EventDTO.class));
+        return eventList;
+    }
+
+    @Override
+    @Transactional
+    public void updateAdminEventInfo(EventDTO dto) {
+        Event event = eventRepository.getById(dto.getId());
+        event.updateAdminEventInfo(dto);
     }
 
     @Override
@@ -117,10 +147,18 @@ public class SupportServiceImpl implements SupportService {
     }
 
     @Override
+    @Transactional
     public void updateQnaAnswer(Long id, String answer) {
         Qna entity = qnaRepository.findById(id)
                 .orElseThrow(() -> new ApiException(ErrorCode.NOT_FOUND_CONTENT));
         entity.updateAnswer(answer);
+    }
+
+    @Override
+    public Page<QnaDTO> getAdminQnaList(Pageable pageable) {
+        Page<QnaDTO> qnaList = qnaRepository.findAll(pageable)
+                .map(qna -> modelMapper.map(qna, QnaDTO.class));
+        return qnaList;
     }
 
     @Override

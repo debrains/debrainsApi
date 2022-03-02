@@ -35,10 +35,7 @@ public class Qna extends BaseEntity{
 
     public void updateAnswer(String answer) {
         this.answer = answer;
-    }
-
-    public void updateAdminQnaInfo(QnaDTO dto) {
-        this.answer = dto.getAnswer();
         this.completed = true;
     }
+
 }

@@ -3,7 +3,7 @@ package com.debrains.debrainsApi.controller.admin;
 import com.debrains.debrainsApi.dto.EventDTO;
 import com.debrains.debrainsApi.dto.NoticeDTO;
 import com.debrains.debrainsApi.dto.QnaDTO;
-import com.debrains.debrainsApi.service.admin.AdminSupportService;
+import com.debrains.debrainsApi.service.SupportService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -21,18 +21,18 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequestMapping("/root/support")
 public class AdminSupportController {
 
-    private final AdminSupportService adminSupportService;
+    private final SupportService supportService;
 
     @GetMapping("/notice")
     public String noticeListPage(@PageableDefault(page = 0, size = 10, sort = "id", direction = Sort.Direction.DESC) Pageable pageable, Model model) {
-        Page<NoticeDTO> page = adminSupportService.findNoticeAll(pageable);
+        Page<NoticeDTO> page = supportService.getAdminNoticeList(pageable);
         model.addAttribute("noticeList", page);
         return "support/notice_list";
     }
 
     @PostMapping("/notice")
     public String updateNoticeInfo(NoticeDTO dto) {
-        adminSupportService.updateAdminNoticeInfo(dto);
+        supportService.updateAdminNoticeInfo(dto);
         return "redirect:/root/support/notice";
     }
 
@@ -43,13 +43,13 @@ public class AdminSupportController {
 
     @PostMapping("/notice/create")
     public String saveNotice(NoticeDTO dto) {
-        adminSupportService.saveNotice(dto);
+        supportService.saveNotice(dto);
         return "redirect:/root/support/notice";
     }
 
     @GetMapping("/notice/{id}")
     public String getNoticeInfo(@PathVariable("id") Long id, Model model) {
-        NoticeDTO getNotice = adminSupportService.findNoticeById(id);
+        NoticeDTO getNotice = supportService.getNotice(id);
         model.addAttribute("notice", getNotice);
         return "support/notice_detail";
     }
@@ -60,20 +60,20 @@ public class AdminSupportController {
      */
     @GetMapping("/event")
     public String eventListPage(@PageableDefault(page = 0, size = 10, sort = "id", direction = Sort.Direction.DESC) Pageable pageable, Model model) {
-        Page<EventDTO> page = adminSupportService.findEventAll(pageable);
+        Page<EventDTO> page = supportService.getAdminEventList(pageable);
         model.addAttribute("eventList", page);
         return "support/event_list";
     }
 
     @PostMapping("/event")
     public String updateEventInfo(EventDTO dto) {
-        adminSupportService.updateAdminEventInfo(dto);
+        supportService.updateAdminEventInfo(dto);
         return "redirect:/root/support/event";
     }
 
     @GetMapping("/event/{id}")
     public String getEventInfo(@PathVariable("id") Long id, Model model) {
-        EventDTO getEvent = adminSupportService.findEventById(id);
+        EventDTO getEvent = supportService.getEvent(id);
         model.addAttribute("event", getEvent);
         return "support/event_detail";
     }
@@ -86,7 +86,7 @@ public class AdminSupportController {
 
     @PostMapping("/event/create")
     public String saveEvent(EventDTO dto) {
-        adminSupportService.saveEvent(dto);
+        supportService.saveEvent(dto);
         return "redirect:/root/support/event";
     }
 
@@ -96,20 +96,20 @@ public class AdminSupportController {
 
     @GetMapping("/qna")
     public String qnaListPage(@PageableDefault(page = 0, size = 10, sort = "id", direction = Sort.Direction.DESC) Pageable pageable, Model model) {
-        Page<QnaDTO> page = adminSupportService.findQnaAll(pageable);
+        Page<QnaDTO> page = supportService.getAdminQnaList(pageable);
         model.addAttribute("qnaList", page);
         return "support/qna_list";
     }
 
     @PostMapping("/qna")
     public String updateQnaInfo(QnaDTO dto) {
-        adminSupportService.updateAdminQnaInfo(dto);
+        supportService.updateQnaAnswer(dto.getId(), dto.getAnswer());
         return "redirect:/root/support/qna";
     }
 
     @GetMapping("/qna/{id}")
     public String getQnaInfo(@PathVariable("id") Long id, Model model) {
-        QnaDTO getQna = adminSupportService.findQnaById(id);
+        QnaDTO getQna = supportService.getQna(id);
         model.addAttribute("qna", getQna);
         return "support/qna_detail";
     }
