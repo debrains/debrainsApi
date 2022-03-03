@@ -1,15 +1,18 @@
 package com.debrains.debrainsApi.entity;
 
+import com.debrains.debrainsApi.dto.TilCrtDTO;
 import lombok.*;
 
 import javax.persistence.*;
-import java.util.Date;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
 @Getter
+@Setter
 @ToString
 public class TilCrt extends BaseEntity {
 
@@ -22,24 +25,25 @@ public class TilCrt extends BaseEntity {
     @JoinColumn(name = "til_id")
     private Til til;
 
-    private String file;
+    private LocalDateTime startTime;
 
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date startTime;
+    private LocalDateTime endTime;
 
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date endTime;
-
-    @Temporal(TemporalType.TIME)
-    private Date watchTime;
+    private LocalTime watchTime;
 
     @Column(length = 2000)
     private String description;
 
-    @Column(nullable = false, columnDefinition = "boolean default false")
+    @Column(columnDefinition = "boolean default true")
     private boolean open;
 
-    @Column(nullable = false, columnDefinition = "boolean default false")
+    @Column(columnDefinition = "boolean default false")
     private boolean denied;
+
+    public void changeTilCrt(TilCrtDTO tilCrtDTO) {
+        this.startTime = tilCrtDTO.getStartTime();
+        this.endTime = tilCrtDTO.getEndTime();
+        this.description = tilCrtDTO.getDescription();
+    }
 
 }

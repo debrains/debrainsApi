@@ -5,50 +5,52 @@
 <!-- Begin Page Content -->
 <div class="container-fluid" layout:fragment="content">
   <!-- Page Heading -->
-  <h1 class="h3 mb-2 text-gray-800">공지사항</h1>
+  <h1 class="h3 mb-2 text-gray-800">이벤트</h1>
 
   <!-- DataTales Example -->
   <div class="card shadow mb-4">
     <div class="card-header py-3">
-      <h6 class="m-0 font-weight-bold text-primary">공지사항 관리</h6>
+      <h6 class="m-0 font-weight-bold text-primary">이벤트 관리</h6>
     </div>
     <div class="card-body">
       <div class="table-responsive">
-        <a href="/root/support/notice/create" style="float: right; margin-left: 1rem" class="btn btn-primary">등록</a>
+        <a href="/root/support/event/create" style="float: right; margin-left: 1rem" class="btn btn-primary">등록</a>
         <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
           <thead>
           <tr>
             <th>제목</th>
             <th>조회수</th>
             <th>작성일</th>
+            <th>진행상태</th>
           </tr>
           </thead>
           <tbody>
-          <tr th:each="notice : ${noticeList}">
-            <td><a th:href="@{/root/support/notice/{id}(id=${notice.getId()})}" th:text="${notice.getTitle()}"></a></td>
-            <td th:text="${notice.getViewCnt()}"></td>
-            <td th:text="${notice.getRegDate()}"></td>
+          <tr th:each="event, index : ${eventList}">
+            <td><a th:href="@{/root/support/event/{id}(id=${event.getId()})}" th:text="${event.getTitle()}" th:value="${index.index}"></a></td>
+            <td th:text="${event.getViewCnt()}"></td>
+            <td th:text="${#temporals.format(event.getRegDate(), 'yyyy-MM-dd HH:mm:ss')}"></td>
+            <td th:text="${event.getEnded() ? '종료' : '진행중'}"></td>
           </tr>
 
           </tbody>
         </table>
         <nav aria-label="..." style="float: right">
-          <ul class="pagination" th:with="start=${T(Math).floor(noticeList.number/10)*10 + 1},
-                                last=(${start + 9 < noticeList.totalPages ? start + 9 : noticeList.totalPages})">
+          <ul class="pagination" th:with="start=${T(Math).floor(eventList.number/10)*10 + 1},
+                                last=(${start + 9 < eventList.totalPages ? start + 9 : eventList.totalPages})">
             <li class="page-item disabled">
-              <a th:href="${noticeList.first} ? '#' : @{/root/support/notice(page=${noticeList.number - 1})}"
+              <a th:href="${eventList.first} ? '#' : @{/root/support/event(page=${eventList.number - 1})}"
                  aria-label="Previous">
                 <span class="page-link" aria-hidden="true">&lt;</span>
               </a>
             </li>
             <li th:each="page: ${#numbers.sequence(start, last)}"
-                th:class="${page == noticeList.number + 1} ? 'page-item active'">
+                th:class="${page == eventList.number + 1} ? 'page-item active'">
               <th:block th:if="${page}">
-                <a class="page-link" th:text="${page}" th:href="@{/root/support/notice(page=${page}-1)}"></a>
+                <a class="page-link" th:text="${page}" th:href="@{/root/support/event(page=${page}-1)}"></a>
               </th:block>
             </li>
-            <li th:class="${noticeList.last} ? 'disabled'">
-              <a th:href="${noticeList.last} ? '#' : @{/root/support/notice(page=${noticeList.number + 1})}"
+            <li th:class="${eventList.last} ? 'disabled'">
+              <a th:href="${eventList.last} ? '#' : @{/root/support/event(page=${eventList.number + 1})}"
                  aria-label="Next">
                 <span class="page-link" aria-hidden="true">&gt;</span>
               </a>

@@ -3,6 +3,8 @@ package com.debrains.debrainsApi.dto;
 import lombok.*;
 
 import javax.validation.constraints.NotBlank;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Builder
 @AllArgsConstructor
@@ -16,6 +18,8 @@ public class QnaDTO {
     private String title;
     @NotBlank
     private String content;
-    private boolean completed;
+    private Boolean completed;
     private String answer;
+
+    private LocalDateTime regDate;
 }

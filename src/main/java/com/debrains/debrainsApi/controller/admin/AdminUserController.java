@@ -41,5 +41,4 @@ public class AdminUserController {
         return "user/user_detail";
     }
 
-
 }
