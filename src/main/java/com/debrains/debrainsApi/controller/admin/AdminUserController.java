@@ -1,7 +1,8 @@
 package com.debrains.debrainsApi.controller.admin;
 
 import com.debrains.debrainsApi.dto.user.UserDTO;
-import com.debrains.debrainsApi.service.admin.AdminUserService;
+import com.debrains.debrainsApi.repository.UserRepository;
+import com.debrains.debrainsApi.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -18,26 +19,26 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequestMapping("/root/user")
 public class AdminUserController {
 
-    private final AdminUserService adminUserService;
+    private final UserService userService;
 
     @GetMapping("")
     public String userListPage(@PageableDefault(page = 0, size = 10, sort = "id") Pageable pageable, Model model) {
-        Page<UserDTO> page = adminUserService.findAll(pageable);
+        Page<UserDTO> page = userService.getUserList(pageable);
         model.addAttribute("userList", page);
         return "user/user_list";
     }
 
-    @GetMapping("/{id}")
-    public String getUserInfo(@PathVariable("id") Long id, Model model) {
-        UserDTO getUser = adminUserService.findById(id);
-        model.addAttribute("user", getUser);
-        return "user/user_detail";
-    }
-
     @PostMapping("")
     public String saveUserInfo(UserDTO dto) {
-        adminUserService.updateUserInfo(dto);
+        userService.updateAdminUserInfo(dto);
         return "redirect:/root/user/" + dto.getId();
+    }
+
+    @GetMapping("/{id}")
+    public String getUserInfo(@PathVariable("id") Long id, Model model) {
+        UserDTO getUser = userService.getAdminUserInfo(id);
+        model.addAttribute("user", getUser);
+        return "user/user_detail";
     }
 
 }

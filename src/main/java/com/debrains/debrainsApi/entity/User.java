@@ -81,14 +81,6 @@ public class User extends BaseEntity {
         this.state = UserState.valueOf(dto.getState());
     }
 
-    public void changeRole(UserRole role) {
-        this.role = role;
-    }
-
-    public void changeState(UserState state) {
-        this.state = state;
-    }
-
     /*
     * 경험치 부여 및 티어 변경
     */

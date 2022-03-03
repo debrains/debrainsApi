@@ -2,8 +2,11 @@ package com.debrains.debrainsApi.service;
 
 import com.debrains.debrainsApi.dto.user.ProfileDTO;
 import com.debrains.debrainsApi.dto.user.UserBoardDTO;
+import com.debrains.debrainsApi.dto.user.UserDTO;
 import com.debrains.debrainsApi.dto.user.UserInfoDTO;
 import com.debrains.debrainsApi.entity.Profile;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.util.Arrays;
 import java.util.List;
@@ -19,7 +22,6 @@ public interface UserService {
     void updateProfile(ProfileDTO dto);
 
     UserBoardDTO getUserBoard(Long id);
-
 
     default UserBoardDTO toDtoBoard(Profile entity) {
         return UserBoardDTO.builder()
@@ -44,4 +46,11 @@ public interface UserService {
                 .skills(Arrays.asList(entity.getSkills().split(",")))
                 .build();
     }
+
+
+    Page<UserDTO> getUserList(Pageable pageable);
+
+    UserDTO getAdminUserInfo(Long id);
+
+    void updateAdminUserInfo(UserDTO dto);
 }
