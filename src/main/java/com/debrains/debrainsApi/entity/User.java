@@ -4,6 +4,7 @@ import com.debrains.debrainsApi.common.AuthProvider;
 import com.debrains.debrainsApi.common.Tier;
 import com.debrains.debrainsApi.common.UserRole;
 import com.debrains.debrainsApi.common.UserState;
+import com.debrains.debrainsApi.dto.user.UserDTO;
 import com.debrains.debrainsApi.dto.user.UserInfoDTO;
 import lombok.*;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -71,6 +72,13 @@ public class User extends BaseEntity {
         this.githubUrl = dto.getGithubUrl();
         this.blogUrl = dto.getBlogUrl();
         this.snsUrl = dto.getSnsUrl();
+    }
+
+    public void updateAdminUserInfo(UserDTO dto){
+        this.memo = dto.getMemo();
+        this.tier = dto.getTier();
+        this.role = UserRole.valueOf(dto.getRole());
+        this.state = UserState.valueOf(dto.getState());
     }
 
     public void changeRole(UserRole role) {
