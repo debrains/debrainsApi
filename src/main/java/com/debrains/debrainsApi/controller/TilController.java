@@ -5,12 +5,13 @@ import com.debrains.debrainsApi.entity.Til;
 import com.debrains.debrainsApi.exception.ApiException;
 import com.debrains.debrainsApi.exception.ErrorCode;
 import com.debrains.debrainsApi.repository.TilRepository;
+import com.debrains.debrainsApi.security.CurrentUser;
+import com.debrains.debrainsApi.security.CustomUserDetails;
 import com.debrains.debrainsApi.service.TilService;
 import com.debrains.debrainsApi.util.PagedModelUtil;
 import com.debrains.debrainsApi.validator.TilValidator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PagedResourcesAssembler;
@@ -37,20 +38,19 @@ public class TilController {
 
     private final TilRepository tilRepository;
 
-    private final ModelMapper modelMapper;
-
     private final TilValidator tilValidator;
 
     /**
      * til 생성
      */
     @PostMapping
-    public ResponseEntity createTil(@RequestBody @Validated TilDTO tilDTO) {
+    public ResponseEntity createTil(@CurrentUser CustomUserDetails user, @RequestBody @Validated TilDTO tilDTO) {
         tilValidator.validateDate(tilDTO);
 
-        Til til = modelMapper.map(tilDTO, Til.class);
-        til.totalCrtCount();
-        Til newTil = tilRepository.save(til);
+        tilDTO.setUserId(user.getId());
+
+        Til newTil = tilService.createTil(tilDTO);
+
         var selfLinkBuilder = linkTo(TilController.class).slash(newTil.getId());
 
         EntityModel<Til> resource = EntityModel.of(newTil);

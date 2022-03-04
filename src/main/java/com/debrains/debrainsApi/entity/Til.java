@@ -19,12 +19,9 @@ public class Til extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    /*@ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
-
-    @OneToMany(mappedBy = "til", cascade = CascadeType.ALL)
-    private List<TilCrt> tilCrts = new ArrayList<>();*/
 
     @Column(nullable = false)
     private String subject;
