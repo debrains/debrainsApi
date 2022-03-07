@@ -30,13 +30,13 @@ public class TilServiceImpl implements TilService {
     }
 
     @Override
+    @Transactional
     public Til updateTil(Long id, TilDTO tilDTO) {
         Til til = tilRepository.findById(id)
                 .orElseThrow(() -> new ApiException(ErrorCode.TIL_NOT_FOUND));
 
-        til.changeSubject(tilDTO.getSubject());
-        til.changeDescription(tilDTO.getDescription());
+        til.changeTil(tilDTO);
 
-        return tilRepository.save(til);
+        return til;
     }
 }

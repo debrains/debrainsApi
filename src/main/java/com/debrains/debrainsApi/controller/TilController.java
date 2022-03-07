@@ -26,7 +26,6 @@ import org.springframework.web.bind.annotation.*;
 import java.net.URI;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @RestController
 @RequestMapping(value = "/tils", produces = MediaTypes.HAL_JSON_VALUE)
@@ -44,10 +43,10 @@ public class TilController {
      * til 생성
      */
     @PostMapping
-    public ResponseEntity createTil(@CurrentUser CustomUserDetails user, @RequestBody @Validated TilDTO tilDTO) {
+    public ResponseEntity createTil(@CurrentUser CustomUserDetails currentUser, @RequestBody @Validated TilDTO tilDTO) {
         tilValidator.validateDate(tilDTO);
 
-        tilDTO.setUserId(user.getId());
+        tilDTO.setUserId(currentUser.getId());
 
         Til newTil = tilService.createTil(tilDTO);
 
@@ -56,8 +55,8 @@ public class TilController {
         EntityModel<Til> resource = EntityModel.of(newTil);
         URI createdUri = selfLinkBuilder.toUri();
         resource.add(linkTo(TilController.class).slash(newTil.getId()).withSelfRel());
-        resource.add(linkTo(TilController.class).withRel("query-tils"));
-        resource.add(linkTo(methodOn(TilController.class).updateTil(newTil.getId(), tilDTO)).withRel("update-til"));
+        resource.add(linkTo(TilController.class).withRel("tils"));
+        resource.add(linkTo(TilController.class).slash(newTil.getId()).withRel("update"));
         resource.add(Link.of("/docs/index.html#resources-tils-create").withRel("profile"));
 
         return ResponseEntity.created(createdUri).body(resource);
@@ -65,6 +64,7 @@ public class TilController {
 
     /**
      * til 리스트 조회
+     * TODO:: 무한 스크롤 -> page 필요 없는지 확인 후 수정
      */
     @GetMapping
     public ResponseEntity<PagedModel<EntityModel<Til>>> queryTil(Pageable pageable,
@@ -82,13 +82,16 @@ public class TilController {
      * til 상세 조회
      */
     @GetMapping("/{id}")
-    public ResponseEntity getTil(@PathVariable Long id) {
+    public ResponseEntity getTil(@CurrentUser CustomUserDetails currentUser, @PathVariable Long id) {
         Til til = tilRepository.findById(id)
                 .orElseThrow(() -> new ApiException(ErrorCode.TIL_NOT_FOUND));
 
         EntityModel<Til> resource = EntityModel.of(til);
         resource.add(linkTo(TilController.class).withSelfRel());
         resource.add(Link.of("/docs/index.html#resources-tils-get").withRel("profile"));
+        if (til.getUser().getId() == currentUser.getId()) {
+            resource.add(linkTo(TilController.class).slash(til.getId()).withRel("update"));
+        }
         return ResponseEntity.ok(resource);
     }
 
@@ -96,7 +99,10 @@ public class TilController {
      * til 수정
      */
     @PatchMapping("/{id}")
-    public ResponseEntity updateTil(@PathVariable Long id, @RequestBody TilDTO tilDTO) {
+    public ResponseEntity updateTil(@CurrentUser CustomUserDetails currentUser, @PathVariable Long id, @RequestBody TilDTO tilDTO) {
+        if (!currentUser.getId().equals(tilDTO.getUserId())) {
+            throw new ApiException(ErrorCode.USER_AUTHENTICATION);
+        }
         Til savedTil = tilService.updateTil(id, tilDTO);
 
         EntityModel<Til> resource = EntityModel.of(savedTil);
@@ -110,15 +116,16 @@ public class TilController {
      * til 삭제
      */
     @DeleteMapping("/{id}")
-    public ResponseEntity deleteTil(@PathVariable Long id) {
+    public ResponseEntity deleteTil(@CurrentUser CustomUserDetails currentUser, @PathVariable Long id) {
         Til til = tilRepository.findById(id)
                 .orElseThrow(() -> new ApiException(ErrorCode.TIL_NOT_FOUND));
 
-        tilRepository.delete(til);
-        EntityModel<Til> resource = EntityModel.of(til);
-        resource.add(linkTo(TilController.class).withSelfRel());
-        resource.add(Link.of("/docs/index.html#resources-tils-delete").withRel("profile"));
+        if (!currentUser.getId().equals(til.getUser().getId())) {
+            throw new ApiException(ErrorCode.USER_AUTHENTICATION);
+        }
 
-        return ResponseEntity.ok(resource);
+        tilRepository.delete(til);
+
+        return ResponseEntity.noContent().build();
     }
 }

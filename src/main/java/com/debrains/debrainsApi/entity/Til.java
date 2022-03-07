@@ -1,5 +1,8 @@
 package com.debrains.debrainsApi.entity;
 
+import com.debrains.debrainsApi.dto.TilDTO;
+import com.debrains.debrainsApi.hateoas.UserSerializer;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import lombok.*;
 
 import javax.persistence.*;
@@ -11,7 +14,7 @@ import java.time.temporal.ChronoUnit;
 @NoArgsConstructor
 @Builder
 @Getter
-@ToString
+@ToString(exclude = "user")
 public class Til extends BaseEntity {
 
     @Id
@@ -21,6 +24,7 @@ public class Til extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
+    @JsonSerialize(using = UserSerializer.class)
     private User user;
 
     @Column(nullable = false)
@@ -50,12 +54,13 @@ public class Til extends BaseEntity {
     @Column(nullable = false, columnDefinition = "boolean default false")
     private boolean expired;
 
-    public void changeSubject(String subject) {
-        this.subject = subject;
-    }
-
-    public void changeDescription(String description) {
-        this.description = description;
+    public void changeTil(TilDTO tilDTO) {
+        if (tilDTO.getSubject() != null) {
+            this.subject = tilDTO.getSubject();
+        }
+        if (tilDTO.getDescription() != null) {
+            this.description = tilDTO.getDescription();
+        }
     }
 
     /**

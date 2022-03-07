@@ -25,6 +25,7 @@ public enum ErrorCode {
     // USER
     USER_NOT_FOUND(HttpStatus.NOT_FOUND, "US01", "존재하지 않는 회원입니다."),
     FOUND_NAME(HttpStatus.CONFLICT, "US02", "이미 존재하는 닉네임입니다."),
+    USER_AUTHENTICATION(HttpStatus.UNAUTHORIZED, "US03", "사용자에게 권한이 없습니다."),
 
     // TIL
     CYCLE_KIND_WRONG(HttpStatus.BAD_REQUEST, "TI01", "인증주기가 잘못됐습니다."),
