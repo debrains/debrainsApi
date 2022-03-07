@@ -5,6 +5,8 @@ import com.debrains.debrainsApi.entity.TilCrt;
 import com.debrains.debrainsApi.exception.ApiException;
 import com.debrains.debrainsApi.exception.ErrorCode;
 import com.debrains.debrainsApi.repository.TilCrtRepository;
+import com.debrains.debrainsApi.security.CurrentUser;
+import com.debrains.debrainsApi.security.CustomUserDetails;
 import com.debrains.debrainsApi.service.TilCrtService;
 import com.debrains.debrainsApi.util.PagedModelUtil;
 import lombok.RequiredArgsConstructor;
@@ -41,11 +43,11 @@ public class TilCrtController {
      * til 인증 생성
      */
     @PostMapping
-    public ResponseEntity createTilCrts(@RequestPart(value = "files", required = false) MultipartFile files,
+    public ResponseEntity createTilCrts(@RequestPart(value = "files", required = false) MultipartFile[] files,
                                         @RequestPart(value = "tilCrtDTO") @Validated TilCrtDTO tilCrtDTO)
-            throws IllegalStateException, IOException {
+            throws IOException {
 
-        TilCrt newTilCrt = tilCrtService.createTilCrts(tilCrtDTO);
+        TilCrt newTilCrt = tilCrtService.createTilCrts(files, tilCrtDTO);
         var selfLinkBuilder = linkTo(TilCrtController.class).slash(newTilCrt.getId());
 
         EntityModel<TilCrt> resource = EntityModel.of(newTilCrt);
@@ -94,10 +96,10 @@ public class TilCrtController {
      */
     @PatchMapping("/{id}")
     public ResponseEntity updateTilCrt(@PathVariable Long id,
-                                       @RequestPart(value = "files", required = false) MultipartFile files,
-                                       @RequestPart(value = "tilCrtDTO") @Validated TilCrtDTO tilCrtDTO) {
+                                       @RequestPart(value = "files", required = false) MultipartFile[] files,
+                                       @RequestPart(value = "tilCrtDTO") @Validated TilCrtDTO tilCrtDTO) throws IOException {
 
-        TilCrt savedTilCrt = tilCrtService.updateTilCrt(id, tilCrtDTO);
+        TilCrt savedTilCrt = tilCrtService.updateTilCrt(id, files, tilCrtDTO);
 
         EntityModel<TilCrt> resource = EntityModel.of(savedTilCrt);
         resource.add(linkTo(TilCrtController.class).withSelfRel());
@@ -120,6 +122,21 @@ public class TilCrtController {
         resource.add(Link.of("/docs/index.html#resources-til-crts-delete").withRel("profile"));
 
         return ResponseEntity.ok(resource);
+    }
+
+    @DeleteMapping("/{id}/file")
+    public ResponseEntity deleteTilCrtFile(@CurrentUser CustomUserDetails user,
+                                           @PathVariable Long id, Long fileId) {
+        TilCrt tilCrt = tilCrtRepository.findById(id)
+                .orElseThrow(() -> new ApiException(ErrorCode.TILCRT_NOT_FOUND));
+
+        if (tilCrt.getUser().getId() != user.getId()) {
+            throw new ApiException(ErrorCode.NO_AUTHORIZATION);
+        }
+
+        tilCrtService.deleteTilCrtFile(fileId);
+
+        return ResponseEntity.ok().build();
     }
 
 }

@@ -19,6 +19,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.modelmapper.ModelMapper;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
@@ -26,6 +27,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
@@ -102,23 +104,19 @@ class UserServiceTest {
 
     @Test
     @DisplayName("회원정보 수정")
-    void updateUserInfo() {
+    void updateUserInfo() throws IOException {
         // given
         Long id = 1L;
 
-        given(userRepository.getById(any())).willReturn(user);
         given(userRepository.findById(any())).willReturn(Optional.of(user));
 
         // when
-        userService.updateUserInfo(userInfoDto);
+        userService.updateUserInfo(null, userInfoDto);
 
         // then
         Optional<User> getUser = userRepository.findById(id);
         assertThat(getUser.get().getId()).isEqualTo(id);
-
-        verify(userRepository).getById(any());
-
-
+        verify(userRepository, times(2)).findById(any());
     }
 
     @Test

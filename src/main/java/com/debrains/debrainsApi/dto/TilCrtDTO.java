@@ -29,4 +29,6 @@ public class TilCrtDTO {
     private LocalTime watchTime;
 
     private boolean open;
+
+    private Long userId;
 }

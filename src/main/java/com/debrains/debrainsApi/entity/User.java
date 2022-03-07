@@ -68,10 +68,12 @@ public class User extends BaseEntity {
     public void updateUserInfo(UserInfoDTO dto) {
         this.name = dto.getName();
         this.description = dto.getDescription();
-        this.img = dto.getImg();
         this.githubUrl = dto.getGithubUrl();
         this.blogUrl = dto.getBlogUrl();
         this.snsUrl = dto.getSnsUrl();
+        if (dto.getImg() != null) {
+            this.img = dto.getImg();
+        }
     }
 
     public void updateAdminUserInfo(UserDTO dto){
