@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:th="http://www.thymeleaf.org"
+      layout:decorate="~{fragments/layout}">
+
+<!-- Begin Page Content -->
+<div class="container-fluid" layout:fragment="content">
+  <!-- Page Heading -->
+  <h1 class="h3 mb-2 text-gray-800">관심사</h1>
+
+  <!-- DataTales Example -->
+  <div class="card shadow mb-4">
+    <div class="card-header py-3">
+      <h6 class="m-0 font-weight-bold text-primary">관심사 목록</h6>
+    </div>
+    <div class="card-body">
+      <div class="table-responsive">
+        <a href="/root/user/skill-create" style="float: right; margin-left: 1rem" class="btn btn-primary">등록</a>
+        <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+          <thead>
+          <tr>
+            <th>no</th>
+            <th>카테고리</th>
+            <th>이름</th>
+            <th>삭제</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr th:each="skill, index : ${skills}">
+            <td th:text="${(skills.getNumber() * skills.getSize() + 1) + index.index}"></td>
+            <td th:text="${skill.getCategory()}"></td>
+            <td th:text="${skill.getName()}"></td>
+            <td><a th:href="@{'/root/user/skill/' + ${skill.getId()}}" onclick="return confirm('삭제하시겠습니까?');"
+                   class="btn btn-danger">삭제</a></td>
+          </tr>
+          </tbody>
+        </table>
+        <nav aria-label="..." style="float: right">
+          <ul class="pagination" th:with="start=${T(Math).floor(skills.number/10)*10 + 1},
+                                last=(${start + 9 < skills.totalPages ? start + 9 : skills.totalPages})">
+            <li class="page-item disabled">
+              <a th:href="${skills.first} ? '#' : @{/root/user/skill(page=${skills.number - 1})}"
+                 aria-label="Previous">
+                <span class="page-link" aria-hidden="true">&lt;</span>
+              </a>
+            </li>
+            <li th:each="page: ${#numbers.sequence(start, last)}"
+                th:class="${page == skills.number + 1} ? 'page-item active'">
+              <th:block th:if="${page}">
+                <a class="page-link" th:text="${page}" th:href="@{/root/user/skill(page=${page}-1)}"></a>
+              </th:block>
+            </li>
+            <li th:class="${skills.last} ? 'disabled'">
+              <a th:href="${skills.last} ? '#' : @{/root/user/skill(page=${skills.number + 1})}"
+                 aria-label="Next">
+                <span class="page-link" aria-hidden="true">&gt;</span>
+              </a>
+            </li>
+          </ul>
+        </nav>
+      </div>
+    </div>
+  </div>
+</div>
+
+</html>

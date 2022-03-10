@@ -17,9 +17,19 @@
 
     <!-- Nav Item - Dashboard -->
     <li class="nav-item">
-      <a class="nav-link" href="/root/user">
-        <i class="fas fa-fw fa-table"></i>
-        <span>회원관리</span></a>
+      <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseOne"
+         aria-expanded="true" aria-controls="collapseOne">
+        <i class="fas fa-fw fa-cog"></i>
+        <span>회원관리</span>
+      </a>
+      <div id="collapseOne" class="collapse" aria-labelledby="headingOne" data-parent="#accordionSidebar">
+        <div class="bg-white py-2 collapse-inner rounded">
+<!--          <h6 class="collapse-header"></h6>-->
+          <a class="collapse-item" href="/root/user">회원관리</a>
+          <a class="collapse-item" href="/root/user/skillreq">관심사 요청</a>
+          <a class="collapse-item" href="/root/user/skill">관심사 설정</a>
+        </div>
+      </div>
     </li>
 
     <li class="nav-item">
@@ -50,21 +60,6 @@
       <a class="nav-link" href="/root/support/event">
         <i class="fas fa-fw fa-tachometer-alt"></i>
         <span>이벤트</span></a>
-    </li>
-
-    <li class="nav-item">
-      <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTwo"
-         aria-expanded="true" aria-controls="collapseTwo">
-        <i class="fas fa-fw fa-cog"></i>
-        <span>환경설정</span>
-      </a>
-      <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
-        <div class="bg-white py-2 collapse-inner rounded">
-          <h6 class="collapse-header">Setting :</h6>
-          <a class="collapse-item" href="/root/setting/interest">관심사 설정</a>
-          <a class="collapse-item" href="#">기본 환경설정</a>
-        </div>
-      </div>
     </li>
 
     <!-- Divider -->
