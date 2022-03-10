@@ -1,6 +1,6 @@
 package com.debrains.debrainsApi.controller;
 
-import com.debrains.debrainsApi.common.RestDocsConfigurate;
+import com.debrains.debrainsApi.config.RestDocsConfigurate;
 import com.debrains.debrainsApi.dto.TilDTO;
 import com.debrains.debrainsApi.entity.CycleStatus;
 import com.debrains.debrainsApi.entity.Til;
