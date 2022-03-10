@@ -7,7 +7,9 @@ import com.debrains.debrainsApi.dto.user.UserInfoDTO;
 import com.debrains.debrainsApi.entity.Profile;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
@@ -15,7 +17,7 @@ public interface UserService {
 
     UserInfoDTO getUserInfo(Long id);
 
-    void updateUserInfo(UserInfoDTO dto);
+    void updateUserInfo(MultipartFile img, UserInfoDTO dto) throws IOException;
 
     ProfileDTO getProfile(Long userId);
 

@@ -1,4 +1,4 @@
-package com.debrains.debrainsApi.common;
+package com.debrains.debrainsApi.config;
 
 import org.springframework.security.test.context.support.WithSecurityContext;
 

@@ -6,6 +6,8 @@ import lombok.*;
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @AllArgsConstructor
@@ -39,6 +41,13 @@ public class TilCrt extends BaseEntity {
 
     @Column(columnDefinition = "boolean default false")
     private boolean denied;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private User user;
+
+    @OneToMany(mappedBy = "tilCrt", cascade = CascadeType.ALL)
+    private List<TilCrtFile> files = new ArrayList<>();
 
     public void changeTilCrt(TilCrtDTO tilCrtDTO) {
         this.startTime = tilCrtDTO.getStartTime();

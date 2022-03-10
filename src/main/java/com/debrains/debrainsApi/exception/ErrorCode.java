@@ -46,7 +46,10 @@ public enum ErrorCode {
 
     // SUPPORT
     UNOPENED_CONTENT(HttpStatus.FORBIDDEN, "SU01", "비공개 게시글입니다."),
-    NOT_FOUND_CONTENT(HttpStatus.NOT_FOUND, "SU02", "존재하지 않는 게시글입니다.");
+    NOT_FOUND_CONTENT(HttpStatus.NOT_FOUND, "SU02", "존재하지 않는 게시글입니다."),
+
+    // FILE
+    NOT_FOUND_FILE(HttpStatus.NOT_FOUND, "FI01", "존재하지 않는 파일입니다.");
 
 
     private final HttpStatus status;

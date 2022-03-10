@@ -19,8 +19,11 @@ import org.springframework.hateoas.RepresentationModel;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
@@ -48,16 +51,18 @@ public class UserController {
     }
 
     @PatchMapping("/info")
-    public ResponseEntity saveUserInfo(@RequestBody @Validated UserInfoDTO dto) {
-        userService.updateUserInfo(dto);
+    public ResponseEntity saveUserInfo(@RequestParam(value = "photo", required = false) MultipartFile img,
+                                       @Validated UserInfoDTO dto) throws IOException {
+        userService.updateUserInfo(img, dto);
         EntityModel<UserInfoDTO> resource = EntityModel.of(dto);
-        resource.add(linkTo(methodOn(this.getClass()).saveUserInfo(dto)).withSelfRel());
+        resource.add(linkTo(this.getClass()).slash("/info").withSelfRel());
 
         return ResponseEntity.ok(resource);
     }
 
-    @GetMapping("/validateName")
-    public boolean validateName(@RequestBody String name) {
+    @PostMapping("/validate")
+    public boolean validateName(@RequestBody Map<String, String> map) {
+        String name = map.get("name");
         return userRepository.existsByName(name);
     }
 

@@ -1,4 +1,4 @@
-package com.debrains.debrainsApi.common;
+package com.debrains.debrainsApi.config;
 
 import com.debrains.debrainsApi.security.CustomUserDetails;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;

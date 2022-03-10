@@ -1,7 +1,7 @@
 package com.debrains.debrainsApi.controller;
 
-import com.debrains.debrainsApi.common.RestDocsConfigurate;
-import com.debrains.debrainsApi.common.WithAuthUser;
+import com.debrains.debrainsApi.config.RestDocsConfigurate;
+import com.debrains.debrainsApi.config.WithAuthUser;
 import com.debrains.debrainsApi.config.SecurityConfig;
 import com.debrains.debrainsApi.dto.*;
 import com.debrains.debrainsApi.hateoas.EventConverter;
@@ -9,7 +9,6 @@ import com.debrains.debrainsApi.hateoas.NoticeConverter;
 import com.debrains.debrainsApi.hateoas.QnaConverter;
 import com.debrains.debrainsApi.security.jwt.JwtAuthenticationFilter;
 import com.debrains.debrainsApi.service.SupportService;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -29,7 +28,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
