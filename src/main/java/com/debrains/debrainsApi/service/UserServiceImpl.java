@@ -1,5 +1,6 @@
 package com.debrains.debrainsApi.service;
 
+import com.debrains.debrainsApi.common.AwsS3Uploader;
 import com.debrains.debrainsApi.dto.EventDTO;
 import com.debrains.debrainsApi.dto.SkillDTO;
 import com.debrains.debrainsApi.dto.SkillReqDTO;
@@ -25,7 +26,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -39,7 +42,10 @@ public class UserServiceImpl implements UserService {
     private final ProfileRepository profileRepository;
     private final SkillRepository skillRepository;
     private final SkillReqRepository skillReqRepository;
+    private final AwsS3Uploader awsS3Uploader;
     private final ModelMapper modelMapper;
+
+    private static String dirName = "user";
 
     @Override
     public UserInfoDTO getUserInfo(Long id) {
@@ -51,8 +57,18 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public void updateUserInfo(UserInfoDTO dto) {
-        User user = userRepository.getById(dto.getId());
+    public void updateUserInfo(MultipartFile img, UserInfoDTO dto) throws IOException {
+        User user = userRepository.findById(dto.getId())
+                .orElseThrow(() -> new ApiException(ErrorCode.USER_NOT_FOUND));
+
+        if (img != null) {
+            if (user.getImg() != null) {        // 이전파일 제거
+                String previous = user.getImg().substring(user.getImg().indexOf(dirName));
+                awsS3Uploader.delete(previous);
+            }
+            String path = awsS3Uploader.upload(img, dirName);
+            dto.setImg(path);
+        }
         user.updateUserInfo(dto);
     }
 

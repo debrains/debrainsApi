@@ -7,7 +7,6 @@ import com.debrains.debrainsApi.dto.QnaDTO;
 import com.debrains.debrainsApi.dto.user.ProfileDTO;
 import com.debrains.debrainsApi.dto.user.UserBoardDTO;
 import com.debrains.debrainsApi.dto.user.UserInfoDTO;
-import com.debrains.debrainsApi.entity.User;
 import com.debrains.debrainsApi.hateoas.QnaConverter;
 import com.debrains.debrainsApi.repository.UserRepository;
 import com.debrains.debrainsApi.security.jwt.JwtAuthenticationFilter;
@@ -18,9 +17,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.context.annotation.ComponentScan;
@@ -30,10 +27,10 @@ import org.springframework.hateoas.MediaTypes;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -189,11 +186,14 @@ class UserControllerTest {
     void validateName() throws Exception {
         // given
         String name = "test";
+        Map<String, String> map = Map.of("name", name);
         given(userRepository.existsByName(name)).willReturn(true);
 
         // when & then
-        mvc.perform(get("/user/validateName")
-                        .content(name))
+        mvc.perform(post("/user/validate")
+                        .with(csrf())
+                        .content(objectMapper.writeValueAsString(map))
+                        .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().string("true"))
                 .andDo(print());
