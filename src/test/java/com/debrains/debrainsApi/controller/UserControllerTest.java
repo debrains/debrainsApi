@@ -1,7 +1,7 @@
 package com.debrains.debrainsApi.controller;
 
-import com.debrains.debrainsApi.common.RestDocsConfigurate;
-import com.debrains.debrainsApi.common.WithAuthUser;
+import com.debrains.debrainsApi.config.RestDocsConfigurate;
+import com.debrains.debrainsApi.config.WithAuthUser;
 import com.debrains.debrainsApi.config.SecurityConfig;
 import com.debrains.debrainsApi.dto.QnaDTO;
 import com.debrains.debrainsApi.dto.user.ProfileDTO;
@@ -32,7 +32,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
