@@ -85,7 +85,6 @@ public class Til extends BaseEntity {
 
     /**
      * TIL 유효한지 확인
-     * TODO:: 목록 출력할 때 확인하여 업데이트(낱개, 리스트)
      */
     public void expiredCheck() {
         LocalDate now = LocalDate.now();

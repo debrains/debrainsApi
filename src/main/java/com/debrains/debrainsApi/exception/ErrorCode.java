@@ -25,7 +25,6 @@ public enum ErrorCode {
     // USER
     USER_NOT_FOUND(HttpStatus.NOT_FOUND, "US01", "존재하지 않는 회원입니다."),
     FOUND_NAME(HttpStatus.CONFLICT, "US02", "이미 존재하는 닉네임입니다."),
-    USER_AUTHENTICATION(HttpStatus.UNAUTHORIZED, "US03", "사용자에게 권한이 없습니다."),
 
     // TIL
     CYCLE_KIND_WRONG(HttpStatus.BAD_REQUEST, "TI01", "인증주기가 잘못됐습니다."),
@@ -37,6 +36,7 @@ public enum ErrorCode {
     DENIED_TIL(HttpStatus.NOT_ACCEPTABLE, "TC01", "관리자에 의해 취소된 인증입니다."),
     UNOPENED_TIL(HttpStatus.FORBIDDEN, "TC02", "비공개된 인증입니다."),
     TILCRT_NOT_FOUND(HttpStatus.NOT_FOUND, "TC03", "존재하지 않는 인증입니다."),
+    TILCRT_TODAY(HttpStatus.BAD_REQUEST, "TC04", "스터디 인증은 하루에 1번만 등록 할 수 있습니다."),
 
     // STUDY
     STUDY_TYPE_WRONG(HttpStatus.BAD_REQUEST, "ST01", "스터디 종류가 잘못됐습니다."),

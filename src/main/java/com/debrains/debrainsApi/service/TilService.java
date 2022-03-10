@@ -1,15 +1,22 @@
 package com.debrains.debrainsApi.service;
 
+import com.debrains.debrainsApi.dto.TilCurDTO;
 import com.debrains.debrainsApi.dto.TilDTO;
 import com.debrains.debrainsApi.entity.CycleStatus;
 import com.debrains.debrainsApi.entity.Til;
 import com.debrains.debrainsApi.entity.User;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 public interface TilService {
 
     Til createTil(TilDTO tilDTO);
 
     Til updateTil(Long id, TilDTO tilDTO);
+
+    Page<Til> getTilList(Pageable pageable);
+
+    TilCurDTO currentTil(Long userId);
 
     default Til dtoToEntity(TilDTO tilDTO) {
         User user = User.builder()

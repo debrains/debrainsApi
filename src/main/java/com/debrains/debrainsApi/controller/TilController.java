@@ -1,5 +1,6 @@
 package com.debrains.debrainsApi.controller;
 
+import com.debrains.debrainsApi.dto.TilCurDTO;
 import com.debrains.debrainsApi.dto.TilDTO;
 import com.debrains.debrainsApi.entity.Til;
 import com.debrains.debrainsApi.exception.ApiException;
@@ -14,6 +15,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.data.web.PagedResourcesAssembler;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.Link;
@@ -64,13 +67,15 @@ public class TilController {
 
     /**
      * til 리스트 조회
-     * TODO:: 무한 스크롤 -> page 필요 없는지 확인 후 수정
+     * TODO:: 1. expired 여부 체크  2. 인증 3가지 방법 중 하나 무조건 선택  3. til 진행사황
      */
     @GetMapping
-    public ResponseEntity<PagedModel<EntityModel<Til>>> queryTil(Pageable pageable,
-                                                                 PagedResourcesAssembler<Til> assembler) {
+    public ResponseEntity<PagedModel<EntityModel<Til>>> queryTil(
+            @PageableDefault(sort = "id", direction = Sort.Direction.DESC) Pageable pageable,
+            PagedResourcesAssembler<Til> assembler) {
 
-        Page<Til> page = tilRepository.findAll(pageable);
+        Page<Til> page = tilService.getTilList(pageable);
+
         PagedModel<EntityModel<Til>> resource = PagedModelUtil.getEntityModels(assembler, page,
                 linkTo(TilController.class), Til::getId);
         resource.add(Link.of("/docs/index.html#resources-tils-list").withRel("profile"));
@@ -101,7 +106,7 @@ public class TilController {
     @PatchMapping("/{id}")
     public ResponseEntity updateTil(@CurrentUser CustomUserDetails currentUser, @PathVariable Long id, @RequestBody TilDTO tilDTO) {
         if (!currentUser.getId().equals(tilDTO.getUserId())) {
-            throw new ApiException(ErrorCode.USER_AUTHENTICATION);
+            throw new ApiException(ErrorCode.NO_AUTHORIZATION);
         }
         Til savedTil = tilService.updateTil(id, tilDTO);
 
@@ -121,11 +126,20 @@ public class TilController {
                 .orElseThrow(() -> new ApiException(ErrorCode.TIL_NOT_FOUND));
 
         if (!currentUser.getId().equals(til.getUser().getId())) {
-            throw new ApiException(ErrorCode.USER_AUTHENTICATION);
+            throw new ApiException(ErrorCode.NO_AUTHORIZATION);
         }
 
         tilRepository.delete(til);
 
         return ResponseEntity.noContent().build();
+    }
+
+    /**
+     * til 진행상황
+     */
+    @GetMapping("/current")
+    public ResponseEntity currentTil(@CurrentUser CustomUserDetails currentUser) {
+        TilCurDTO tilCurDTO = tilService.currentTil(currentUser.getId());
+        return ResponseEntity.ok(tilCurDTO);
     }
 }
