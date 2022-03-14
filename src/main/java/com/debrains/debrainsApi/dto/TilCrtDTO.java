@@ -28,7 +28,5 @@ public class TilCrtDTO {
     @JsonFormat(pattern = "HH:mm")
     private LocalTime watchTime;
 
-    private boolean open;
-
     private Long userId;
 }

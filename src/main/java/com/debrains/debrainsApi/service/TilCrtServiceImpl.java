@@ -5,7 +5,6 @@ import com.debrains.debrainsApi.dto.TilCrtDTO;
 import com.debrains.debrainsApi.entity.Til;
 import com.debrains.debrainsApi.entity.TilCrt;
 import com.debrains.debrainsApi.entity.TilCrtFile;
-import com.debrains.debrainsApi.entity.User;
 import com.debrains.debrainsApi.exception.ApiException;
 import com.debrains.debrainsApi.exception.ErrorCode;
 import com.debrains.debrainsApi.repository.TilCrtFileRepository;
@@ -38,21 +37,23 @@ public class TilCrtServiceImpl implements TilCrtService {
                 .orElseThrow(() -> new ApiException(ErrorCode.TIL_NOT_FOUND));
         til.addCrtCnt();
 
-        TilCrt entity = modelMapper.map(tilCrtDTO, TilCrt.class);
+        TilCrt entity = dtoToEntity(tilCrtDTO, til);
         TilCrt tilCrt = tilCrtRepository.save(entity);
 
-        if (!files[0].isEmpty()) {
-            for (MultipartFile file:files) {
-                String path = awsS3Uploader.upload(file, dirName);
+        if (files != null) {
+            if (!files[0].isEmpty()) {
+                for (MultipartFile file : files) {
+                    String path = awsS3Uploader.upload(file, dirName);
 
-                TilCrtFile tilCrtFile = TilCrtFile.builder()
-                        .fileName(path.substring(path.indexOf(dirName)))
-                        .originalName(file.getOriginalFilename())
-                        .path(path)
-                        .size(file.getSize())
-                        .tilCrt(TilCrt.builder().id(tilCrt.getId()).build())
-                        .build();
-                fileRepository.save(tilCrtFile);
+                    TilCrtFile tilCrtFile = TilCrtFile.builder()
+                            .fileName(path.substring(path.indexOf(dirName)))
+                            .originalName(file.getOriginalFilename())
+                            .path(path)
+                            .size(file.getSize())
+                            .tilCrt(TilCrt.builder().id(tilCrt.getId()).build())
+                            .build();
+                    fileRepository.save(tilCrtFile);
+                }
             }
         }
 
@@ -68,7 +69,7 @@ public class TilCrtServiceImpl implements TilCrtService {
         tilCrt.changeTilCrt(tilCrtDTO);
 
         if (!files[0].isEmpty()) {
-            for (MultipartFile file:files) {
+            for (MultipartFile file : files) {
                 String path = awsS3Uploader.upload(file, dirName);
 
                 TilCrtFile tilCrtFile = TilCrtFile.builder()

@@ -67,7 +67,6 @@ public class TilController {
 
     /**
      * til 리스트 조회
-     * TODO:: 1. expired 여부 체크  2. 인증 3가지 방법 중 하나 무조건 선택  3. til 진행사황
      */
     @GetMapping
     public ResponseEntity<PagedModel<EntityModel<Til>>> queryTil(
