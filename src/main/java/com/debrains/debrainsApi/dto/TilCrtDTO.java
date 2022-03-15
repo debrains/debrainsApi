@@ -16,6 +16,8 @@ import java.time.LocalTime;
 @ToString
 public class TilCrtDTO {
 
+    private Long id;
+
     @NotNull
     private Long tilId;
 
@@ -29,4 +31,6 @@ public class TilCrtDTO {
     private LocalTime watchTime;
 
     private Long userId;
+
+    private String filePath;
 }

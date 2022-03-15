@@ -12,11 +12,14 @@ import com.debrains.debrainsApi.repository.TilCrtRepository;
 import com.debrains.debrainsApi.repository.TilRepository;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -100,6 +103,22 @@ public class TilCrtServiceImpl implements TilCrtService {
         TilCrtFile file = fileRepository.findById(id)
                 .orElseThrow(() -> new ApiException(ErrorCode.NOT_FOUND_FILE));
         awsS3Uploader.delete(file.getFileName());
+    }
+
+    @Override
+    public List<TilCrtDTO> tilCrtList(Pageable pageable) {
+        List<TilCrtDTO> dtoList = tilCrtRepository.findAll(pageable)
+                .stream().map(entity -> modelMapper.map(entity, TilCrtDTO.class))
+                .collect(Collectors.toList());
+
+        for (TilCrtDTO dto : dtoList) {
+            List<String> filePath = fileRepository.findTilCrtFile(dto.getId());
+            if (!filePath.isEmpty()) {
+                dto.setFilePath(filePath.get(0));
+            }
+        }
+
+        return dtoList;
     }
 
 }

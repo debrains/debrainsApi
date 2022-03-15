@@ -10,6 +10,7 @@ import java.time.LocalDateTime;
 public interface TilCrtRepository extends JpaRepository<TilCrt, Long> {
 
     @Query("SELECT count(t.id) FROM TilCrt t " +
-            "WHERE t.user.id=:id and t.regDate>=:start and t.regDate<=:end and t.denied=false")
-    Long tilCrtCount(@Param("id") Long userId, LocalDateTime start, LocalDateTime end);
+            "WHERE t.user.id=:id and t.til.id=:tilId " +
+            "and t.regDate>=:start and t.regDate<=:end and t.denied=false")
+    Long tilCrtCount(@Param("id") Long userId, Long tilId, LocalDateTime start, LocalDateTime end);
 }

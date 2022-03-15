@@ -4,7 +4,6 @@ import com.debrains.debrainsApi.dto.TilCrtDTO;
 import com.debrains.debrainsApi.entity.TilCrt;
 import com.debrains.debrainsApi.exception.ApiException;
 import com.debrains.debrainsApi.exception.ErrorCode;
-import com.debrains.debrainsApi.hateoas.TilCrtConverter;
 import com.debrains.debrainsApi.repository.TilCrtRepository;
 import com.debrains.debrainsApi.security.CurrentUser;
 import com.debrains.debrainsApi.security.CustomUserDetails;
@@ -13,8 +12,8 @@ import com.debrains.debrainsApi.util.PagedModelUtil;
 import com.debrains.debrainsApi.validator.TilCrtValidator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
@@ -34,6 +33,7 @@ import java.net.URI;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.List;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 
@@ -63,7 +63,7 @@ public class TilCrtController {
         LocalDateTime start = LocalDateTime.of(LocalDate.now(), LocalTime.MIN);
         LocalDateTime end = LocalDateTime.of(LocalDate.now(), LocalTime.MAX);
 
-        Long tilCrtCount = tilCrtRepository.tilCrtCount(currentUser.getId(), start, end);
+        Long tilCrtCount = tilCrtRepository.tilCrtCount(currentUser.getId(), tilCrtDTO.getTilId(), start, end);
         if (tilCrtCount > 0) {
             throw new ApiException(ErrorCode.TILCRT_TODAY);
         }
@@ -85,28 +85,18 @@ public class TilCrtController {
      * til 인증 리스트 조회
      */
     @GetMapping
-    /*public ResponseEntity queryTilCrts() {
-
-        List<TilCrtDTO> page = tilCrtRepository.findAll()
-                .stream().map(entity -> modelMapper.map(entity, TilCrtDTO.class))
-                .collect(Collectors.toList());
-
-        List<EntityModel<TilCrtDTO>> tilCrtList = page.stream()
-                .map(tilCrtDTO -> tilCrtConverter.toModel(tilCrtDTO)).collect(Collectors.toList());
-
-        CollectionModel<EntityModel<TilCrtDTO>> resource = CollectionModel.of(tilCrtList,
-                linkTo(methodOn(this.getClass()).queryTilCrts()).withSelfRel());
-
-        return ResponseEntity.ok(resource);
-    }*/
-    public ResponseEntity<PagedModel<EntityModel<TilCrt>>> queryTilCrts(
+    public ResponseEntity<PagedModel<EntityModel<TilCrtDTO>>> queryTilCrts(
             @PageableDefault(sort = "id", direction = Sort.Direction.DESC) Pageable pageable,
-            PagedResourcesAssembler<TilCrt> assembler) {
+            PagedResourcesAssembler<TilCrtDTO> assembler) {
 
-        Page<TilCrt> page = tilCrtRepository.findAll(pageable);
+        List<TilCrtDTO> dto = tilCrtService.tilCrtList(pageable);
 
-        PagedModel<EntityModel<TilCrt>> resource = PagedModelUtil.getEntityModels(assembler, page,
-                linkTo(TilCrtController.class), TilCrt::getId);
+        int start = (int) pageable.getOffset();
+        int end = Math.min((start + pageable.getPageSize()), dto.size());
+        Page<TilCrtDTO> page = new PageImpl<>(dto.subList(start, end), pageable, dto.size());
+        PagedModel<EntityModel<TilCrtDTO>> resource = PagedModelUtil.getEntityModels(assembler, page,
+                linkTo(TilCrtController.class), TilCrtDTO::getId);
+
         resource.add(Link.of("/docs/index.html#resources-til-crts-list").withRel("profile"));
 
         return ResponseEntity.ok(resource);
