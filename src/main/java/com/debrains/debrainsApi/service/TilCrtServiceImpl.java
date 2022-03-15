@@ -65,28 +65,37 @@ public class TilCrtServiceImpl implements TilCrtService {
 
     @Override
     @Transactional
-    public TilCrt updateTilCrt(Long id, MultipartFile[] files, TilCrtDTO tilCrtDTO) throws IOException {
+    public TilCrtDTO updateTilCrt(Long id, MultipartFile[] files, TilCrtDTO tilCrtDTO) throws IOException {
         TilCrt tilCrt = tilCrtRepository.findById(id)
                 .orElseThrow(() -> new ApiException(ErrorCode.TILCRT_NOT_FOUND));
 
         tilCrt.changeTilCrt(tilCrtDTO);
 
-        if (!files[0].isEmpty()) {
-            for (MultipartFile file : files) {
-                String path = awsS3Uploader.upload(file, dirName);
+        if (files != null) {
+            if (!files[0].isEmpty()) {
+                for (MultipartFile file : files) {
+                    String path = awsS3Uploader.upload(file, dirName);
 
-                TilCrtFile tilCrtFile = TilCrtFile.builder()
-                        .fileName(path.substring(path.indexOf(dirName)))
-                        .originalName(file.getOriginalFilename())
-                        .path(path)
-                        .size(file.getSize())
-                        .tilCrt(TilCrt.builder().id(id).build())
-                        .build();
-                fileRepository.save(tilCrtFile);
+                    TilCrtFile tilCrtFile = TilCrtFile.builder()
+                            .fileName(path.substring(path.indexOf(dirName)))
+                            .originalName(file.getOriginalFilename())
+                            .path(path)
+                            .size(file.getSize())
+                            .tilCrt(TilCrt.builder().id(id).build())
+                            .build();
+                    fileRepository.save(tilCrtFile);
+                }
             }
         }
 
-        return tilCrt;
+        TilCrtDTO dto = modelMapper.map(tilCrt, TilCrtDTO.class);
+
+        List<String> filePath = fileRepository.findTilCrtFile(dto.getId());
+        if (!filePath.isEmpty()) {
+            dto.setFilePath(filePath);
+        }
+
+        return dto;
     }
 
     @Override
@@ -114,11 +123,26 @@ public class TilCrtServiceImpl implements TilCrtService {
         for (TilCrtDTO dto : dtoList) {
             List<String> filePath = fileRepository.findTilCrtFile(dto.getId());
             if (!filePath.isEmpty()) {
-                dto.setFilePath(filePath.get(0));
+                dto.setFilePath(filePath);
             }
         }
 
         return dtoList;
+    }
+
+    @Override
+    public TilCrtDTO getTilCrt(Long id) {
+        TilCrt tilCrt = tilCrtRepository.findById(id)
+                .orElseThrow(() -> new ApiException(ErrorCode.TILCRT_NOT_FOUND));
+
+        TilCrtDTO dto = modelMapper.map(tilCrt, TilCrtDTO.class);
+
+        List<String> filePath = fileRepository.findTilCrtFile(dto.getId());
+        if (!filePath.isEmpty()) {
+            dto.setFilePath(filePath);
+        }
+
+        return dto;
     }
 
 }

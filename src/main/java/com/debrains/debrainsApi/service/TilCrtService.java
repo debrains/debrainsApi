@@ -14,7 +14,7 @@ public interface TilCrtService {
 
     TilCrt createTilCrts(MultipartFile[] files, TilCrtDTO tilCrtDTO) throws IOException;
 
-    TilCrt updateTilCrt(Long id, MultipartFile[] files, TilCrtDTO tilCrtDTO) throws IOException;
+    TilCrtDTO updateTilCrt(Long id, MultipartFile[] files, TilCrtDTO tilCrtDTO) throws IOException;
 
     void deleteTilCrt(TilCrt tilCrt);
 
@@ -29,11 +29,17 @@ public interface TilCrtService {
                 .user(user)
                 .til(til)
                 .description(tilCrtDTO.getDescription())
-                .startTime(tilCrtDTO.getStartTime())
-                .endTime(tilCrtDTO.getEndTime())
+                .startTime1(tilCrtDTO.getStartTime1())
+                .endTime1(tilCrtDTO.getEndTime1())
+                .startTime2(tilCrtDTO.getStartTime2())
+                .endTime2(tilCrtDTO.getEndTime2())
+                .startTime3(tilCrtDTO.getStartTime3())
+                .endTime3(tilCrtDTO.getEndTime3())
                 .watchTime(tilCrtDTO.getWatchTime())
                 .build();
 
         return tilCrt;
     }
+
+    TilCrtDTO getTilCrt(Long id);
 }

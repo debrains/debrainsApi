@@ -32,9 +32,14 @@ public class TilCrt extends BaseEntity {
     @JsonSerialize(using = TilSerializer.class)
     private Til til;
 
-    private LocalDateTime startTime;
+    private LocalDateTime startTime1;
+    private LocalDateTime endTime1;
 
-    private LocalDateTime endTime;
+    private LocalDateTime startTime2;
+    private LocalDateTime endTime2;
+
+    private LocalDateTime startTime3;
+    private LocalDateTime endTime3;
 
     private LocalTime watchTime;
 
@@ -53,12 +58,15 @@ public class TilCrt extends BaseEntity {
     private User user;
 
     @OneToMany(mappedBy = "tilCrt", cascade = CascadeType.ALL)
-    @JsonIgnore
     private List<TilCrtFile> files = new ArrayList<>();
 
     public void changeTilCrt(TilCrtDTO tilCrtDTO) {
-        this.startTime = tilCrtDTO.getStartTime();
-        this.endTime = tilCrtDTO.getEndTime();
+        this.startTime1 = tilCrtDTO.getStartTime1();
+        this.endTime1 = tilCrtDTO.getEndTime1();
+        this.startTime2 = tilCrtDTO.getStartTime2();
+        this.endTime2 = tilCrtDTO.getEndTime2();
+        this.startTime3 = tilCrtDTO.getStartTime3();
+        this.endTime3 = tilCrtDTO.getEndTime3();
         this.description = tilCrtDTO.getDescription();
     }
 

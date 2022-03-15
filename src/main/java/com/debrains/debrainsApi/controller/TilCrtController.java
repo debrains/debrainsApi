@@ -107,15 +107,13 @@ public class TilCrtController {
      */
     @GetMapping("/{id}")
     public ResponseEntity getTilCrt(@CurrentUser CustomUserDetails currentUser, @PathVariable Long id) {
+        TilCrtDTO tilCrtDTO = tilCrtService.getTilCrt(id);
 
-        TilCrt tilCrt = tilCrtRepository.findById(id)
-                .orElseThrow(() -> new ApiException(ErrorCode.TILCRT_NOT_FOUND));
-
-        EntityModel<TilCrt> resource = EntityModel.of(tilCrt);
-        resource.add(linkTo(TilCrtController.class).slash(tilCrt.getId()).withSelfRel());
+        EntityModel<TilCrtDTO> resource = EntityModel.of(tilCrtDTO);
+        resource.add(linkTo(TilCrtController.class).slash(tilCrtDTO.getId()).withSelfRel());
         resource.add(Link.of("/docs/index.html#resources-til-crts-get").withRel("profile"));
-        if (tilCrt.getUser().getId() == currentUser.getId()) {
-            resource.add(linkTo(TilCrtController.class).slash(tilCrt.getId()).withRel("update"));
+        if (tilCrtDTO.getUserId() == currentUser.getId()) {
+            resource.add(linkTo(TilCrtController.class).slash(tilCrtDTO.getId()).withRel("update"));
         }
         return ResponseEntity.ok(resource);
     }
@@ -131,9 +129,9 @@ public class TilCrtController {
         if (!currentUser.getId().equals(tilCrtDTO.getUserId())) {
             throw new ApiException(ErrorCode.NO_AUTHORIZATION);
         }
-        TilCrt savedTilCrt = tilCrtService.updateTilCrt(id, files, tilCrtDTO);
+        TilCrtDTO dto = tilCrtService.updateTilCrt(id, files, tilCrtDTO);
 
-        EntityModel<TilCrt> resource = EntityModel.of(savedTilCrt);
+        EntityModel<TilCrtDTO> resource = EntityModel.of(dto);
         resource.add(linkTo(TilCrtController.class).withSelfRel());
         resource.add(Link.of("/docs/index.html#resources-til-crts-update").withRel("profile"));
 
@@ -170,7 +168,7 @@ public class TilCrtController {
 
         tilCrtService.deleteTilCrtFile(fileId);
 
-        return ResponseEntity.ok().build();
+        return ResponseEntity.noContent().build();
     }
 
 }
