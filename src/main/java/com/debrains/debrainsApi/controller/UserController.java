@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -52,7 +53,7 @@ public class UserController {
 
     @PatchMapping("/info")
     public ResponseEntity saveUserInfo(@RequestParam(value = "photo", required = false) MultipartFile img,
-                                       @Validated UserInfoDTO dto) throws IOException {
+                                       @RequestBody @Validated UserInfoDTO dto) throws IOException {
         userService.updateUserInfo(img, dto);
         EntityModel<UserInfoDTO> resource = EntityModel.of(dto);
         resource.add(linkTo(this.getClass()).slash("/info").withSelfRel());
@@ -61,9 +62,10 @@ public class UserController {
     }
 
     @PostMapping("/validate")
-    public boolean validateName(@RequestBody Map<String, String> map) {
+    public ResponseEntity validateName(@RequestBody Map<String, String> map) {
         String name = map.get("name");
-        return userRepository.existsByName(name);
+        Map<String, Boolean> result = Map.of("exist", userRepository.existsByName(name));
+        return ResponseEntity.ok(result);
     }
 
     @GetMapping("/profile")

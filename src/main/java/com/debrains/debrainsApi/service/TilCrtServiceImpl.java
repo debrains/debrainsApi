@@ -67,7 +67,7 @@ public class TilCrtServiceImpl implements TilCrtService {
 
         tilCrt.changeTilCrt(tilCrtDTO);
 
-        if (!files[0].isEmpty()) {
+        if (files != null && !files[0].isEmpty()) {
             for (MultipartFile file:files) {
                 String path = awsS3Uploader.upload(file, dirName);
 

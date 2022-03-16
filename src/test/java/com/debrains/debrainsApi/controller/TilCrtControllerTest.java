@@ -1,6 +1,7 @@
 package com.debrains.debrainsApi.controller;
 
 import com.debrains.debrainsApi.config.RestDocsConfigurate;
+import com.debrains.debrainsApi.config.WithAuthUser;
 import com.debrains.debrainsApi.dto.TilCrtDTO;
 import com.debrains.debrainsApi.entity.CycleStatus;
 import com.debrains.debrainsApi.entity.Til;
@@ -59,6 +60,7 @@ public class TilCrtControllerTest {
 
     @Test
     @DisplayName("TIL인증_생성")
+    @WithAuthUser
     public void createTilCrt() throws Exception {
 
         // Given
@@ -91,6 +93,7 @@ public class TilCrtControllerTest {
 
     @Test
     @DisplayName("til_인증_생성_빈값")
+    @WithAuthUser
     public void createTilCrtEmpty() throws Exception {
         TilCrtDTO tilCrtDTO = TilCrtDTO.builder().build();
 
@@ -109,6 +112,7 @@ public class TilCrtControllerTest {
 
     @Test
     @DisplayName("til_인증_조회")
+    @WithAuthUser
     public void queryTilCrts() throws Exception {
         IntStream.range(0, 23).forEach(i -> {
             createTilCrt(i);
@@ -129,6 +133,7 @@ public class TilCrtControllerTest {
 
     @Test
     @DisplayName("til_인증_상세보기")
+    @WithAuthUser
     public void getTilCrts() throws Exception {
         TilCrt tilCrt = createTilCrt(1);
 
@@ -149,6 +154,7 @@ public class TilCrtControllerTest {
 
     @Test
     @DisplayName("til_인증_수정_파일O")
+    @WithAuthUser
     public void updateTilCrts_existFile() throws Exception {
 
         // Given
@@ -181,6 +187,7 @@ public class TilCrtControllerTest {
 
     @Test
     @DisplayName("til_인증_수정_파일X")
+    @WithAuthUser
     public void updateTilCrts_not_existFile() throws Exception {
 
         // Given

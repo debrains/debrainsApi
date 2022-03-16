@@ -1,7 +1,7 @@
 package com.debrains.debrainsApi.controller;
 
-import com.debrains.debrainsApi.common.RestDocsConfigurate;
-import com.debrains.debrainsApi.common.WithAuthUser;
+import com.debrains.debrainsApi.config.RestDocsConfigurate;
+import com.debrains.debrainsApi.config.WithAuthUser;
 import com.debrains.debrainsApi.dto.TilDTO;
 import com.debrains.debrainsApi.entity.CycleStatus;
 import com.debrains.debrainsApi.entity.Til;
@@ -22,6 +22,7 @@ import org.springframework.http.MediaType;
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.stream.IntStream;
@@ -44,6 +45,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 @AutoConfigureRestDocs
 @Import(RestDocsConfigurate.class)
+@Transactional
 class TilControllerTest {
 
     @Autowired

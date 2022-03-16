@@ -14,6 +14,6 @@ public class QnaConverter implements RepresentationModelAssembler<QnaDTO, Entity
     @Override
     public EntityModel<QnaDTO> toModel(QnaDTO qna) {
         return EntityModel.of(qna,
-                linkTo(methodOn(SupportController.class).getQna(qna.getId())).withSelfRel());
+                linkTo(methodOn(SupportController.class).getQna(null, qna.getId())).withSelfRel());
     }
 }

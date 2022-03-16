@@ -3,6 +3,7 @@ package com.debrains.debrainsApi.dto.user;
 import lombok.*;
 
 import javax.validation.constraints.NotBlank;
+import java.util.List;
 
 @Builder
 @AllArgsConstructor
@@ -20,5 +21,5 @@ public class UserBoardDTO {
     private String blogUrl;
     private String snsUrl;
     private String purpose;
-    private String skills;
+    private List<String> skills;
 }
