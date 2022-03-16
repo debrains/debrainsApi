@@ -1,6 +1,8 @@
 package com.debrains.debrainsApi.controller;
 
 import com.debrains.debrainsApi.dto.*;
+import com.debrains.debrainsApi.exception.ApiException;
+import com.debrains.debrainsApi.exception.ErrorCode;
 import com.debrains.debrainsApi.hateoas.EventConverter;
 import com.debrains.debrainsApi.hateoas.NoticeConverter;
 import com.debrains.debrainsApi.hateoas.QnaConverter;
@@ -49,6 +51,7 @@ public class SupportController {
     public ResponseEntity getNotice(@PathVariable Long id) {
         NoticeDTO notice = supportService.getNotice(id);
         EntityModel<NoticeDTO> resource = noticeConverter.toModel(notice);
+        resource.add(linkTo(methodOn(this.getClass()).getNoticeList()).withRel("list"));
 
         return ResponseEntity.ok(resource);
     }
@@ -67,13 +70,19 @@ public class SupportController {
     public ResponseEntity getEvent(@PathVariable Long id) {
         EventDTO event = supportService.getEvent(id);
         EntityModel<EventDTO> resource = eventConverter.toModel(event);
+        resource.add(linkTo(methodOn(this.getClass()).getEventList()).withRel("list"));
 
         return ResponseEntity.ok(resource);
     }
 
     @GetMapping("/qna/{id}")
-    public ResponseEntity getQna(@PathVariable Long id) {
+    public ResponseEntity getQna(@CurrentUser CustomUserDetails user, @PathVariable Long id) {
         QnaDTO qna = supportService.getQna(id);
+
+        if (user.getId() != qna.getUserId()) {
+            throw new ApiException(ErrorCode.NO_AUTHENTICATION);
+        }
+
         EntityModel<QnaDTO> resource = qnaConverter.toModel(qna);
 
         return ResponseEntity.ok(resource);
@@ -84,7 +93,7 @@ public class SupportController {
         qna.setUserId(user.getId());
         QnaDTO entity = supportService.saveQna(qna);
 
-        WebMvcLinkBuilder selfLinkBuilder = linkTo(methodOn(this.getClass()).getQna(entity.getId()));
+        WebMvcLinkBuilder selfLinkBuilder = linkTo(methodOn(this.getClass()).getQna(null, entity.getId()));
         URI createdUri = selfLinkBuilder.toUri();
         EntityModel<QnaDTO> resource = EntityModel.of(entity);
         resource.add(linkTo(methodOn(this.getClass()).saveQna(null, qna)).withSelfRel());
