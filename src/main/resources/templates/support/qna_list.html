@@ -28,7 +28,7 @@
             <td><a th:href="@{/root/support/qna/{id}(id=${qna.getId()})}" th:text="${qna.getTitle()}" th:value="${index.index}"></a></td>
             <td th:text="${qna.getUserId()}"></td>
             <td th:text="${#temporals.format(qna.getRegDate(), 'yyyy-MM-dd HH:mm:ss')}"></td>
-            <td th:text="${qna.getCompleted() ? '처리완료' : '처리중'}"></td>
+            <td th:text="${qna.isCompleted() ? '처리완료' : '처리중'}"></td>
           </tr>
           </tbody>
         </table>

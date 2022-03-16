@@ -13,7 +13,8 @@
   <div class="row">
 
     <div class="col-lg-8">
-      <form action="#" method="post">
+      <form action="/root/til/crt" method="post">
+        <input type="hidden" name="id" th:value="${crt.getId()}">
         <div class="form-group row">
           <label for="name" class="col-sm-2 col-form-label">name</label>
           <div class="col-sm-10">
@@ -32,32 +33,45 @@
 
         <div class="form-group row">
           <label for="startTime" class="col-sm-2 col-form-label">시작시간</label>
-          <div class="col-sm-3">
-            <input type="text" class="form-control-plaintext" id="startTime" name="startTime"
-                   th:value="${#temporals.format(crt.getStartTime(), 'yyyy-MM-dd HH:mm:ss')}" readonly>
-          </div>
-          ~
-          <label for="endTime" class="col-sm-2 col-form-label">종료시간</label>
-          <div class="col-sm-3">
-            <input type="text" class="form-control-plaintext" id="endTime" name="endTime"
-                   th:value="${#temporals.format(crt.getEndTime(), 'yyyy-MM-dd HH:mm:ss')}" readonly>
+          <div class="col-sm-6">
+            <input type="datetime-local" class="form-control-plaintext" id="startTime"
+                   th:value="${crt.getStartTime()}" readonly>
           </div>
         </div>
+
+        <div class="form-group row">
+          <label for="endTime" class="col-sm-2 col-form-label">종료시간</label>
+          <div class="col-sm-6">
+            <input type="datetime-local" class="form-control-plaintext" id="endTime"
+                   th:value="${crt.getEndTime()}" readonly>
+          </div>
+        </div>
+
 
         <div class="form-group row">
           <label for="watchTime" class="col-sm-2 col-form-label">스톱워치</label>
           <div class="col-sm-10">
-            <input type="text" class="form-control-plaintext" id="watchTime" name="watchTime"
-                   th:value="${#temporals.format(crt.getWatchTime(), 'yyyy-MM-dd HH:mm:ss')}" readonly>
+            <input type="datetime-local" class="form-control-plaintext" id="watchTime"
+                   th:value="${crt.getWatchTime()}" readonly>
           </div>
         </div>
 
         <div class="form-group row">
-          <label for="denied" class="col-sm-2 col-form-label">취소유무</label>
+          <label for="open" class="col-sm-2 col-form-label">공개여부</label>
           <div class="col-sm-10">
-            <select class="custom-select" th:value="${crt.getDenied()}" id="denied" name="denied">
-              <option th:value="0" th:text="취소" th:selected="!${crt.getDenied()}"></option>
-              <option th:value="1" th:text="정상" th:selected="${crt.getDenied()}"></option>
+            <select class="custom-select" th:value="${crt.isOpen()}" id="open" name="open">
+              <option th:value="0" th:text="비공개" th:selected="!${crt.isOpen()}"></option>
+              <option th:value="1" th:text="공개" th:selected="${crt.isOpen()}"></option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group row">
+          <label for="denied" class="col-sm-2 col-form-label">승인여부</label>
+          <div class="col-sm-10">
+            <select class="custom-select" th:value="${crt.isDenied()}" id="denied" name="denied">
+              <option th:value="0" th:text="승인" th:selected="!${crt.isDenied()}"></option>
+              <option th:value="1" th:text="거부" th:selected="${crt.isDenied()}"></option>
             </select>
           </div>
         </div>
@@ -69,6 +83,10 @@
               <a th:href="@{/root/til/download/{id}(id=${file.getId()})}" th:text="${file.getOriginalName()}"></a>
             </th:block>
           </div>
+        </div>
+
+        <div class="form-group row">
+          <button type="submit" class="btn btn-primary">수정</button>
         </div>
 
       </form>

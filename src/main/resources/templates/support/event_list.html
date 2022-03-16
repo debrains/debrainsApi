@@ -29,7 +29,7 @@
             <td><a th:href="@{/root/support/event/{id}(id=${event.getId()})}" th:text="${event.getTitle()}" th:value="${index.index}"></a></td>
             <td th:text="${event.getViewCnt()}"></td>
             <td th:text="${#temporals.format(event.getRegDate(), 'yyyy-MM-dd HH:mm:ss')}"></td>
-            <td th:text="${event.getEnded() ? '종료' : '진행중'}"></td>
+            <td th:text="${event.isEnded() ? '종료' : '진행중'}"></td>
           </tr>
 
           </tbody>

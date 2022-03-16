@@ -30,4 +30,6 @@ public interface TilCrtService {
     List<TilCrtFileDTO> getTilcrtFiles(Long id);
 
     TilCrtFileDTO getTilCrtFileById(Long id);
+
+    void updateAdminTilCrt(TilCrtDTO tilcrt);
 }

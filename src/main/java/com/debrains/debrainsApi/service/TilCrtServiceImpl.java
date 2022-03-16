@@ -2,10 +2,7 @@ package com.debrains.debrainsApi.service;
 
 import com.debrains.debrainsApi.common.AwsS3Uploader;
 import com.debrains.debrainsApi.dto.*;
-import com.debrains.debrainsApi.entity.Til;
-import com.debrains.debrainsApi.entity.TilCrt;
-import com.debrains.debrainsApi.entity.TilCrtFile;
-import com.debrains.debrainsApi.entity.User;
+import com.debrains.debrainsApi.entity.*;
 import com.debrains.debrainsApi.exception.ApiException;
 import com.debrains.debrainsApi.exception.ErrorCode;
 import com.debrains.debrainsApi.repository.TilCrtFileRepository;
@@ -141,6 +138,13 @@ public class TilCrtServiceImpl implements TilCrtService {
         TilCrtFile file = fileRepository.findById(id).orElseThrow();
         TilCrtFileDTO dto = modelMapper.map(file, TilCrtFileDTO.class);
         return dto;
+    }
+
+    @Override
+    @Transactional
+    public void updateAdminTilCrt(TilCrtDTO tilcrt) {
+        TilCrt entity = tilCrtRepository.findById(tilcrt.getId()).orElseThrow();
+        entity.updateAdminTilCrt(tilcrt);
     }
 
 }

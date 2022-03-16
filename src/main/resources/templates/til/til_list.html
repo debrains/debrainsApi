@@ -24,7 +24,7 @@
           <tbody>
           <tr th:each="til : ${tilList}">
             <td><a th:href="@{/root/til/{id}(id=${til.getId()})}" th:text="${til.getSubject()}"></a></td>
-            <td th:text="${til.getExpired() ? '만료' : '만료전'}"></td>
+            <td th:text="${til.isExpired() ? '만료' : '만료전'}"></td>
           </tr>
 
           </tbody>

@@ -31,7 +31,7 @@ public class Event extends BaseEntity{
     public void updateAdminEventInfo(EventDTO eventDTO){
         this.title = eventDTO.getTitle();
         this.content = eventDTO.getContent();
-        this.open = eventDTO.getOpen();
-        this.ended = eventDTO.getEnded();
+        this.open = eventDTO.isOpen();
+        this.ended = eventDTO.isEnded();
     }
 }

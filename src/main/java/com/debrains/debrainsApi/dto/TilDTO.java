@@ -34,7 +34,7 @@ public class TilDTO {
     private String cycleStatus;
     private int cycleCnt;
 
-    private Boolean expired;
+    private boolean expired;
 
     private LocalDateTime regDate;
 }

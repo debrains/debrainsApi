@@ -24,7 +24,7 @@
           <tbody>
           <tr th:each="crt : ${tilcrtList}">
             <td><a th:href="@{/root/til/crt/{id}(id=${crt.getId()})}" th:text="${crt.getDescription()}"></a></td>
-            <td th:text="${crt.getDenied() ? '정상' : '취소'}"></td>
+            <td th:text="${crt.isDenied() ? '정상' : '취소'}"></td>
           </tr>
 
           </tbody>

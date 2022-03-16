@@ -34,7 +34,7 @@ public class TilCrtDTO {
 
     private Long userId;
 
-    private Boolean denied;
+    private boolean denied;
 
     private String name;
 
