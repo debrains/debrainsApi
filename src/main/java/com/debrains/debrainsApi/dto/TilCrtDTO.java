@@ -16,6 +16,8 @@ import java.time.LocalTime;
 @ToString
 public class TilCrtDTO {
 
+    private Long id;
+
     @NotNull
     private Long tilId;
 
@@ -31,4 +33,9 @@ public class TilCrtDTO {
     private boolean open;
 
     private Long userId;
+
+    private Boolean denied;
+
+    private String name;
+
 }

@@ -8,6 +8,7 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Builder
 @AllArgsConstructor
@@ -17,6 +18,7 @@ import java.time.LocalDate;
 @ToString
 public class TilDTO {
 
+    private Long id;
 //    @NotBlank
     private Long userId;
     @NotBlank
@@ -31,4 +33,8 @@ public class TilDTO {
     @NotBlank
     private String cycleStatus;
     private int cycleCnt;
+
+    private Boolean expired;
+
+    private LocalDateTime regDate;
 }

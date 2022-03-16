@@ -1,89 +1,63 @@
 <!DOCTYPE html>
-<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      layout:decorate="~{layout}">
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:th="http://www.thymeleaf.org"
+      layout:decorate="~{fragments/layout}">
 
 <!-- Begin Page Content -->
 <div class="container-fluid" layout:fragment="content">
   <!-- Page Heading -->
-  <h1 class="h3 mb-2 text-gray-800">목표 관리</h1>
-  <p class="mb-4">DataTables is a third party plugin that is used to generate the demo table below.
-    For more information about DataTables, please visit the <a target="_blank"
-                                                               href="https://datatables.net">official DataTables
-      documentation</a>.</p>
+  <h1 class="h3 mb-2 text-gray-800">TIL</h1>
 
   <!-- DataTales Example -->
   <div class="card shadow mb-4">
     <div class="card-header py-3">
-      <h6 class="m-0 font-weight-bold text-primary">DataTables Example</h6>
+      <h6 class="m-0 font-weight-bold text-primary">TIL 목록</h6>
     </div>
     <div class="card-body">
       <div class="table-responsive">
         <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
           <thead>
           <tr>
-            <th>Name</th>
-            <th>Position</th>
-            <th>Office</th>
-            <th>Age</th>
-            <th>Start date</th>
-            <th>Salary</th>
+            <th>목표</th>
+            <th>만료여부</th>
           </tr>
           </thead>
           <tbody>
-          <tr>
-            <td><a href="/root/userDetail">Tiger Nixon</a></td>
-            <td>System Architect</td>
-            <td>Edinburgh</td>
-            <td>61</td>
-            <td>2011/04/25</td>
-            <td>$320,800</td>
-          </tr>
-          <tr>
-            <td>Garrett Winters</td>
-            <td>Accountant</td>
-            <td>Tokyo</td>
-            <td>63</td>
-            <td>2011/07/25</td>
-            <td>$170,750</td>
-          </tr>
-          <tr>
-            <td>Ashton Cox</td>
-            <td>Junior Technical Author</td>
-            <td>San Francisco</td>
-            <td>66</td>
-            <td>2009/01/12</td>
-            <td>$86,000</td>
+          <tr th:each="til : ${tilList}">
+            <td><a th:href="@{/root/til/{id}(id=${til.getId()})}" th:text="${til.getSubject()}"></a></td>
+            <td th:text="${til.getExpired() ? '만료' : '만료전'}"></td>
           </tr>
 
           </tbody>
         </table>
+        <nav aria-label="..." style="float: right">
+          <ul class="pagination" th:with="start=${T(Math).floor(tilList.number/10)*10 + 1},
+                                last=(${start + 9 < tilList.totalPages ? start + 9 : tilList.totalPages})">
+            <li class="page-item disabled">
+              <a th:href="${tilList.first} ? '#' : @{/root/til(page=${tilList.number - 1})}"
+                 aria-label="Previous">
+                <span class="page-link" aria-hidden="true">&lt;</span>
+              </a>
+            </li>
+            <li th:each="page: ${#numbers.sequence(start, last)}"
+                th:class="${page == tilList.number + 1} ? 'page-item active'">
+              <th:block th:if="${page}">
+                <a class="page-link" th:text="${page}" th:href="@{/root/til(page=${page}-1)}"></a>
+              </th:block>
+            </li>
+            <li th:class="${tilList.last} ? 'disabled'">
+              <a th:href="${tilList.last} ? '#' : @{/root/til(page=${tilList.number + 1})}"
+                 aria-label="Next">
+                <span class="page-link" aria-hidden="true">&gt;</span>
+              </a>
+            </li>
+          </ul>
+        </nav>
       </div>
     </div>
   </div>
 </div>
-<a class="scroll-to-top rounded" href="#page-top">
-  <i class="fas fa-angle-up"></i>
-</a>
 
 <!-- Logout Modal-->
-<div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-     aria-hidden="true">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">Ready to Leave?</h5>
-        <button class="close" type="button" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">×</span>
-        </button>
-      </div>
-      <div class="modal-body">Select "Logout" below if you are ready to end your current session.</div>
-      <div class="modal-footer">
-        <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
-        <a class="btn btn-primary" href="../login.html">Logout</a>
-      </div>
-    </div>
-  </div>
-</div>
-<!-- Bootstrap core JavaScript-->
+
 
 </html>
