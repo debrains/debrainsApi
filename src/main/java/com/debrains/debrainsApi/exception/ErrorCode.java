@@ -21,6 +21,9 @@ public enum ErrorCode {
     ENDDATE_BEFORE_NOW(HttpStatus.BAD_REQUEST, "DA02", "종료일이 현재보다 빠를 수 없습니다."),
     ENDTIME_BEFORE_STARTTIME(HttpStatus.BAD_REQUEST, "DA03", "종료시간이 시작시간보다 빠를 수 없습니다."),
     NOW_BEFORE_STARTDATE(HttpStatus.BAD_REQUEST, "DA04", "시작일이 현재 날짜보다 늦습니다."),
+    NOW_BEFORE_STARTTIME(HttpStatus.BAD_REQUEST, "DA05", "시작 시간이 현재 시간보다 늦습니다."),
+    NOW_BEFORE_ENDTIME(HttpStatus.BAD_REQUEST, "DA06", "종료 시간이 현재 시간보다 늦습니다."),
+    NO_DATA_TIME(HttpStatus.BAD_REQUEST, "DA06", "시작시간 또는 종료시간을 입력해주세요."),
 
     // USER
     USER_NOT_FOUND(HttpStatus.NOT_FOUND, "US01", "존재하지 않는 회원입니다."),
@@ -37,6 +40,7 @@ public enum ErrorCode {
     UNOPENED_TIL(HttpStatus.FORBIDDEN, "TC02", "비공개된 인증입니다."),
     TILCRT_NOT_FOUND(HttpStatus.NOT_FOUND, "TC03", "존재하지 않는 인증입니다."),
     TILCRT_TODAY(HttpStatus.BAD_REQUEST, "TC04", "스터디 인증은 하루에 1번만 등록 할 수 있습니다."),
+    NO_DATA_CRT(HttpStatus.BAD_REQUEST, "TC05", "3가지 인증 방법 중 한가지는 필수로 입력해야 합니다."),
 
     // STUDY
     STUDY_TYPE_WRONG(HttpStatus.BAD_REQUEST, "ST01", "스터디 종류가 잘못됐습니다."),
