@@ -290,7 +290,7 @@ public class TilCrtControllerTest {
                         .characterEncoding("UTF-8"))
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andDo(document("update-til",
+                .andDo(document("update-tilcrt",
                         links(
                                 linkWithRel("self").description("link to self"),
                                 linkWithRel("profile").description("link to profile")
@@ -351,7 +351,7 @@ public class TilCrtControllerTest {
                 .accept(MediaTypes.HAL_JSON))
                 .andDo(print())
                 .andExpect(status().isNoContent())
-                .andDo(document("delete-til-crt",
+                .andDo(document("delete-tilcrt",
                         pathParameters(
                                 parameterWithName("id").description("TIL_CRT ID")
                         )));

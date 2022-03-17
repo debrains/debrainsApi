@@ -243,6 +243,9 @@ class TilControllerTest {
                         pathParameters(
                                 parameterWithName("id").description("TIL ID")
                         ),
+                        responseHeaders(
+                                headerWithName(HttpHeaders.CONTENT_TYPE).description("content type")
+                        ),
                         responseFields(
                                 fieldWithPath("id").description("TIL ID"),
                                 fieldWithPath("user.id").description("작성자 ID"),
@@ -307,6 +310,9 @@ class TilControllerTest {
                         relaxedRequestFields(
                                 fieldWithPath("subject").description("목표"),
                                 fieldWithPath("description").description("목표 상세내용")
+                        ),
+                        responseHeaders(
+                                headerWithName(HttpHeaders.CONTENT_TYPE).description("content type")
                         ),
                         responseFields(
                                 fieldWithPath("id").description("TIL ID"),
