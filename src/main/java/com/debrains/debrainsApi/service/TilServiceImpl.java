@@ -27,7 +27,6 @@ public class TilServiceImpl implements TilService {
     public Til createTil(TilDTO tilDTO) {
 
         Til til = dtoToEntity(tilDTO);
-        log.info("Til: " + til);
         til.totalCrtCount();
         Til newTil = tilRepository.save(til);
 

@@ -5,7 +5,7 @@ import com.debrains.debrainsApi.config.WithAuthUser;
 import com.debrains.debrainsApi.dto.TilDTO;
 import com.debrains.debrainsApi.entity.CycleStatus;
 import com.debrains.debrainsApi.entity.Til;
-import com.debrains.debrainsApi.repository.TilRepository;
+import com.debrains.debrainsApi.service.TilService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -58,7 +58,7 @@ class TilControllerTest {
     ModelMapper modelMapper;
 
     @Autowired
-    TilRepository tilRepository;
+    TilService tilService;
 
     @Test
     @WithAuthUser
@@ -87,7 +87,7 @@ class TilControllerTest {
                         links(
                                 linkWithRel("self").description("link to self"),
                                 linkWithRel("tils").description("link to query tils"),
-                                linkWithRel("update").description("link to update til"),
+                                linkWithRel("update").description("link to update"),
                                 linkWithRel("profile").description("link to profile")
                         ),
                         requestHeaders(
@@ -95,7 +95,7 @@ class TilControllerTest {
                                 headerWithName(HttpHeaders.CONTENT_TYPE).description("content type")
                         ),
                         requestFields(
-                                fieldWithPath("userId").description("작성자"),
+                                fieldWithPath("userId").description("작성자 ID"),
                                 fieldWithPath("subject").description("목표"),
                                 fieldWithPath("description").description("목표 상세내용"),
                                 fieldWithPath("startDate").description("시작일"),
@@ -109,6 +109,7 @@ class TilControllerTest {
                         ),
                         relaxedResponseFields(
                                 fieldWithPath("id").description("TIL ID"),
+                                fieldWithPath("user.id").description("작성자 ID"),
                                 fieldWithPath("subject").description("목표"),
                                 fieldWithPath("description").description("목표 상세내용"),
                                 fieldWithPath("startDate").description("시작일"),
@@ -179,20 +180,21 @@ class TilControllerTest {
                 .andExpect(jsonPath("_embedded.tilList[0]._links.self").exists())
                 .andExpect(jsonPath("_links.self").exists())
                 .andExpect(jsonPath("_links.profile").exists())
-                .andDo(document("query-tils",
+                .andDo(document("get-tilList",
                         links(
-                                linkWithRel("first").description("link to first"),
-                                linkWithRel("prev").description("link to prev"),
-                                linkWithRel("self").description("link to self"),
-                                linkWithRel("next").description("link to next"),
-                                linkWithRel("last").description("link to last"),
+                                linkWithRel("first").description("처음 페이지"),
+                                linkWithRel("prev").description("이전 페이지"),
+                                linkWithRel("self").description("현재 페이지"),
+                                linkWithRel("next").description("다음 페이지"),
+                                linkWithRel("last").description("마지막 페이지"),
                                 linkWithRel("profile").description("link to profile")
                         ),
                         responseHeaders(
                                 headerWithName(HttpHeaders.CONTENT_TYPE).description("content type")
                         ),
-                        relaxedResponseFields(
+                        responseFields(
                                 fieldWithPath("_embedded.tilList[].id").description("TIL ID"),
+                                fieldWithPath("_embedded.tilList[].user.id").description("작성자 ID"),
                                 fieldWithPath("_embedded.tilList[].subject").description("목표"),
                                 fieldWithPath("_embedded.tilList[].description").description("목표 상세내용"),
                                 fieldWithPath("_embedded.tilList[].startDate").description("시작일"),
@@ -204,13 +206,13 @@ class TilControllerTest {
                                 fieldWithPath("_embedded.tilList[].expired").description("만료여부"),
                                 fieldWithPath("_embedded.tilList[].regDate").description("생성날짜"),
                                 fieldWithPath("_embedded.tilList[].modDate").description("수정날짜"),
-                                fieldWithPath("_embedded.tilList[]._links.self.href").description("현재 api 주소"),
+                                fieldWithPath("_embedded.tilList[]._links.self.href").description("link to self"),
                                 fieldWithPath("_links.first.href").description("처음 페이지"),
                                 fieldWithPath("_links.prev.href").description("이전 페이지"),
                                 fieldWithPath("_links.self.href").description("현재 페이지"),
                                 fieldWithPath("_links.next.href").description("다음 페이지"),
                                 fieldWithPath("_links.last.href").description("마지막 페이지"),
-                                fieldWithPath("_links.profile.href").description("해당 api의 문서"),
+                                fieldWithPath("_links.profile.href").description("link to profile"),
                                 fieldWithPath("page.size").description("한 페이지 당 게시물 개수"),
                                 fieldWithPath("page.totalElements").description("총 게시물 수"),
                                 fieldWithPath("page.totalPages").description("총 페이지 수"),
@@ -223,9 +225,7 @@ class TilControllerTest {
     @WithAuthUser
     @DisplayName("기존의 til을 하나 조회하기")
     public void getTil() throws Exception {
-        Til til = Til.builder()
-                .id(33L)
-                .build();
+        Til til = generateTil(1);
 
         mockMvc.perform(RestDocumentationRequestBuilders.get("/tils/{id}", til.getId()))
                 .andDo(print())
@@ -234,17 +234,21 @@ class TilControllerTest {
                 .andExpect(jsonPath("id").exists())
                 .andExpect(jsonPath("_links.self").exists())
                 .andExpect(jsonPath("_links.profile").exists())
-                .andDo(document("get-an-til",
+                .andDo(document("get-til",
                         links(
-                                linkWithRel("self").description("현재 api 주소"),
-                                linkWithRel("update").description("link to update til"),
-                                linkWithRel("profile").description("해당 api의 문서")
+                                linkWithRel("self").description("link to self"),
+                                linkWithRel("update").description("link to update"),
+                                linkWithRel("profile").description("link to profile")
                         ),
                         pathParameters(
                                 parameterWithName("id").description("TIL ID")
                         ),
-                        relaxedResponseFields(
+                        responseHeaders(
+                                headerWithName(HttpHeaders.CONTENT_TYPE).description("content type")
+                        ),
+                        responseFields(
                                 fieldWithPath("id").description("TIL ID"),
+                                fieldWithPath("user.id").description("작성자 ID"),
                                 fieldWithPath("subject").description("목표"),
                                 fieldWithPath("description").description("목표 상세내용"),
                                 fieldWithPath("startDate").description("시작일"),
@@ -255,7 +259,10 @@ class TilControllerTest {
                                 fieldWithPath("totalCnt").description("완료해야하는 총 인증 횟수"),
                                 fieldWithPath("expired").description("만료여부"),
                                 fieldWithPath("regDate").description("생성날짜"),
-                                fieldWithPath("modDate").description("수정날짜")
+                                fieldWithPath("modDate").description("수정날짜"),
+                                fieldWithPath("_links.self.href").description("link to self"),
+                                fieldWithPath("_links.profile.href").description("link to profile"),
+                                fieldWithPath("_links.update.href").description("link to update")
                         )));
     }
 
@@ -280,7 +287,7 @@ class TilControllerTest {
 
         // When & Then
         mockMvc.perform(RestDocumentationRequestBuilders.patch("/tils/{id}", til.getId())
-                .contentType(MediaType.APPLICATION_JSON) // 내가 보내는 데이터의 타입을 알려줌
+                .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaTypes.HAL_JSON)
                 .content(objectMapper.writeValueAsString(tilDTO)))
                 .andDo(print())
@@ -290,18 +297,26 @@ class TilControllerTest {
                 .andExpect(jsonPath("_links.self").exists())
                 .andDo(document("update-til",
                         links(
-                                linkWithRel("self").description("현재 api 주소"),
-                                linkWithRel("profile").description("해당 api의 문서")
+                                linkWithRel("self").description("link to self"),
+                                linkWithRel("profile").description("link to profile")
                         ),
                         pathParameters(
                                 parameterWithName("id").description("TIL ID")
+                        ),
+                        requestHeaders(
+                                headerWithName(HttpHeaders.ACCEPT).description("accept header"),
+                                headerWithName(HttpHeaders.CONTENT_TYPE).description("content type")
                         ),
                         relaxedRequestFields(
                                 fieldWithPath("subject").description("목표"),
                                 fieldWithPath("description").description("목표 상세내용")
                         ),
-                        relaxedResponseFields(
+                        responseHeaders(
+                                headerWithName(HttpHeaders.CONTENT_TYPE).description("content type")
+                        ),
+                        responseFields(
                                 fieldWithPath("id").description("TIL ID"),
+                                fieldWithPath("user.id").description("작성자 ID"),
                                 fieldWithPath("subject").description("목표"),
                                 fieldWithPath("description").description("목표 상세내용"),
                                 fieldWithPath("startDate").description("시작일"),
@@ -312,7 +327,9 @@ class TilControllerTest {
                                 fieldWithPath("totalCnt").description("완료해야하는 총 인증 횟수"),
                                 fieldWithPath("expired").description("만료여부"),
                                 fieldWithPath("regDate").description("생성날짜"),
-                                fieldWithPath("modDate").description("수정날짜")
+                                fieldWithPath("modDate").description("수정날짜"),
+                                fieldWithPath("_links.self.href").description("link to self"),
+                                fieldWithPath("_links.profile.href").description("link to profile")
                         )));
     }
 
@@ -320,11 +337,11 @@ class TilControllerTest {
     @WithAuthUser
     @DisplayName("til 삭제")
     void deleteTil() throws Exception {
-        Til til = Til.builder()
-                .id(34L)
-                .build();
+        Til til = generateTil(1);
 
-        mockMvc.perform(RestDocumentationRequestBuilders.delete("/tils/{id}", til.getId()))
+        mockMvc.perform(RestDocumentationRequestBuilders.delete("/tils/{id}", til.getId())
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaTypes.HAL_JSON))
                 .andDo(print())
                 .andExpect(status().isNoContent())
                 .andDo(document("delete-til",
@@ -344,8 +361,7 @@ class TilControllerTest {
                 .cycleStatus(CycleStatus.WEEK.toString())
                 .cycleCnt(4)
                 .build();
-        Til til = modelMapper.map(tilDTO, Til.class);
-        til.totalCrtCount();
-        return tilRepository.save(til);
+
+        return tilService.createTil(tilDTO);
     }
 }
