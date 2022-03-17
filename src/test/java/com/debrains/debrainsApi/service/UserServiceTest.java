@@ -86,6 +86,7 @@ class UserServiceTest {
     }
 
     @Test
+    @DisplayName("유저정보 얻기")
     void getUserInfoSuccess() {
         // given
         Long id = 1L;
@@ -140,32 +141,34 @@ class UserServiceTest {
     }
 
     @Test
+    @DisplayName("유저 프로필 수정")
     void updateProfile() {
         // given
         Long id = 1L;
         ProfileDTO dto = ProfileDTO.builder()
                 .id(id)
                 .purpose("취업")
+                .skills(List.of("1", "3"))
                 .userId(id)
                 .build();
 
         Profile entity = Profile.builder()
                 .id(id)
                 .purpose("취업")
+                .skills("1,3")
                 .user(User.builder().id(id).build())
                 .build();
 
-        given(profileRepository.getById(any())).willReturn(entity);
-        given(profileRepository.findById(any())).willReturn(Optional.of(entity));
+        given(profileRepository.findByUserId(any())).willReturn(Optional.of(entity));
 
         // when
         userService.updateProfile(dto);
 
         // then
-        Optional<Profile> profile = profileRepository.findById(id);
-        assertThat(profile.get().getId()).isEqualTo(id);
+        Profile profile = profileRepository.findByUserId(id).get();
+        assertThat(profile.getId()).isEqualTo(id);
 
-        verify(profileRepository).getById(id);
+        verify(profileRepository, times(2)).findByUserId(id);
 
     }
 
@@ -177,6 +180,7 @@ class UserServiceTest {
         Profile profile = Profile.builder()
                 .id(id)
                 .purpose("취업")
+                .skills("1,3")
                 .user(user)
                 .build();
 
