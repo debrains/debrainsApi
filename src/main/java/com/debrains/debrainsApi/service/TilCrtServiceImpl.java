@@ -115,8 +115,8 @@ public class TilCrtServiceImpl implements TilCrtService {
     }
 
     @Override
-    public List<TilCrtDTO> tilCrtList(Pageable pageable) {
-        List<TilCrtDTO> dtoList = tilCrtRepository.findAll(pageable)
+    public List<TilCrtDTO> tilCrtList(Long userId, Pageable pageable) {
+        List<TilCrtDTO> dtoList = tilCrtRepository.findTilCrtByUser_Id(userId, pageable)
                 .stream().map(entity -> modelMapper.map(entity, TilCrtDTO.class))
                 .collect(Collectors.toList());
 

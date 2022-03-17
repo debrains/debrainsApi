@@ -68,6 +68,7 @@ public class TilCrtController {
             throw new ApiException(ErrorCode.TILCRT_TODAY);
         }
 
+        tilCrtDTO.setUserId(currentUser.getId());
         TilCrt newTilCrt = tilCrtService.createTilCrts(files, tilCrtDTO);
         var selfLinkBuilder = linkTo(TilCrtController.class).slash(newTilCrt.getId());
 
@@ -86,10 +87,11 @@ public class TilCrtController {
      */
     @GetMapping
     public ResponseEntity<PagedModel<EntityModel<TilCrtDTO>>> queryTilCrts(
+            @CurrentUser CustomUserDetails currentUser,
             @PageableDefault(sort = "id", direction = Sort.Direction.DESC) Pageable pageable,
             PagedResourcesAssembler<TilCrtDTO> assembler) {
 
-        List<TilCrtDTO> dto = tilCrtService.tilCrtList(pageable);
+        List<TilCrtDTO> dto = tilCrtService.tilCrtList(currentUser.getId(), pageable);
 
         int start = (int) pageable.getOffset();
         int end = Math.min((start + pageable.getPageSize()), dto.size());

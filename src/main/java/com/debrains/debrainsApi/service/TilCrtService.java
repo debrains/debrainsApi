@@ -20,7 +20,7 @@ public interface TilCrtService {
 
     void deleteTilCrtFile(Long id);
 
-    List<TilCrtDTO> tilCrtList(Pageable pageable);
+    List<TilCrtDTO> tilCrtList(Long userId, Pageable pageable);
 
     default TilCrt dtoToEntity(TilCrtDTO tilCrtDTO, Til til) {
         User user = User.builder().id(tilCrtDTO.getUserId()).build();
