@@ -27,6 +27,16 @@ public class ExceptionAdvice {
     }
 
     /*
+     * Custom Bad Request Exception
+     */
+    @ExceptionHandler(BadRequestException.class)
+    protected ResponseEntity<ErrorResponse> BadRequestExcetionHandler(final BadRequestException e) {
+        log.error("Bad Request Exception", e);
+        final ErrorResponse response = ErrorResponse.of(ErrorCode.NO_REFRESH_TOKEN);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+    }
+
+    /*
     * @Validated Binding Exception
     */
     @ExceptionHandler(MethodArgumentNotValidException.class)

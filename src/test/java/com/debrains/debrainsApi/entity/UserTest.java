@@ -26,7 +26,7 @@ class UserTest {
                 .build();
 
         // when
-        user.calExp(11L);
+        user.calExp(501L);
 
         // then
         assertThat(user.getTier()).isEqualTo(2);
