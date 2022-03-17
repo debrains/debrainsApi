@@ -68,10 +68,9 @@ public class TilCrtControllerTest {
         TilCrtDTO tilCrtDTO = TilCrtDTO.builder()
                 .tilId(til.getId())
                 .description("인증 설명입니다.")
-                .startTime(LocalDateTime.now())
-                .endTime(LocalDateTime.now().plusHours(4))
+                .startTime1(LocalDateTime.now())
+                .endTime1(LocalDateTime.now().plusHours(4))
                 .watchTime(LocalTime.of(5, 0, 0))
-                .open(true)
                 .build();
 
         MockMultipartFile metadata = new MockMultipartFile("tilCrtDTO", "tilCrtDTO",
@@ -238,10 +237,9 @@ public class TilCrtControllerTest {
         TilCrt tilCrt = TilCrt.builder()
                 .til(til)
                 .description("TIL 인증 description" + index + " 입니다")
-                .startTime(LocalDateTime.now())
-                .endTime(LocalDateTime.now().plusHours(4))
+                .startTime1(LocalDateTime.now())
+                .endTime1(LocalDateTime.now().plusHours(4))
                 .watchTime(LocalTime.of(5, 0, 0))
-                .open(true)
                 .build();
 
         return tilCrtRepository.save(tilCrt);
