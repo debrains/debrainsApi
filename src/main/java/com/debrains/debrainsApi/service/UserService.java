@@ -1,5 +1,7 @@
 package com.debrains.debrainsApi.service;
 
+import com.debrains.debrainsApi.dto.SkillDTO;
+import com.debrains.debrainsApi.dto.SkillReqDTO;
 import com.debrains.debrainsApi.dto.user.ProfileDTO;
 import com.debrains.debrainsApi.dto.user.UserBoardDTO;
 import com.debrains.debrainsApi.dto.user.UserDTO;
@@ -55,4 +57,19 @@ public interface UserService {
     UserDTO getAdminUserInfo(Long id);
 
     void updateAdminUserInfo(UserDTO dto);
+
+    /**
+     * 관심사 (skill)
+     */
+    Page<SkillDTO> getSkillList(Pageable pageable);
+
+    List<String> getCategories();
+
+    void saveSkill(SkillDTO dto);
+
+    Page<SkillReqDTO> getSkillreqList(Pageable pageable);
+
+    void deleteSkill(Long id);
+
+    void deleteSkillreq(Long id);
 }

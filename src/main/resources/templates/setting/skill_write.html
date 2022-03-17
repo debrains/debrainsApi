@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:th="http://www.thymeleaf.org"
+      layout:decorate="~{fragments/layout}">
+
+<!-- Begin Page Content -->
+<div class="container-fluid" layout:fragment="content">
+
+  <!-- Page Heading -->
+  <div class="d-sm-flex align-items-center justify-content-between mb-4">
+    <h1 class="h3 mb-0 text-gray-800">관심사 등록</h1>
+  </div>
+
+  <div class="row">
+
+    <div class="col-lg-8">
+      <form action="/root/user/skill" method="post" id="skillCreate">
+        <div class="form-group row">
+          <label for="category" class="col-sm-2 col-form-label">카테고리</label>
+          <div class="col-sm-10">
+            <select class="custom-select" id="category" name="category">
+              <th:block th:each="ctg : ${ctgs}">
+                <option th:value="${ctg}" th:text="${ctg}"></option>
+              </th:block>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group row">
+          <label for="name" class="col-sm-2 col-form-label">이름</label>
+          <div class="col-sm-10">
+            <input type="text" class="form-control" id="name" name="name" />
+          </div>
+        </div>
+
+        <div class="form-group row">
+          <label for="seq" class="col-sm-2 col-form-label">순서</label>
+          <div class="col-sm-10">
+            <select class="custom-select" id="seq" name="seq">
+              <th:block th:each="num: ${#numbers.sequence(1, 9)}">
+                <option th:value="${num}" th:text="${num}"></option>
+              </th:block>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group row">
+          <a href="#" id="subtn" class="btn btn-primary">등록</a>
+        </div>
+      </form>
+    </div>
+  </div>
+
+</div>
+<a class="scroll-to-top rounded" href="#page-top">
+  <i class="fas fa-angle-up"></i>
+</a>
+
+<script layout:fragment="javascript">
+  $("#subtn").click(() => {
+    let ctgName = $("#name").val();
+    $.ajax({
+      url: "/root/user/skillName",
+      type: "GET",
+      data: {name : ctgName},
+      success: (result) => {
+        if(result){
+          alert("존재 하는 이름 입니다.");
+        }else{
+          $("#skillCreate").submit();
+        }
+      }
+    })
+  })
+</script>
+</html>

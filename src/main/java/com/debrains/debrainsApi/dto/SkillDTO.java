@@ -2,18 +2,16 @@ package com.debrains.debrainsApi.dto;
 
 import lombok.*;
 
-import javax.validation.constraints.NotBlank;
-
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Setter
-@ToString
-public class SkillReqDTO {
+public class SkillDTO {
 
     private Long id;
+    private String category;
+    private int seq;
+    private String name;
 
-    @NotBlank
-    private String request;
 }

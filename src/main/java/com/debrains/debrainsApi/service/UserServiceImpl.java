@@ -2,19 +2,26 @@ package com.debrains.debrainsApi.service;
 
 import com.debrains.debrainsApi.common.AwsS3Uploader;
 import com.debrains.debrainsApi.dto.EventDTO;
+import com.debrains.debrainsApi.dto.SkillDTO;
+import com.debrains.debrainsApi.dto.SkillReqDTO;
 import com.debrains.debrainsApi.dto.user.ProfileDTO;
 import com.debrains.debrainsApi.dto.user.UserBoardDTO;
 import com.debrains.debrainsApi.dto.user.UserDTO;
 import com.debrains.debrainsApi.dto.user.UserInfoDTO;
 import com.debrains.debrainsApi.entity.Profile;
+import com.debrains.debrainsApi.entity.Skill;
+import com.debrains.debrainsApi.entity.SkillReq;
 import com.debrains.debrainsApi.entity.User;
 import com.debrains.debrainsApi.exception.ApiException;
 import com.debrains.debrainsApi.exception.ErrorCode;
 import com.debrains.debrainsApi.repository.ProfileRepository;
+import com.debrains.debrainsApi.repository.SkillRepository;
+import com.debrains.debrainsApi.repository.SkillReqRepository;
 import com.debrains.debrainsApi.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.modelmapper.ModelMapper;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -33,6 +40,8 @@ public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
     private final ProfileRepository profileRepository;
+    private final SkillRepository skillRepository;
+    private final SkillReqRepository skillReqRepository;
     private final AwsS3Uploader awsS3Uploader;
     private final ModelMapper modelMapper;
 
@@ -107,5 +116,43 @@ public class UserServiceImpl implements UserService {
     public void updateAdminUserInfo(UserDTO dto) {
         User user = userRepository.getById(dto.getId());
         user.updateAdminUserInfo(dto);
+    }
+
+    @Override
+    public Page<SkillDTO> getSkillList(Pageable pageable) {
+        Page<SkillDTO> skillList = skillRepository.findAll(pageable)
+                .map(entity -> modelMapper.map(entity, SkillDTO.class));
+        return skillList;
+    }
+
+    @Override
+    public List<String> getCategories() {
+        List<String> categories = skillRepository.getCategories();
+        return categories;
+    }
+
+    @Override
+    public void saveSkill(SkillDTO dto) {
+        Skill entity = modelMapper.map(dto, Skill.class);
+        skillRepository.save(entity);
+    }
+
+    @Override
+    public Page<SkillReqDTO> getSkillreqList(Pageable pageable) {
+        Page<SkillReqDTO> skillreqList = skillReqRepository.findAll(pageable)
+                .map(entity -> modelMapper.map(entity, SkillReqDTO.class));
+        return skillreqList;
+    }
+
+    @Override
+    @Transactional
+    public void deleteSkill(Long id) {
+        skillRepository.deleteById(id);
+    }
+
+    @Override
+    @Transactional
+    public void deleteSkillreq(Long id) {
+        skillReqRepository.deleteById(id);
     }
 }
