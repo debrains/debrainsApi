@@ -5,7 +5,6 @@ import com.debrains.debrainsApi.config.WithAuthUser;
 import com.debrains.debrainsApi.dto.TilDTO;
 import com.debrains.debrainsApi.entity.CycleStatus;
 import com.debrains.debrainsApi.entity.Til;
-import com.debrains.debrainsApi.repository.TilRepository;
 import com.debrains.debrainsApi.service.TilService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.DisplayName;
@@ -25,8 +24,6 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.BDDMockito.given;
 import java.time.LocalDate;
 import java.util.stream.IntStream;
 
@@ -62,9 +59,6 @@ class TilControllerTest {
 
     @Autowired
     TilService tilService;
-
-    @Autowired
-    TilRepository tilRepository;
 
     @Test
     @WithAuthUser
@@ -212,7 +206,7 @@ class TilControllerTest {
                                 fieldWithPath("_embedded.tilList[].expired").description("만료여부"),
                                 fieldWithPath("_embedded.tilList[].regDate").description("생성날짜"),
                                 fieldWithPath("_embedded.tilList[].modDate").description("수정날짜"),
-                                fieldWithPath("_embedded.tilList[]._links.self.href").description("현재 api 주소"),
+                                fieldWithPath("_embedded.tilList[]._links.self.href").description("link to self"),
                                 fieldWithPath("_links.first.href").description("처음 페이지"),
                                 fieldWithPath("_links.prev.href").description("이전 페이지"),
                                 fieldWithPath("_links.self.href").description("현재 페이지"),
@@ -290,7 +284,7 @@ class TilControllerTest {
 
         // When & Then
         mockMvc.perform(RestDocumentationRequestBuilders.patch("/tils/{id}", til.getId())
-                .contentType(MediaType.APPLICATION_JSON) // 내가 보내는 데이터의 타입을 알려줌
+                .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaTypes.HAL_JSON)
                 .content(objectMapper.writeValueAsString(tilDTO)))
                 .andDo(print())
@@ -300,8 +294,8 @@ class TilControllerTest {
                 .andExpect(jsonPath("_links.self").exists())
                 .andDo(document("update-til",
                         links(
-                                linkWithRel("self").description("현재 api 주소"),
-                                linkWithRel("profile").description("해당 api의 문서")
+                                linkWithRel("self").description("link to self"),
+                                linkWithRel("profile").description("link to profile")
                         ),
                         pathParameters(
                                 parameterWithName("id").description("TIL ID")
@@ -340,7 +334,7 @@ class TilControllerTest {
         Til til = generateTil(1);
 
         mockMvc.perform(RestDocumentationRequestBuilders.delete("/tils/{id}", til.getId())
-                .contentType(MediaType.APPLICATION_JSON) // 내가 보내는 데이터의 타입을 알려줌
+                .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaTypes.HAL_JSON))
                 .andDo(print())
                 .andExpect(status().isNoContent())
