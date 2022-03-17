@@ -6,14 +6,14 @@ import lombok.RequiredArgsConstructor;
 @Getter
 @RequiredArgsConstructor
 public enum Tier {
-    BRONZE(1, Long.MIN_VALUE, 10L),
-    SILVER(2, 11L, 20L),
-    GOLD(3, 21L, 30L),
-    PLATINUM(4, 31L, 40L),
-    DIAMOND(5, 41L, 50L),
-    MASTER(6, 51L, 60L),
-    GRANDMASTER(7, 61L, 70L),
-    CHALLENGE(8, 71L, Long.MAX_VALUE);
+    BRONZE(1, Long.MIN_VALUE, 500L),          // 500
+    SILVER(2, 501L, 2000L),             // 1500
+    GOLD(3, 2001L, 5000L),              // 3000
+    PLATINUM(4, 5001L, 11000L),         // 6000
+    DIAMOND(5, 11001L, 23000L),         // 12000
+    MASTER(6, 23001L, 47000L),          // 24000
+    GRANDMASTER(7, 47001L, 100000L),    // 53000
+    CHALLENGE(8, 100001L, Long.MAX_VALUE);
 
     private final int level;
     private final long start;
