@@ -46,11 +46,11 @@ public class TilCrt extends BaseEntity {
     @Column(length = 2000)
     private String description;
 
-    @Column(columnDefinition = "boolean default true")
-    private boolean open;
+    @Builder.Default
+    private boolean open = true;
 
-    @Column(columnDefinition = "boolean default false")
-    private boolean denied;
+    @Builder.Default
+    private boolean denied = false;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")

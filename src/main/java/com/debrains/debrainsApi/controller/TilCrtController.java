@@ -1,10 +1,12 @@
 package com.debrains.debrainsApi.controller;
 
 import com.debrains.debrainsApi.dto.TilCrtDTO;
+import com.debrains.debrainsApi.entity.Til;
 import com.debrains.debrainsApi.entity.TilCrt;
 import com.debrains.debrainsApi.exception.ApiException;
 import com.debrains.debrainsApi.exception.ErrorCode;
 import com.debrains.debrainsApi.repository.TilCrtRepository;
+import com.debrains.debrainsApi.repository.TilRepository;
 import com.debrains.debrainsApi.security.CurrentUser;
 import com.debrains.debrainsApi.security.CustomUserDetails;
 import com.debrains.debrainsApi.service.TilCrtService;
@@ -43,6 +45,8 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 @Log4j2
 public class TilCrtController {
 
+    private final TilRepository tilRepository;
+
     private final TilCrtService tilCrtService;
 
     private final TilCrtRepository tilCrtRepository;
@@ -57,6 +61,12 @@ public class TilCrtController {
                                         @RequestPart(value = "files", required = false) MultipartFile[] files,
                                         @RequestPart(value = "tilCrtDTO") @Validated TilCrtDTO tilCrtDTO)
             throws IOException {
+        Til til = tilRepository.findById(tilCrtDTO.getTilId())
+                .orElseThrow(() -> new ApiException(ErrorCode.TIL_NOT_FOUND));
+        if (!currentUser.getId().equals(til.getUser().getId())) {
+            throw new ApiException(ErrorCode.NO_AUTHORIZATION);
+        }
+
         tilCrtValidator.validateDate(tilCrtDTO);
         tilCrtValidator.validateCrt(tilCrtDTO, files);
 
@@ -109,6 +119,8 @@ public class TilCrtController {
      */
     @GetMapping("/{id}")
     public ResponseEntity getTilCrt(@CurrentUser CustomUserDetails currentUser, @PathVariable Long id) {
+        tilCrtUserCheck(currentUser, id);
+
         TilCrtDTO tilCrtDTO = tilCrtService.getTilCrt(id);
 
         EntityModel<TilCrtDTO> resource = EntityModel.of(tilCrtDTO);
@@ -128,9 +140,8 @@ public class TilCrtController {
                                        @PathVariable Long id,
                                        @RequestPart(value = "files", required = false) MultipartFile[] files,
                                        @RequestPart(value = "tilCrtDTO") @Validated TilCrtDTO tilCrtDTO) throws IOException {
-        if (!currentUser.getId().equals(tilCrtDTO.getUserId())) {
-            throw new ApiException(ErrorCode.NO_AUTHORIZATION);
-        }
+        tilCrtUserCheck(currentUser, id);
+
         TilCrtDTO dto = tilCrtService.updateTilCrt(id, files, tilCrtDTO);
 
         EntityModel<TilCrtDTO> resource = EntityModel.of(dto);
@@ -173,4 +184,11 @@ public class TilCrtController {
         return ResponseEntity.noContent().build();
     }
 
+    private void tilCrtUserCheck(@CurrentUser CustomUserDetails currentUser, @PathVariable Long id) {
+        TilCrt tilCrt = tilCrtRepository.findById(id)
+                .orElseThrow(() -> new ApiException(ErrorCode.TILCRT_NOT_FOUND));
+        if (!currentUser.getId().equals(tilCrt.getUser().getId())) {
+            throw new ApiException(ErrorCode.NO_AUTHORIZATION);
+        }
+    }
 }
