@@ -1,7 +1,6 @@
 package com.debrains.debrainsApi.repository;
 
 import com.debrains.debrainsApi.entity.Til;
-import com.debrains.debrainsApi.security.CurrentUser;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
