@@ -164,7 +164,7 @@ class TilControllerTest {
     @DisplayName("til리스트 조회하기")
     public void queryTils() throws Exception {
         //Given
-        IntStream.range(0, 5).forEach(i -> {
+        IntStream.range(0, 30).forEach(i -> {
             generateTil(i);
         });
 
@@ -350,12 +350,24 @@ class TilControllerTest {
                         )));
     }
 
+    @Test
+    @WithAuthUser
+    @DisplayName("til 현재 상황 조회")
+    void currentTil() throws Exception {
+        mockMvc.perform(get("/tils/current")
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaTypes.HAL_JSON))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andDo(document("current-til"));
+    }
+
     private Til generateTil(int index) {
 
         TilDTO tilDTO = TilDTO.builder()
                 .userId(1L)
-                .subject("TIL subject 입니다.")
-                .description("TIL description 입니다")
+                .subject("TIL subject" + index + " 입니다.")
+                .description("TIL description" + index + " 입니다")
                 .startDate(LocalDate.now())
                 .endDate(LocalDate.now().plusWeeks(8))
                 .cycleStatus(CycleStatus.WEEK.toString())

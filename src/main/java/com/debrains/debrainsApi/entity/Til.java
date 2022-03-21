@@ -51,16 +51,12 @@ public class Til extends BaseEntity {
     @Column(columnDefinition = "int default 0")
     private int totalCnt;
 
-    @Column(nullable = false, columnDefinition = "boolean default false")
-    private boolean expired;
+    @Builder.Default
+    private boolean expired = false;
 
     public void changeTil(TilDTO tilDTO) {
-        if (tilDTO.getSubject() != null) {
-            this.subject = tilDTO.getSubject();
-        }
-        if (tilDTO.getDescription() != null) {
-            this.description = tilDTO.getDescription();
-        }
+        this.subject = tilDTO.getSubject();
+        this.description = tilDTO.getDescription();
     }
 
     /**
@@ -98,9 +94,11 @@ public class Til extends BaseEntity {
      */
     public void addCrtCnt() {
         this.crtCnt += 1;
+        user.calExp(100L);
     }
 
     public void removeCrtCnt() {
         this.crtCnt -= 1;
+        user.calExp(-100L);
     }
 }

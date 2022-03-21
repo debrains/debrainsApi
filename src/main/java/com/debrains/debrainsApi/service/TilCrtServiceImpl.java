@@ -97,12 +97,13 @@ public class TilCrtServiceImpl implements TilCrtService {
     }
 
     @Override
+    @Transactional
     public void deleteTilCrt(TilCrt tilCrt) {
         Til til = tilRepository.findById(tilCrt.getTil().getId())
                 .orElseThrow(() -> new ApiException(ErrorCode.TIL_NOT_FOUND));
+        til.removeCrtCnt();
 
         tilCrtRepository.delete(tilCrt);
-        til.removeCrtCnt();
     }
 
     @Override
