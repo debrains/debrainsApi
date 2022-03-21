@@ -1,5 +1,8 @@
 package com.debrains.debrainsApi.entity;
 
+import com.debrains.debrainsApi.dto.TilDTO;
+import com.debrains.debrainsApi.hateoas.UserSerializer;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import lombok.*;
 
 import javax.persistence.*;
@@ -11,7 +14,7 @@ import java.time.temporal.ChronoUnit;
 @NoArgsConstructor
 @Builder
 @Getter
-@ToString
+@ToString(exclude = "user")
 public class Til extends BaseEntity {
 
     @Id
@@ -19,12 +22,10 @@ public class Til extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    /*@ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
+    @JsonSerialize(using = UserSerializer.class)
     private User user;
-
-    @OneToMany(mappedBy = "til", cascade = CascadeType.ALL)
-    private List<TilCrt> tilCrts = new ArrayList<>();*/
 
     @Column(nullable = false)
     private String subject;
@@ -50,15 +51,12 @@ public class Til extends BaseEntity {
     @Column(columnDefinition = "int default 0")
     private int totalCnt;
 
-    @Column(nullable = false, columnDefinition = "boolean default false")
-    private boolean expired;
+    @Builder.Default
+    private boolean expired = false;
 
-    public void changeSubject(String subject) {
-        this.subject = subject;
-    }
-
-    public void changeDescription(String description) {
-        this.description = description;
+    public void changeTil(TilDTO tilDTO) {
+        this.subject = tilDTO.getSubject();
+        this.description = tilDTO.getDescription();
     }
 
     /**
@@ -83,7 +81,6 @@ public class Til extends BaseEntity {
 
     /**
      * TIL 유효한지 확인
-     * TODO:: 목록 출력할 때 확인하여 업데이트(낱개, 리스트)
      */
     public void expiredCheck() {
         LocalDate now = LocalDate.now();
@@ -97,9 +94,11 @@ public class Til extends BaseEntity {
      */
     public void addCrtCnt() {
         this.crtCnt += 1;
+        user.calExp(100L);
     }
 
     public void removeCrtCnt() {
         this.crtCnt -= 1;
+        user.calExp(-100L);
     }
 }

@@ -4,6 +4,8 @@ import com.debrains.debrainsApi.dto.QnaDTO;
 import com.debrains.debrainsApi.dto.user.ProfileDTO;
 import com.debrains.debrainsApi.dto.user.UserBoardDTO;
 import com.debrains.debrainsApi.dto.user.UserInfoDTO;
+import com.debrains.debrainsApi.exception.ApiException;
+import com.debrains.debrainsApi.exception.ErrorCode;
 import com.debrains.debrainsApi.hateoas.QnaConverter;
 import com.debrains.debrainsApi.repository.UserRepository;
 import com.debrains.debrainsApi.security.CurrentUser;
@@ -22,6 +24,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -45,15 +48,19 @@ public class UserController {
         UserInfoDTO userInfo = userService.getUserInfo(user.getId());
         EntityModel<UserInfoDTO> resource = EntityModel.of(userInfo);
         resource.add(linkTo(methodOn(this.getClass()).getUserInfo(user)).withSelfRel());
-//        resource.add(linkTo(this.getClass()).slash(userInfo.getId()).withRel("/user-update"));
 
         return ResponseEntity.ok(resource);
     }
 
     @PatchMapping("/info")
     public ResponseEntity saveUserInfo(@RequestParam(value = "photo", required = false) MultipartFile img,
+                                       @CurrentUser CustomUserDetails user,
                                        @Validated UserInfoDTO dto) throws IOException {
+        if (dto.getId() != user.getId()) {
+            throw new ApiException(ErrorCode.NO_AUTHORIZATION);
+        }
         userService.updateUserInfo(img, dto);
+
         EntityModel<UserInfoDTO> resource = EntityModel.of(dto);
         resource.add(linkTo(this.getClass()).slash("/info").withSelfRel());
 
@@ -61,9 +68,10 @@ public class UserController {
     }
 
     @PostMapping("/validate")
-    public boolean validateName(@RequestBody Map<String, String> map) {
+    public ResponseEntity validateName(@RequestBody Map<String, String> map) {
         String name = map.get("name");
-        return userRepository.existsByName(name);
+        Map<String, Boolean> result = Map.of("exist", userRepository.existsByName(name));
+        return ResponseEntity.ok(result);
     }
 
     @GetMapping("/profile")
@@ -76,10 +84,15 @@ public class UserController {
     }
 
     @PatchMapping("/profile")
-    public ResponseEntity saveProfile(@RequestBody @Validated ProfileDTO dto) {
+    public ResponseEntity saveProfile(@CurrentUser CustomUserDetails user,
+                                      @RequestBody @Validated ProfileDTO dto) {
+        if (dto.getUserId() != user.getId()) {
+            throw new ApiException(ErrorCode.NO_AUTHORIZATION);
+        }
         userService.updateProfile(dto);
+
         EntityModel<ProfileDTO> resource = EntityModel.of(dto);
-        resource.add(linkTo(methodOn(this.getClass()).saveProfile(dto)).withSelfRel());
+        resource.add(linkTo(methodOn(this.getClass()).saveProfile(null, dto)).withSelfRel());
 
         return ResponseEntity.ok(resource);
     }

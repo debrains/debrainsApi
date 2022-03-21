@@ -38,7 +38,7 @@ public interface UserService {
                 .blogUrl(entity.getUser().getBlogUrl())
                 .snsUrl(entity.getUser().getSnsUrl())
                 .purpose(entity.getPurpose())
-                .skills(entity.getSkills())
+                .skills(Arrays.asList(entity.getSkills().split(",")))
                 .build();
     }
 

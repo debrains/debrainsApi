@@ -1,4 +1,4 @@
-package com.debrains.debrainsApi.common;
+package com.debrains.debrainsApi.config;
 
 import org.springframework.boot.test.autoconfigure.restdocs.RestDocsMockMvcConfigurationCustomizer;
 import org.springframework.boot.test.context.TestConfiguration;

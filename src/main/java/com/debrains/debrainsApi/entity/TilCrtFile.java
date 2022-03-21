@@ -24,6 +24,6 @@ public class TilCrtFile extends BaseEntity {
     private Long size;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "tilcrt_id")
+    @JoinColumn(name = "til_crt_id")
     private TilCrt tilCrt;
 }

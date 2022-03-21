@@ -83,7 +83,8 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public void updateProfile(ProfileDTO dto) {
-        Profile profile = profileRepository.getById(dto.getId());
+        Profile profile = profileRepository.findByUserId(dto.getId())
+                .orElseThrow(() -> new ApiException(ErrorCode.USER_NOT_FOUND));
         profile.updateProfile(dto);
     }
 

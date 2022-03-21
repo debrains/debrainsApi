@@ -63,16 +63,6 @@ endif::[]
 | 요청한 리소스가 없음.
 |===
 
-[[overview-errors]]
-== 오류
-
-에러 응답이 발생했을 때 (상태 코드 >= 400), 본문에 해당 문제를 기술한 JSON 객체가 담겨있다. 에러 객체는 다음의 구조를 따른다.
-
-include::{snippets}/errors/response-fields.adoc[]
-
-예를 들어, 잘못된 요청으로 TIL를 만들려고 했을 때 다음과 같은 `400 Bad Request` 응답을 받는다.
-
-include::{snippets}/errors/http-response.adoc[]
 
 [[overview-hypermedia]]
 == 하이퍼미디어
@@ -89,7 +79,6 @@ include::{snippets}/errors/http-response.adoc[]
 
 인덱스는 서비스 진입점을 제공한다.
 
-
 [[resources-index-access]]
 === 인덱스 조회
 
@@ -97,30 +86,165 @@ include::{snippets}/errors/http-response.adoc[]
 
 operation::index[snippets='response-body,http-response,links']
 
+[[resources-support]]
+== SUPPORT
+SUPPORT 리소스는 고객센터를 다룰 때 사용한다.
+
+[[resources-support-notice-list]]
+=== 공지사항 리스트 조회
+`GET` 요청으로 공지사항 리스트를 조회한다.
+
+operation::get-noticeList[snippets='http-request,request-headers,http-response,response-headers,response-fields,links']
+
+[[resources-support-notice]]
+=== 공지사항 조회
+`GET` 요청으로 공지사항 하나를 조회한다.
+
+operation::get-notice[snippets='http-request,request-headers,http-response,response-headers,response-fields,links']
+
+[[resources-support-event-list]]
+=== 이벤트 리스트 조회
+`GET` 요청으로 이벤트 리스트를 조회한다.
+
+operation::get-eventList[snippets='http-request,request-headers,http-response,response-headers,response-fields,links']
+
+[[resources-support-event]]
+=== 이벤트 조회
+`GET` 요청으로 이벤트 하나를 조회한다.
+
+operation::get-event[snippets='http-request,request-headers,http-response,response-headers,response-fields,links']
+
+[[resources-support-qna-get]]
+=== QnA 조회
+`GET` 요청으로 QnA 하나를 조회한다.
+
+operation::get-qna[snippets='http-request,request-headers,http-response,response-headers,response-fields,links']
+
+[[resources-support-qna-save]]
+=== QnA 제출
+`POST` 요청으로 QnA를 제출한다.
+
+operation::save-qna[snippets='http-request,request-headers,request-fields,http-response,response-headers,response-fields,links']
+
+
+[[resources-support-skill-request]]
+=== 프로필 스킬 추가요청
+`POST` 요청으로 프로필의 스킬리스트에 스킬을 추가요청한다.
+
+operation::request-skill[snippets='http-request,request-headers,request-fields,http-response,response-headers']
+
+
+
+
+
+[[resources-tils]]
+== TIL
+TIL 리소스는 TIL을 다룰 때 사용한다.
+
 [[resources-tils-list]]
 === TIL 목록 조회
+`GET` 요청으로 TIL 리스트를 조회한다.
 
-`GET` 요청을 사용하여 서비스의 모든 TIL를 조회할 수 있다.
+operation::get-tilList[snippets='http-request,http-response,response-headers,response-fields,links']
 
-operation::query-tils[snippets='response-fields,curl-request,http-response,links']
 
 [[resources-tils-create]]
 === TIL 생성
+`POST` 요청을 사용해서 TIL을 만든다.
 
-`POST` 요청을 사용해서 새 TIL를 만들 수 있다.
+operation::create-til[snippets='http-request,request-headers,request-fields,http-response,response-headers,response-fields,links']
 
-operation::create-til[snippets='request-fields,curl-request,http-request,request-headers,http-response,response-headers,response-fields,links']
 
 [[resources-tils-get]]
 === TIL 조회
+`GET` 요청으로 TIL 하나를 조회한다.
 
-`Get` 요청을 사용해서 기존 TIL 하나를 조회할 수 있다.
+operation::get-til[snippets='http-request,path-parameters,http-response,response-headers,response-fields,links']
 
-operation::get-an-til[snippets='request-fields,curl-request,http-response,links']
 
 [[resources-tils-update]]
 === TIL 수정
+`PATCH` 요청을 사용해서 TIL를 수정할 수 있다.
 
-`PUT` 요청을 사용해서 기존 TIL를 수정할 수 있다.
+operation::update-til[snippets='http-request,request-headers,path-parameters,request-fields,http-response,response-headers,response-fields,links']
 
-operation::update-til[snippets='request-fields,curl-request,http-response,links']
+
+
+[[resources-til-crts]]
+== TIL 인증
+TIL 인증 리소스는 TIL 인증을 다룰 때 사용한다.
+
+[[resources-til-crts-list]]
+=== TIL 인증 목록 조회
+`GET` 요청으로 TIL 인증 리스트를 조회한다.
+
+operation::get-tilcrtList[snippets='http-request,http-response,response-headers,response-fields,links']
+
+
+[[resources-til-crts-create]]
+=== TIL 인증 생성
+`POST` 요청을 사용해서 TIL 인증을 만든다.
+
+operation::create-tilcrt[snippets='http-request,request-headers,request-fields,http-response,response-headers,response-fields,links']
+
+
+[[resources-til-crts-get]]
+=== TIL 인증 조회
+`GET` 요청으로 TIL 인증 하나를 조회한다.
+
+operation::get-tilcrt[snippets='http-request,path-parameters,http-response,response-headers,response-fields,links']
+
+
+[[resources-til-crts-update]]
+=== TIL 인증 수정
+`PATCH` 요청을 사용해서 TIL 인증을 수정할 수 있다.
+
+operation::update-tilcrt[snippets='http-request,request-headers,path-parameters,request-fields,http-response,response-headers,response-fields,links']
+
+
+
+[[resources-user]]
+== USER
+USER 리소스는 유저정보를 다룰 때 사용한다.
+
+[[resources-user-get]]
+=== 유저정보 조회
+`GET` 요청으로 현재 로그인한 유저정보를 조회한다.
+
+operation::get-userInfo[snippets='http-request,request-headers,http-response,response-headers,response-fields,links']
+
+[[resources-user-update]]
+=== 유저정보 수정
+`PATCH` 요청으로 유저정보를 수정한다.
+
+operation::save-userInfo[snippets='http-request,request-headers,request-fields,http-response,response-headers,response-fields,links']
+
+[[resources-user-nameValidate]]
+=== 유저정보 닉네임 중복검사
+`POST` 요청으로 유저정보 수정시 닉네임 중복검사를 한다.
+
+operation::validate-name[snippets='http-request,request-headers,request-fields,http-response,response-headers,response-fields']
+
+[[resources-user-profile-get]]
+=== 유저프로필 조회
+`GET` 요청으로 현재 로그인한 유저프로필을 조회한다.
+
+operation::get-userProfile[snippets='http-request,request-headers,http-response,response-headers,response-fields,links']
+
+[[resources-user-profile-update]]
+=== 유저프로필 수정
+`PATCH` 요청으로 유저프로필을 수정한다.
+
+operation::save-userProfile[snippets='http-request,request-headers,request-fields,http-response,response-headers,response-fields,links']
+
+[[resources-user-board-get]]
+=== 유저보드 조회
+`GET` 요청으로 유저정보와 프로필이 결합되어 출력되는 유저보드를 조회한다.
+
+operation::get-userBoard[snippets='http-request,request-headers,http-response,response-headers,response-fields,links']
+
+[[resources-user-qnaList-get]]
+=== My QnA 리스트 조회
+`GET` 요청으로 현재 로그인한 유저의 QnA리스트를 조회한다.
+
+operation::get-userQnaList[snippets='http-request,request-headers,http-response,response-headers,response-fields,links']

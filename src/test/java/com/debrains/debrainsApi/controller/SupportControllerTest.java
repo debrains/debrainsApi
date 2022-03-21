@@ -1,15 +1,16 @@
 package com.debrains.debrainsApi.controller;
 
-import com.debrains.debrainsApi.common.RestDocsConfigurate;
-import com.debrains.debrainsApi.common.WithAuthUser;
+import com.debrains.debrainsApi.config.RestDocsConfigurate;
+import com.debrains.debrainsApi.config.WithAuthUser;
 import com.debrains.debrainsApi.config.SecurityConfig;
 import com.debrains.debrainsApi.dto.*;
+import com.debrains.debrainsApi.exception.ApiException;
+import com.debrains.debrainsApi.exception.ErrorCode;
 import com.debrains.debrainsApi.hateoas.EventConverter;
 import com.debrains.debrainsApi.hateoas.NoticeConverter;
 import com.debrains.debrainsApi.hateoas.QnaConverter;
 import com.debrains.debrainsApi.security.jwt.JwtAuthenticationFilter;
 import com.debrains.debrainsApi.service.SupportService;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -26,10 +27,12 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
@@ -72,11 +75,14 @@ class SupportControllerTest {
         // given
         List<NoticeDTO> noticeList = new ArrayList<>();
 
-        for (long i=1L; i < 3L; i++) {
+        for (long i=1L; i < 4L; i++) {
             NoticeDTO notice = NoticeDTO.builder()
                     .id(i)
-                    .title("notice title")
-                    .content("notice content")
+                    .title("notice title " + i)
+                    .content("notice content " + i)
+                    .open(false)
+                    .top(false)
+                    .regDate(LocalDateTime.now())
                     .build();
             noticeList.add(notice);
         }
@@ -102,12 +108,14 @@ class SupportControllerTest {
                                 headerWithName(HttpHeaders.CONTENT_TYPE).description("content type")
                         ),
                         responseFields(
-                                fieldWithPath("_embedded.noticeDTOList[].id").description("notice id number"),
-                                fieldWithPath("_embedded.noticeDTOList[].title").description("notice title"),
-                                fieldWithPath("_embedded.noticeDTOList[].content").description("notice content"),
-                                fieldWithPath("_embedded.noticeDTOList[].viewCnt").description("notice viewCnt"),
-                                fieldWithPath("_embedded.noticeDTOList[].viewCnt").description("notice viewCnt"),
-                                fieldWithPath("_embedded.noticeDTOList[]._links.self.href").description("link to self"),
+                                fieldWithPath("_embedded.noticeDTOList[].id").description("공지사항 ID"),
+                                fieldWithPath("_embedded.noticeDTOList[].title").description("제목"),
+                                fieldWithPath("_embedded.noticeDTOList[].content").description("내용"),
+                                fieldWithPath("_embedded.noticeDTOList[].viewCnt").description("조회수"),
+                                fieldWithPath("_embedded.noticeDTOList[].open").description("공개여부"),
+                                fieldWithPath("_embedded.noticeDTOList[].top").description("상단고정여부"),
+                                fieldWithPath("_embedded.noticeDTOList[].regDate").description("생성날짜"),
+                                fieldWithPath("_embedded.noticeDTOList[]._links.self.href").description("link to Notice"),
                                 fieldWithPath("_links.self.href").description("link to self")
                         )
                 ));
@@ -124,6 +132,9 @@ class SupportControllerTest {
                 .id(id)
                 .title("notice title")
                 .content("notice content")
+                .open(false)
+                .top(false)
+                .regDate(LocalDateTime.now())
                 .build();
         given(supportService.getNotice(any())).willReturn(dto);
 
@@ -135,11 +146,11 @@ class SupportControllerTest {
                 .andExpect(header().string(HttpHeaders.CONTENT_TYPE, MediaTypes.HAL_JSON_VALUE))
                 .andExpect(jsonPath("$.id").exists())
                 .andExpect(jsonPath("$.title").exists())
-                .andExpect(jsonPath("_links.self").exists())
                 .andDo(print())
                 .andDo(document("get-notice",
                         links(
-                                linkWithRel("self").description("link to self")
+                                linkWithRel("self").description("link to self"),
+                                linkWithRel("list").description("link to List")
                         ),
                         requestHeaders(
                                 headerWithName(HttpHeaders.ACCEPT).description("accept header"),
@@ -149,11 +160,15 @@ class SupportControllerTest {
                                 headerWithName(HttpHeaders.CONTENT_TYPE).description("content type")
                         ),
                         responseFields(
-                                fieldWithPath("id").description("notice id number"),
-                                fieldWithPath("title").description("notice title"),
-                                fieldWithPath("content").description("notice content"),
-                                fieldWithPath("viewCnt").description("view count"),
-                                fieldWithPath("_links.self.href").description("link to list")
+                                fieldWithPath("id").description("공지사항 ID"),
+                                fieldWithPath("title").description("제목"),
+                                fieldWithPath("content").description("내용"),
+                                fieldWithPath("viewCnt").description("조회수"),
+                                fieldWithPath("open").description("공개여부"),
+                                fieldWithPath("top").description("상단고정여부"),
+                                fieldWithPath("regDate").description("생성날짜"),
+                                fieldWithPath("_links.self.href").description("link to self"),
+                                fieldWithPath("_links.list.href").description("link to List")
                         )
                 ));
         verify(supportService).getNotice(any());
@@ -166,11 +181,14 @@ class SupportControllerTest {
         // given
         List<EventDTO> eventList = new ArrayList<>();
 
-        for (long i=1L; i < 3L; i++) {
+        for (long i=1L; i < 4L; i++) {
             EventDTO event = EventDTO.builder()
                     .id(i)
                     .title("event title " + i)
                     .content("event content " + i)
+                    .open(false)
+                    .ended(false)
+                    .regDate(LocalDateTime.now())
                     .build();
             eventList.add(event);
         }
@@ -183,7 +201,6 @@ class SupportControllerTest {
                 .andExpect(header().string(HttpHeaders.CONTENT_TYPE, MediaTypes.HAL_JSON_VALUE))
                 .andExpect(jsonPath("$..title").exists())
                 .andExpect(jsonPath("$..content").exists())
-                .andExpect(jsonPath("_links.self").exists())
                 .andDo(print())
                 .andDo(document("get-eventList",
                         links(
@@ -197,11 +214,14 @@ class SupportControllerTest {
                             headerWithName(HttpHeaders.CONTENT_TYPE).description("content type")
                         ),
                         responseFields(
-                            fieldWithPath("_embedded.eventDTOList[].id").description("event id number"),
-                            fieldWithPath("_embedded.eventDTOList[].title").description("event title"),
-                            fieldWithPath("_embedded.eventDTOList[].content").description("event content"),
-                            fieldWithPath("_embedded.eventDTOList[].viewCnt").description("event viewCnt"),
-                            fieldWithPath("_embedded.eventDTOList[]._links.self.href").description("link to self"),
+                            fieldWithPath("_embedded.eventDTOList[].id").description("이벤트 ID"),
+                            fieldWithPath("_embedded.eventDTOList[].title").description("제목"),
+                            fieldWithPath("_embedded.eventDTOList[].content").description("내용"),
+                            fieldWithPath("_embedded.eventDTOList[].viewCnt").description("조회수"),
+                            fieldWithPath("_embedded.eventDTOList[].open").description("공개여부"),
+                            fieldWithPath("_embedded.eventDTOList[].ended").description("종료여부"),
+                            fieldWithPath("_embedded.eventDTOList[].regDate").description("생성날짜"),
+                            fieldWithPath("_embedded.eventDTOList[]._links.self.href").description("link to Event"),
                             fieldWithPath("_links.self.href").description("link to self")
                         )
                 ));
@@ -218,6 +238,9 @@ class SupportControllerTest {
                 .id(id)
                 .title("event title")
                 .content("event content")
+                .open(false)
+                .ended(false)
+                .regDate(LocalDateTime.now())
                 .build();
         given(supportService.getEvent(any())).willReturn(dto);
 
@@ -229,11 +252,11 @@ class SupportControllerTest {
                 .andExpect(header().string(HttpHeaders.CONTENT_TYPE, MediaTypes.HAL_JSON_VALUE))
                 .andExpect(jsonPath("$.id").exists())
                 .andExpect(jsonPath("$.title").exists())
-                .andExpect(jsonPath("_links.self").exists())
                 .andDo(print())
                 .andDo(document("get-event",
                         links(
-                            linkWithRel("self").description("link to self")
+                            linkWithRel("self").description("link to self"),
+                            linkWithRel("list").description("link to List")
                         ),
                         requestHeaders(
                             headerWithName(HttpHeaders.ACCEPT).description("accept header"),
@@ -243,11 +266,15 @@ class SupportControllerTest {
                             headerWithName(HttpHeaders.CONTENT_TYPE).description("content type")
                         ),
                         responseFields(
-                            fieldWithPath("id").description("event id number"),
-                            fieldWithPath("title").description("event title"),
-                            fieldWithPath("content").description("event content"),
-                            fieldWithPath("viewCnt").description("view count"),
-                            fieldWithPath("_links.self.href").description("link to list")
+                                fieldWithPath("id").description("이벤트 ID"),
+                                fieldWithPath("title").description("제목"),
+                                fieldWithPath("content").description("내용"),
+                                fieldWithPath("viewCnt").description("조회수"),
+                                fieldWithPath("open").description("공개여부"),
+                                fieldWithPath("ended").description("종료여부"),
+                                fieldWithPath("regDate").description("생성날짜"),
+                                fieldWithPath("_links.self.href").description("link to self"),
+                                fieldWithPath("_links.list.href").description("link to List")
                         )
                 ));
         verify(supportService).getEvent(any());
@@ -265,7 +292,8 @@ class SupportControllerTest {
                 .title("Test Qna Title")
                 .content("Test Qna Content")
                 .completed(true)
-                .answer("Test Qna Answer From Admin")
+                .answer("Test Qna Answer")
+                .regDate(LocalDateTime.now())
                 .build();
         given(supportService.getQna(any())).willReturn(dto);
 
@@ -277,7 +305,6 @@ class SupportControllerTest {
                 .andExpect(header().string(HttpHeaders.CONTENT_TYPE, MediaTypes.HAL_JSON_VALUE))
                 .andExpect(jsonPath("$.id").exists())
                 .andExpect(jsonPath("$.title").exists())
-                .andExpect(jsonPath("_links.self").exists())
                 .andDo(print())
                 .andDo(document("get-qna",
                         links(
@@ -291,17 +318,42 @@ class SupportControllerTest {
                                 headerWithName(HttpHeaders.CONTENT_TYPE).description("content type")
                         ),
                         responseFields(
-                                fieldWithPath("id").description("qna id number"),
-                                fieldWithPath("userId").description("user id number"),
-                                fieldWithPath("title").description("qna title"),
-                                fieldWithPath("content").description("qna content"),
-                                fieldWithPath("completed").description("completed"),
-                                fieldWithPath("answer").description("answer from admin"),
+                                fieldWithPath("id").description("QnA ID"),
+                                fieldWithPath("userId").description("작성자 ID"),
+                                fieldWithPath("title").description("제목"),
+                                fieldWithPath("content").description("내용"),
+                                fieldWithPath("completed").description("완료여부"),
+                                fieldWithPath("answer").description("작성된 답변 from 관리자"),
+                                fieldWithPath("regDate").description("생성날짜"),
                                 fieldWithPath("_links.self.href").description("link to self")
                         )
                 ));
         verify(supportService).getQna(any());
+    }
 
+    @Test
+    @DisplayName("QnA 열람 실패")
+    @WithAuthUser
+    void getQnaFail() throws Exception {
+        // given
+        Long id = 1L;
+        QnaDTO dto = QnaDTO.builder()
+                .id(id)
+                .userId(2L)         // 내 QnA가 아닌 글
+                .title("Test Qna Title")
+                .content("Test Qna Content")
+                .completed(true)
+                .answer("Test Qna Answer")
+                .regDate(LocalDateTime.now())
+                .build();
+        given(supportService.getQna(any())).willReturn(dto);
+
+        // when&then
+        mvc.perform(get("/support/qna/{id}", id)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .accept(MediaTypes.HAL_JSON))
+                .andExpect(status().isUnauthorized())
+                .andDo(print());
     }
 
     @Test
@@ -318,6 +370,8 @@ class SupportControllerTest {
                 .userId(1L)
                 .title("QnA Title")
                 .content("QnA Content")
+                .completed(false)
+                .regDate(LocalDateTime.now())
                 .build();
         given(supportService.saveQna(any())).willReturn(dto);
 
@@ -331,7 +385,6 @@ class SupportControllerTest {
                 .andExpect(header().string(HttpHeaders.CONTENT_TYPE, MediaTypes.HAL_JSON_VALUE))
                 .andExpect(jsonPath("$.id").exists())
                 .andExpect(jsonPath("$.title").exists())
-                .andExpect(jsonPath("_links.self").exists())
                 .andDo(print())
                 .andDo(document("save-qna",
                         links(
@@ -352,14 +405,15 @@ class SupportControllerTest {
                                 headerWithName(HttpHeaders.CONTENT_TYPE).description("content type")
                         ),
                         responseFields(
-                                fieldWithPath("id").description("qna id number"),
-                                fieldWithPath("userId").description("user id number"),
-                                fieldWithPath("title").description("qna title"),
-                                fieldWithPath("content").description("qna content"),
-                                fieldWithPath("completed").description("completed"),
-                                fieldWithPath("answer").description("answer from admin"),
+                                fieldWithPath("id").description("QnA ID"),
+                                fieldWithPath("userId").description("작성자 ID"),
+                                fieldWithPath("title").description("제목"),
+                                fieldWithPath("content").description("내용"),
+                                fieldWithPath("completed").description("완료여부"),
+                                fieldWithPath("answer").description("작성된 답변 from 관리자"),
+                                fieldWithPath("regDate").description("생성날짜"),
                                 fieldWithPath("_links.self.href").description("link to self"),
-                                fieldWithPath("_links.create.href").description("link to created qna")
+                                fieldWithPath("_links.create.href").description("link to QnA")
                         )
                 ));
         verify(supportService).saveQna(any());

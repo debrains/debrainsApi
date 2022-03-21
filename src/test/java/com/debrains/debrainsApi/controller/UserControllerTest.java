@@ -1,7 +1,7 @@
 package com.debrains.debrainsApi.controller;
 
-import com.debrains.debrainsApi.common.RestDocsConfigurate;
-import com.debrains.debrainsApi.common.WithAuthUser;
+import com.debrains.debrainsApi.config.RestDocsConfigurate;
+import com.debrains.debrainsApi.config.WithAuthUser;
 import com.debrains.debrainsApi.config.SecurityConfig;
 import com.debrains.debrainsApi.dto.QnaDTO;
 import com.debrains.debrainsApi.dto.user.ProfileDTO;
@@ -26,13 +26,13 @@ import org.springframework.context.annotation.Import;
 import org.springframework.hateoas.MediaTypes;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
+import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
@@ -74,7 +74,7 @@ class UserControllerTest {
         // given
         Long id = 1L;
         UserInfoDTO dto = UserInfoDTO.builder()
-                .id(1L)
+                .id(id)
                 .email("dev@dev.com")
                 .name("dev")
                 .description("I'm Developer")
@@ -88,13 +88,11 @@ class UserControllerTest {
         // when & then
         mvc.perform(get("/user/info")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .accept(MediaTypes.HAL_JSON)
-                        .content(objectMapper.writeValueAsString(id)))
+                        .accept(MediaTypes.HAL_JSON))
                 .andExpect(status().isOk())
                 .andExpect(header().string(HttpHeaders.CONTENT_TYPE, MediaTypes.HAL_JSON_VALUE))
                 .andExpect(jsonPath("$.id").value(id))
                 .andExpect(jsonPath("$.state").doesNotExist())
-                .andExpect(jsonPath("_links.self").exists())
                 .andDo(print())
                 .andDo(document("get-userInfo",
                         links(
@@ -108,13 +106,13 @@ class UserControllerTest {
                                 headerWithName(HttpHeaders.CONTENT_TYPE).description("content type")
                         ),
                         responseFields(
-                                fieldWithPath("id").description("user id number"),
-                                fieldWithPath("email").description("user unique email"),
-                                fieldWithPath("name").description("user unique nickname"),
-                                fieldWithPath("description").description("user description"),
-                                fieldWithPath("img").description("profile image"),
-                                fieldWithPath("githubUrl").description("github URL"),
-                                fieldWithPath("blogUrl").description("blog URL"),
+                                fieldWithPath("id").description("유저고유 ID"),
+                                fieldWithPath("email").description("이메일"),
+                                fieldWithPath("name").description("닉네임"),
+                                fieldWithPath("description").description("소개글"),
+                                fieldWithPath("img").description("프로필사진"),
+                                fieldWithPath("githubUrl").description("깃허브 URL"),
+                                fieldWithPath("blogUrl").description("블로그 URL"),
                                 fieldWithPath("snsUrl").description("SNS URL"),
                                 fieldWithPath("_links.self.href").description("link to self"))
                 ));
@@ -154,26 +152,26 @@ class UserControllerTest {
                                 headerWithName(HttpHeaders.CONTENT_TYPE).description("content type")
                         ),
                         requestFields(
-                                fieldWithPath("id").description("user id number"),
-                                fieldWithPath("email").description("user unique email"),
-                                fieldWithPath("name").description("user unique nickname"),
-                                fieldWithPath("description").description("user description"),
-                                fieldWithPath("img").description("profile image"),
-                                fieldWithPath("githubUrl").description("github URL"),
-                                fieldWithPath("blogUrl").description("blog URL"),
+                                fieldWithPath("id").description("유저고유 ID"),
+                                fieldWithPath("email").description("이메일 (수정불가)"),
+                                fieldWithPath("name").description("닉네임 (중복불가)"),
+                                fieldWithPath("description").description("소개글"),
+                                fieldWithPath("img").description("프로필사진"),
+                                fieldWithPath("githubUrl").description("깃허브 URL"),
+                                fieldWithPath("blogUrl").description("블로그 URL"),
                                 fieldWithPath("snsUrl").description("SNS URL")
                         ),
                         responseHeaders(
                                 headerWithName(HttpHeaders.CONTENT_TYPE).description("content type")
                         ),
                         responseFields(
-                                fieldWithPath("id").description("user id number"),
-                                fieldWithPath("email").description("user unique email"),
-                                fieldWithPath("name").description("user unique nickname"),
-                                fieldWithPath("description").description("user description"),
-                                fieldWithPath("img").description("profile image"),
-                                fieldWithPath("githubUrl").description("github URL"),
-                                fieldWithPath("blogUrl").description("blog URL"),
+                                fieldWithPath("id").description("유저고유 ID"),
+                                fieldWithPath("email").description("이메일 (수정불가)"),
+                                fieldWithPath("name").description("닉네임 (중복불가)"),
+                                fieldWithPath("description").description("소개글"),
+                                fieldWithPath("img").description("프로필사진"),
+                                fieldWithPath("githubUrl").description("깃허브 URL"),
+                                fieldWithPath("blogUrl").description("블로그 URL"),
                                 fieldWithPath("snsUrl").description("SNS URL"),
                                 fieldWithPath("_links.self.href").description("link to self")
                         )
@@ -195,21 +193,36 @@ class UserControllerTest {
                         .content(objectMapper.writeValueAsString(map))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(content().string("true"))
-                .andDo(print());
+                .andExpect(jsonPath("$.exist").value(true))
+                .andDo(print())
+                .andDo(document("validate-name",
+                        requestHeaders(
+                                headerWithName(HttpHeaders.CONTENT_TYPE).description("content type")
+                        ),
+                        requestFields(
+                                fieldWithPath("name").description("신청 닉네임")
+                        ),
+                        responseHeaders(
+                                headerWithName(HttpHeaders.CONTENT_TYPE).description("content type")
+                        ),
+                        responseFields(
+                                fieldWithPath("exist").type(JsonFieldType.BOOLEAN).description("닉네임 중복여부")
+                        )
+                ));
         verify(userRepository).existsByName(name);
 
     }
 
     @Test
     @WithAuthUser
-    @DisplayName("프로필정도 GET SUCCESS")
+    @DisplayName("프로필정보 GET SUCCESS")
     void getUserProfile() throws Exception {
         // given
         ProfileDTO dto = ProfileDTO.builder()
                 .id(1L)
                 .userId(1L)
                 .purpose("취업")
+                .skills(List.of("1", "3"))
                 .build();
         given(userService.getProfile(any())).willReturn(dto);
 
@@ -220,8 +233,8 @@ class UserControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(header().string(HttpHeaders.CONTENT_TYPE, MediaTypes.HAL_JSON_VALUE))
                 .andExpect(jsonPath("$.id").exists())
-                .andExpect(jsonPath("$.purpose").exists())
-                .andExpect(jsonPath("_links.self").exists())
+                .andExpect(jsonPath("$.purpose").value("취업"))
+                .andExpect(jsonPath("$.skills").exists())
                 .andDo(print())
                 .andDo(document("get-userProfile",
                         links(
@@ -235,10 +248,10 @@ class UserControllerTest {
                                 headerWithName(HttpHeaders.CONTENT_TYPE).description("content type")
                         ),
                         responseFields(
-                                fieldWithPath("id").description("profile id number"),
-                                fieldWithPath("userId").description("user id number"),
-                                fieldWithPath("purpose").description("purpose"),
-                                fieldWithPath("skills").description("skills"),
+                                fieldWithPath("id").description("프로필 ID"),
+                                fieldWithPath("userId").description("유저고유 ID"),
+                                fieldWithPath("purpose").description("목적"),
+                                fieldWithPath("skills").type(JsonFieldType.ARRAY).description("관심 스킬리스트"),
                                 fieldWithPath("_links.self.href").description("link to self"))
                 ));
         verify(userService).getProfile(any());
@@ -252,6 +265,7 @@ class UserControllerTest {
                 .id(1L)
                 .userId(1L)
                 .purpose("취업")
+                .skills(List.of("1", "3"))
                 .build();
 
         // when & then
@@ -272,19 +286,19 @@ class UserControllerTest {
                                 headerWithName(HttpHeaders.CONTENT_TYPE).description("content type")
                         ),
                         requestFields(
-                                fieldWithPath("id").description("user id number"),
-                                fieldWithPath("userId").description("user id number"),
-                                fieldWithPath("purpose").description("purpose"),
-                                fieldWithPath("skills").description("skills")
+                                fieldWithPath("id").description("프로필 ID"),
+                                fieldWithPath("userId").description("유저고유 ID"),
+                                fieldWithPath("purpose").description("목적"),
+                                fieldWithPath("skills").type(JsonFieldType.ARRAY).description("관심 스킬리스트")
                         ),
                         responseHeaders(
                                 headerWithName(HttpHeaders.CONTENT_TYPE).description("content type")
                         ),
                         responseFields(
-                                fieldWithPath("id").description("user id number"),
-                                fieldWithPath("userId").description("user id number"),
-                                fieldWithPath("purpose").description("purpose"),
-                                fieldWithPath("skills").description("skills"),
+                                fieldWithPath("id").description("프로필 ID"),
+                                fieldWithPath("userId").description("유저고유 ID"),
+                                fieldWithPath("purpose").description("목적"),
+                                fieldWithPath("skills").type(JsonFieldType.ARRAY).description("관심 스킬리스트"),
                                 fieldWithPath("_links.self.href").description("link to self")
                         )
                 ));
@@ -305,6 +319,7 @@ class UserControllerTest {
                 .blogUrl("https://devdev.github.io/")
                 .snsUrl("https://www.instagram.com/devdev")
                 .purpose("취업")
+                .skills(List.of("1", "3"))
                 .build();
         given(userService.getUserBoard(any())).willReturn(board);
 
@@ -330,16 +345,16 @@ class UserControllerTest {
                                 headerWithName(HttpHeaders.CONTENT_TYPE).description("content type")
                         ),
                         responseFields(
-                                fieldWithPath("id").description("user id number"),
-                                fieldWithPath("email").description("user unique email"),
-                                fieldWithPath("name").description("user unique nickname"),
-                                fieldWithPath("description").description("user description"),
-                                fieldWithPath("img").description("profile image"),
-                                fieldWithPath("githubUrl").description("github URL"),
-                                fieldWithPath("blogUrl").description("blog URL"),
+                                fieldWithPath("id").description("유저고유 ID"),
+                                fieldWithPath("email").description("이메일 (중복불가)"),
+                                fieldWithPath("name").description("닉네임 (중복불가)"),
+                                fieldWithPath("description").description("소개글"),
+                                fieldWithPath("img").description("프로필사진"),
+                                fieldWithPath("githubUrl").description("깃허브 URL"),
+                                fieldWithPath("blogUrl").description("블로그 URL"),
                                 fieldWithPath("snsUrl").description("SNS URL"),
-                                fieldWithPath("purpose").description("purpose"),
-                                fieldWithPath("skills").description("skills"),
+                                fieldWithPath("purpose").description("목적"),
+                                fieldWithPath("skills").type(JsonFieldType.ARRAY).description("관심 스킬리스트"),
                                 fieldWithPath("_links.self.href").description("link to self"))
                 ));
         verify(userService).getUserBoard(any());
@@ -352,14 +367,14 @@ class UserControllerTest {
         Long id = 1L;
         List<QnaDTO> qnaList = new ArrayList<>();
 
-        for (long i=1L; i < 3L; i++) {
+        for (long i=1L; i < 4L; i++) {
             QnaDTO qna = QnaDTO.builder()
                     .id(i)
                     .userId(id)
                     .title("Test Qna Title " + i)
                     .content("Test Qna Content " + i)
                     .completed(true)
-                    .answer("Test Qna Answer From Admin " + i)
+                    .answer("Test Qna Answer " + i)
                     .build();
             qnaList.add(qna);
         }
@@ -387,13 +402,14 @@ class UserControllerTest {
                                 headerWithName(HttpHeaders.CONTENT_TYPE).description("content type")
                         ),
                         responseFields(
-                                fieldWithPath("_embedded.qnaDTOList[].id").description("qna id number"),
-                                fieldWithPath("_embedded.qnaDTOList[].userId").description("user id number"),
-                                fieldWithPath("_embedded.qnaDTOList[].title").description("qna title"),
-                                fieldWithPath("_embedded.qnaDTOList[].content").description("qna content"),
-                                fieldWithPath("_embedded.qnaDTOList[].completed").description("completed"),
-                                fieldWithPath("_embedded.qnaDTOList[].answer").description("qna answer from admin"),
-                                fieldWithPath("_embedded.qnaDTOList[]._links.self.href").description("link to self"),
+                                fieldWithPath("_embedded.qnaDTOList[].id").description("QnA ID"),
+                                fieldWithPath("_embedded.qnaDTOList[].userId").description("작성자 ID"),
+                                fieldWithPath("_embedded.qnaDTOList[].title").description("제목"),
+                                fieldWithPath("_embedded.qnaDTOList[].content").description("내용"),
+                                fieldWithPath("_embedded.qnaDTOList[].completed").description("완료여부"),
+                                fieldWithPath("_embedded.qnaDTOList[].answer").description("작성된 답변 from 관리자"),
+                                fieldWithPath("_embedded.qnaDTOList[].regDate").description("생성날짜"),
+                                fieldWithPath("_embedded.qnaDTOList[]._links.self.href").description("link to QnA"),
                                 fieldWithPath("_links.self.href").description("link to self")
                         )
                 ));
