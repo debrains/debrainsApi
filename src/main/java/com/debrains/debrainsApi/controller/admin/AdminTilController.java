@@ -1,5 +1,6 @@
 package com.debrains.debrainsApi.controller.admin;
 
+import com.debrains.debrainsApi.dto.SupportFileDTO;
 import com.debrains.debrainsApi.dto.TilCrtDTO;
 import com.debrains.debrainsApi.dto.TilCrtFileDTO;
 import com.debrains.debrainsApi.dto.TilDTO;
@@ -93,17 +94,11 @@ public class AdminTilController {
     @GetMapping("/download/{id}")
     public ResponseEntity<Resource> fileDownload(@PathVariable("id") Long id) throws MalformedURLException {
         TilCrtFileDTO file = tilCrtService.getTilCrtFileById(id);
-        String originName = file.getOriginalName();
-        String fileName = file.getFileName();
-
-        UrlResource resource = new UrlResource("file:" + file.getPath() + File.separator + originName);
-
-        String encodedUploadFileName = UriUtils.encode(fileName, StandardCharsets.UTF_8);
-        String contentDispostion = "attachment; filename=\"" + encodedUploadFileName + "\"";
+        UrlResource resource = new UrlResource(file.getPath());
+        String contentDispostion = "attachment; filename=\"" + file.getOriginalName() + "\"";
         return ResponseEntity
                 .ok()
                 .header(HttpHeaders.CONTENT_DISPOSITION, contentDispostion).body(resource);
-
     }
 
 

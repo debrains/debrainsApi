@@ -17,12 +17,14 @@
         <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
           <thead>
           <tr>
+            <th>no</th>
             <th>목표</th>
             <th>만료여부</th>
           </tr>
           </thead>
           <tbody>
-          <tr th:each="til : ${tilList}">
+          <tr th:each="til, index : ${tilList}">
+            <td th:text="${(tilList.getNumber() * tilList.getSize() + 1) + index.index}"></td>
             <td><a th:href="@{/root/til/{id}(id=${til.getId()})}" th:text="${til.getSubject()}"></a></td>
             <td th:text="${til.isExpired() ? '만료' : '만료전'}"></td>
           </tr>

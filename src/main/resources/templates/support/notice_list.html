@@ -18,16 +18,18 @@
         <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
           <thead>
           <tr>
+            <th>no</th>
             <th>제목</th>
             <th>조회수</th>
             <th>작성일</th>
           </tr>
           </thead>
           <tbody>
-          <tr th:each="notice : ${noticeList}">
+          <tr th:each="notice, index : ${noticeList}">
+            <td th:text="${(noticeList.getNumber() * noticeList.getSize() + 1) + index.index}"></td>
             <td><a th:href="@{/root/support/notice/{id}(id=${notice.getId()})}" th:text="${notice.getTitle()}"></a></td>
             <td th:text="${notice.getViewCnt()}"></td>
-            <td th:text="${notice.getRegDate()}"></td>
+            <td th:text="${#temporals.format(notice.getRegDate(), 'yyyy-MM-dd HH:mm:ss')}"></td>
           </tr>
 
           </tbody>

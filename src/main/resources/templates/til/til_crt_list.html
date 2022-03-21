@@ -17,12 +17,14 @@
         <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
           <thead>
           <tr>
+            <th>no</th>
             <th>내용</th>
             <th>취소여부</th>
           </tr>
           </thead>
           <tbody>
-          <tr th:each="crt : ${tilcrtList}">
+          <tr th:each="crt, index : ${tilcrtList}">
+            <td th:text="${(tilcrtList.getNumber() * tilcrtList.getSize() + 1) + index.index}"></td>
             <td><a th:href="@{/root/til/crt/{id}(id=${crt.getId()})}" th:text="${crt.getDescription()}"></a></td>
             <td th:text="${crt.isDenied() ? '정상' : '취소'}"></td>
           </tr>
