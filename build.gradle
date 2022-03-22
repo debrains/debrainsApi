@@ -42,6 +42,7 @@ dependencies {
 	implementation 'org.modelmapper:modelmapper:3.0.0'
 	implementation 'nz.net.ultraq.thymeleaf:thymeleaf-layout-dialect:2.3.0'
 	implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
+	implementation 'org.springframework.boot:spring-boot-starter-mail'
 
 	testCompileOnly 'org.projectlombok:lombok'
 	testAnnotationProcessor 'org.projectlombok:lombok'
