@@ -13,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.Link;
 import org.springframework.hateoas.MediaTypes;
 import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.ResponseEntity;
@@ -43,6 +44,7 @@ public class SupportController {
                 .stream().map(noticeDTO -> noticeConverter.toModel(noticeDTO)).collect(Collectors.toList());
         CollectionModel<EntityModel<NoticeDTO>> resource = CollectionModel.of(noticeList,
                 linkTo(methodOn(this.getClass()).getNoticeList()).withSelfRel());
+        resource.add(Link.of("/docs/index.html#resources-support-notice-list").withRel("profile"));
 
         return ResponseEntity.ok(resource);
     }
@@ -52,6 +54,7 @@ public class SupportController {
         NoticeDTO notice = supportService.getNotice(id);
         EntityModel<NoticeDTO> resource = noticeConverter.toModel(notice);
         resource.add(linkTo(methodOn(this.getClass()).getNoticeList()).withRel("list"));
+        resource.add(Link.of("/docs/index.html#resources-support-notice").withRel("profile"));
 
         return ResponseEntity.ok(resource);
     }
@@ -62,6 +65,7 @@ public class SupportController {
                 .stream().map(eventDTO -> eventConverter.toModel(eventDTO)).collect(Collectors.toList());
         CollectionModel<EntityModel<EventDTO>> resource = CollectionModel.of(eventList,
                 linkTo(methodOn(this.getClass()).getEventList()).withSelfRel());
+        resource.add(Link.of("/docs/index.html#resources-support-event-list").withRel("profile"));
 
         return ResponseEntity.ok(resource);
     }
@@ -71,6 +75,7 @@ public class SupportController {
         EventDTO event = supportService.getEvent(id);
         EntityModel<EventDTO> resource = eventConverter.toModel(event);
         resource.add(linkTo(methodOn(this.getClass()).getEventList()).withRel("list"));
+        resource.add(Link.of("/docs/index.html#resources-support-event").withRel("profile"));
 
         return ResponseEntity.ok(resource);
     }
@@ -84,6 +89,7 @@ public class SupportController {
         }
 
         EntityModel<QnaDTO> resource = qnaConverter.toModel(qna);
+        resource.add(Link.of("/docs/index.html#resources-support-qna-get").withRel("profile"));
 
         return ResponseEntity.ok(resource);
     }
@@ -98,6 +104,7 @@ public class SupportController {
         EntityModel<QnaDTO> resource = EntityModel.of(entity);
         resource.add(linkTo(methodOn(this.getClass()).saveQna(null, qna)).withSelfRel());
         resource.add(selfLinkBuilder.withRel("create"));
+        resource.add(Link.of("/docs/index.html#resources-support-qna-save").withRel("profile"));
 
         return ResponseEntity.created(createdUri).body(resource);
     }
