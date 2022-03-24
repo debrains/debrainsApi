@@ -14,10 +14,7 @@ import com.debrains.debrainsApi.service.SupportService;
 import com.debrains.debrainsApi.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-import org.springframework.hateoas.CollectionModel;
-import org.springframework.hateoas.EntityModel;
-import org.springframework.hateoas.MediaTypes;
-import org.springframework.hateoas.RepresentationModel;
+import org.springframework.hateoas.*;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -48,6 +45,7 @@ public class UserController {
         UserInfoDTO userInfo = userService.getUserInfo(user.getId());
         EntityModel<UserInfoDTO> resource = EntityModel.of(userInfo);
         resource.add(linkTo(methodOn(this.getClass()).getUserInfo(user)).withSelfRel());
+        resource.add(Link.of("/docs/index.html#resources-user-get").withRel("profile"));
 
         return ResponseEntity.ok(resource);
     }
@@ -63,6 +61,7 @@ public class UserController {
 
         EntityModel<UserInfoDTO> resource = EntityModel.of(dto);
         resource.add(linkTo(this.getClass()).slash("/info").withSelfRel());
+        resource.add(Link.of("/docs/index.html#resources-user-update").withRel("profile"));
 
         return ResponseEntity.ok(resource);
     }
@@ -79,6 +78,7 @@ public class UserController {
         ProfileDTO userProfile = userService.getProfile(user.getId());
         EntityModel<ProfileDTO> resource = EntityModel.of(userProfile);
         resource.add(linkTo(methodOn(this.getClass()).getProfile(user)).withSelfRel());
+        resource.add(Link.of("/docs/index.html#resources-user-profile-get").withRel("profile"));
 
         return ResponseEntity.ok(resource);
     }
@@ -93,6 +93,7 @@ public class UserController {
 
         EntityModel<ProfileDTO> resource = EntityModel.of(dto);
         resource.add(linkTo(methodOn(this.getClass()).saveProfile(null, dto)).withSelfRel());
+        resource.add(Link.of("/docs/index.html#resources-user-profile-update").withRel("profile"));
 
         return ResponseEntity.ok(resource);
     }
@@ -102,6 +103,7 @@ public class UserController {
         UserBoardDTO user = userService.getUserBoard(id);
         EntityModel<UserBoardDTO> resource = EntityModel.of(user);
         resource.add(linkTo(methodOn(this.getClass()).getUserBoard(id)).withSelfRel());
+        resource.add(Link.of("/docs/index.html#resources-user-board-get").withRel("profile"));
 
         return ResponseEntity.ok(resource);
     }
@@ -112,6 +114,7 @@ public class UserController {
                 .stream().map(qnaDTO -> qnaConverter.toModel(qnaDTO)).collect(Collectors.toList());
         CollectionModel<EntityModel<QnaDTO>> resource = CollectionModel.of(qnaList,
                 linkTo(methodOn(this.getClass()).getMyQnaList(user)).withSelfRel());
+        resource.add(Link.of("/docs/index.html#resources-user-qnaList-get").withRel("profile"));
 
         return ResponseEntity.ok(resource);
     }
