@@ -18,7 +18,7 @@ public class QnaDTO {
     private String title;
     @NotBlank
     private String content;
-    private Boolean completed;
+    private boolean completed;
     private String answer;
 
     private LocalDateTime regDate;

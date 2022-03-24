@@ -31,7 +31,13 @@ public class TilCrtDTO {
     @JsonFormat(pattern = "HH:mm")
     private LocalTime watchTime;
 
+    private boolean open;
+
     private Long userId;
+
+    private boolean denied;
+
+    private String name;
 
     private List<String> filePath;
 }

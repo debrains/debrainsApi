@@ -1,89 +1,113 @@
 <!DOCTYPE html>
-<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      layout:decorate="~{layout}">
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:th="http://www.thymeleaf.org"
+      layout:decorate="~{fragments/layout}">
 
 <!-- Begin Page Content -->
 <div class="container-fluid" layout:fragment="content">
+
   <!-- Page Heading -->
-  <h1 class="h3 mb-2 text-gray-800">목표 관리</h1>
-  <p class="mb-4">DataTables is a third party plugin that is used to generate the demo table below.
-    For more information about DataTables, please visit the <a target="_blank"
-                                                               href="https://datatables.net">official DataTables
-      documentation</a>.</p>
+  <div class="d-sm-flex align-items-center justify-content-between mb-4">
+    <h1 class="h3 mb-0 text-gray-800">TIL 상세</h1>
+  </div>
 
-  <!-- DataTales Example -->
-  <div class="card shadow mb-4">
-    <div class="card-header py-3">
-      <h6 class="m-0 font-weight-bold text-primary">DataTables Example</h6>
-    </div>
-    <div class="card-body">
-      <div class="table-responsive">
-        <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
-          <thead>
-          <tr>
-            <th>Name</th>
-            <th>Position</th>
-            <th>Office</th>
-            <th>Age</th>
-            <th>Start date</th>
-            <th>Salary</th>
-          </tr>
-          </thead>
-          <tbody>
-          <tr>
-            <td><a href="/auth/userDetail">Tiger Nixon</a></td>
-            <td>System Architect</td>
-            <td>Edinburgh</td>
-            <td>61</td>
-            <td>2011/04/25</td>
-            <td>$320,800</td>
-          </tr>
-          <tr>
-            <td>Garrett Winters</td>
-            <td>Accountant</td>
-            <td>Tokyo</td>
-            <td>63</td>
-            <td>2011/07/25</td>
-            <td>$170,750</td>
-          </tr>
-          <tr>
-            <td>Ashton Cox</td>
-            <td>Junior Technical Author</td>
-            <td>San Francisco</td>
-            <td>66</td>
-            <td>2009/01/12</td>
-            <td>$86,000</td>
-          </tr>
+  <div class="row">
 
-          </tbody>
-        </table>
-      </div>
+    <div class="col-lg-8">
+      <form action="#" method="post">
+        <div class="form-group row">
+          <label for="title" class="col-sm-2 col-form-label">목표</label>
+          <div class="col-sm-10">
+            <input type="text" class="form-control-plaintext" id="title" name="title"
+                   th:value="${til.getSubject()}" readonly>
+          </div>
+        </div>
+
+        <div class="form-group row">
+          <label for="content" class="col-sm-2 col-form-label">내용</label>
+          <div class="col-sm-10">
+            <textarea class="form-control-plaintext" id="content" name="content"
+                      th:text="${til.getDescription()} ? ${til.getDescription()} : '-'" readonly></textarea>
+          </div>
+        </div>
+
+        <div class="form-group row">
+          <label for="startDate" class="col-sm-1 col-form-label">시작일</label>
+          <div class="col-sm-4">
+            <input type="datetime-local" class="form-control" id="startDate" name="startDate"
+                   th:value="${til.getStartDate()}" readonly>
+          </div>
+          ~
+          <label for="endDate" class="col-sm-1 col-form-label">종료일</label>
+          <div class="col-sm-4">
+            <input type="datetime-local" class="form-control" id="endDate" name="endDate"
+                   th:value="${til.getEndDate()}" readonly>
+          </div>
+        </div>
+
+        <div class="form-group row">
+          <label for="cycleStatus" class="col-sm-2 col-form-label">주기</label>
+          <div class="col-sm-10">
+            <input type="text" readonly class="form-control-plaintext" id="cycleStatus"
+                   th:value="${til.getCycleStatus()}">
+          </div>
+        </div>
+
+        <div class="form-group row">
+          <label for="cycleCnt" class="col-sm-2 col-form-label">현재인증횟수</label>
+          <div class="col-sm-10">
+            <input type="text" readonly class="form-control-plaintext" id="cycleCnt"
+                   th:value="${til.getCycleCnt()}">
+          </div>
+        </div>
+
+        <div class="form-group row">
+          <label for="expired" class="col-sm-2 col-form-label">만료여부</label>
+          <div class="col-sm-10">
+            <input type="text" readonly class="form-control-plaintext" id="expired"
+                   th:value="${til.isExpired() ? '만료' : '만료전'}">
+          </div>
+        </div>
+
+        <div class="form-group row">
+          <label for="regDate" class="col-sm-2 col-form-label">작성일</label>
+          <div class="col-sm-10">
+            <input type="datetime-local" readonly class="form-control-plaintext" id="regDate"
+                   th:value="${til.getRegDate()}">
+          </div>
+        </div>
+      </form>
     </div>
+  </div>
+  <hr/>
+  <div class="table-responsive">
+    <h5 class="h5 mb-0 text-gray-800">TIL 인증 목록</h5>
+    <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+      <thead>
+      <tr>
+        <th>인증내용</th>
+        <th>취소여부</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr th:each="crt : ${tilcrtList}">
+        <td><a th:href="@{/root/til/crt/{id}(id=${crt.getId()})}" th:text="${crt.getDescription()}"></a></td>
+        <td th:text="${crt.isDenied() ? '거부' : '승인'}"></td>
+      </tr>
+
+      </tbody>
+    </table>
   </div>
 </div>
 <a class="scroll-to-top rounded" href="#page-top">
   <i class="fas fa-angle-up"></i>
 </a>
 
-<!-- Logout Modal-->
-<div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-     aria-hidden="true">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">Ready to Leave?</h5>
-        <button class="close" type="button" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">×</span>
-        </button>
-      </div>
-      <div class="modal-body">Select "Logout" below if you are ready to end your current session.</div>
-      <div class="modal-footer">
-        <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
-        <a class="btn btn-primary" href="../login.html">Logout</a>
-      </div>
-    </div>
-  </div>
-</div>
-<!-- Bootstrap core JavaScript-->
+<th:block layout:fragment="javascript">
+  <script>
+    $(function(){
+      $(".dataTables_length").css("display", "none");
+    })
 
+  </script>
+</th:block>
 </html>

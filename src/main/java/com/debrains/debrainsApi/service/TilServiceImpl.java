@@ -8,6 +8,7 @@ import com.debrains.debrainsApi.exception.ErrorCode;
 import com.debrains.debrainsApi.repository.TilRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -21,6 +22,7 @@ import java.util.List;
 public class TilServiceImpl implements TilService {
 
     private final TilRepository tilRepository;
+    private final ModelMapper modelMapper;
 
     @Override
     @Transactional
@@ -70,5 +72,19 @@ public class TilServiceImpl implements TilService {
                 .failCnt(failTil)
                 .build();
         return tilCurDTO;
+    }
+
+    @Override
+    public Page<TilDTO> getAdminTilList(Pageable pageable) {
+        Page<TilDTO> tilList = tilRepository.findAll(pageable)
+                .map(til -> modelMapper.map(til, TilDTO.class));
+        return tilList;
+    }
+
+    @Override
+    public TilDTO getTil(Long id) {
+        Til entity = tilRepository.findById(id).orElseThrow();
+        TilDTO dto = modelMapper.map(entity, TilDTO.class);
+        return dto;
     }
 }

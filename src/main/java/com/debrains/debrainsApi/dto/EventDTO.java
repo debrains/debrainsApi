@@ -16,8 +16,8 @@ public class EventDTO {
     private String title;
     private String content;
     private int viewCnt;
-    private Boolean open;
-    private Boolean ended;
+    private boolean open;
+    private boolean ended;
     private LocalDateTime regDate;
 
 }

@@ -1,20 +1,28 @@
 package com.debrains.debrainsApi.controller.admin;
 
+import com.debrains.debrainsApi.common.SupportType;
 import com.debrains.debrainsApi.dto.EventDTO;
 import com.debrains.debrainsApi.dto.NoticeDTO;
 import com.debrains.debrainsApi.dto.QnaDTO;
+import com.debrains.debrainsApi.dto.SupportFileDTO;
 import com.debrains.debrainsApi.service.SupportService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.util.List;
 
 @Controller
 @RequiredArgsConstructor
@@ -31,8 +39,8 @@ public class AdminSupportController {
     }
 
     @PostMapping("/notice")
-    public String updateNoticeInfo(NoticeDTO dto) {
-        supportService.updateAdminNoticeInfo(dto);
+    public String updateNoticeInfo(NoticeDTO dto, @RequestPart(value = "files", required = false) MultipartFile[] files) throws IOException {
+        supportService.updateAdminNoticeInfo(dto, files);
         return "redirect:/root/support/notice";
     }
 
@@ -42,16 +50,29 @@ public class AdminSupportController {
     }
 
     @PostMapping("/notice/create")
-    public String saveNotice(NoticeDTO dto) {
-        supportService.saveNotice(dto);
+    public String saveNotice(NoticeDTO dto, @RequestPart(value = "files", required = false) MultipartFile[] files) throws IOException {
+        supportService.saveNotice(files, dto);
         return "redirect:/root/support/notice";
     }
+
 
     @GetMapping("/notice/{id}")
     public String getNoticeInfo(@PathVariable("id") Long id, Model model) {
         NoticeDTO getNotice = supportService.getNotice(id);
+        List<SupportFileDTO> files = supportService.getAdminSupportFiles(id, SupportType.Notice);
         model.addAttribute("notice", getNotice);
+        model.addAttribute("files", files);
         return "support/notice_detail";
+    }
+
+    @GetMapping("/notice/delete/{id}")
+    public String deleteNotice(@PathVariable("id") Long id){
+        supportService.deleteNotice(id);
+        List<SupportFileDTO> files = supportService.getAdminSupportFiles(id, SupportType.Notice);
+        for (SupportFileDTO file : files) {
+            supportService.deleteFile(file.getId());
+        }
+        return "redirect:/root/support/notice";
     }
 
 
@@ -66,14 +87,16 @@ public class AdminSupportController {
     }
 
     @PostMapping("/event")
-    public String updateEventInfo(EventDTO dto) {
-        supportService.updateAdminEventInfo(dto);
+    public String updateEventInfo(EventDTO dto, @RequestPart(value = "files", required = false) MultipartFile[] files) throws IOException {
+        supportService.updateAdminEventInfo(dto, files);
         return "redirect:/root/support/event";
     }
 
     @GetMapping("/event/{id}")
     public String getEventInfo(@PathVariable("id") Long id, Model model) {
         EventDTO getEvent = supportService.getEvent(id);
+        List<SupportFileDTO> files = supportService.getAdminSupportFiles(id, SupportType.Event);
+        model.addAttribute("files", files);
         model.addAttribute("event", getEvent);
         return "support/event_detail";
     }
@@ -85,8 +108,18 @@ public class AdminSupportController {
 
 
     @PostMapping("/event/create")
-    public String saveEvent(EventDTO dto) {
-        supportService.saveEvent(dto);
+    public String saveEvent(EventDTO dto, @RequestPart(value = "files", required = false) MultipartFile[] files) throws IOException {
+        supportService.saveEvent(dto, files);
+        return "redirect:/root/support/event";
+    }
+
+    @GetMapping("/event/delete/{id}")
+    public String deleteEvent(@PathVariable("id") Long id){
+        supportService.deleteEvent(id);
+        List<SupportFileDTO> files = supportService.getAdminSupportFiles(id, SupportType.Event);
+        for (SupportFileDTO file : files) {
+            supportService.deleteFile(file.getId());
+        }
         return "redirect:/root/support/event";
     }
 
@@ -114,5 +147,24 @@ public class AdminSupportController {
         return "support/qna_detail";
     }
 
+    /**
+     * 파일 download
+     */
+    @GetMapping("/download/{id}")
+    public ResponseEntity<Resource> fileDownload(@PathVariable("id") Long id) throws MalformedURLException {
+        SupportFileDTO file = supportService.getSupportFileById(id);
+        UrlResource resource = new UrlResource(file.getPath());
+        String contentDispostion = "attachment; filename=\"" + file.getOriginalName() + "\"";
+        return ResponseEntity
+                .ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION, contentDispostion).body(resource);
+    }
+
+    @GetMapping("/file/{id}")
+    @ResponseBody
+    public String deleteFile(@PathVariable("id") Long id) {
+        supportService.deleteFile(id);
+        return "succ";
+    }
 
 }

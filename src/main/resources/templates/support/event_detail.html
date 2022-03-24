@@ -13,7 +13,7 @@
   <div class="row">
 
     <div class="col-lg-8">
-      <form action="/root/support/event" method="post">
+      <form action="/root/support/event" method="post" enctype="multipart/form-data">
         <input type="hidden" name="id" th:value="${event.getId()}">
         <div class="form-group row">
           <label for="title" class="col-sm-2 col-form-label">제목</label>
@@ -34,9 +34,9 @@
         <div class="form-group row">
           <label for="open" class="col-sm-2 col-form-label">공개유무</label>
           <div class="col-sm-10">
-            <select class="custom-select" th:value="${event.getOpen()}" id="open" name="open">
-              <option th:value="0" th:text="비공개" th:selected="!${event.getOpen()}"></option>
-              <option th:value="1" th:text="공개" th:selected="${event.getOpen()}"></option>
+            <select class="custom-select" th:value="${event.isOpen()}" id="open" name="open">
+              <option th:value="0" th:text="비공개" th:selected="!${event.isOpen()}"></option>
+              <option th:value="1" th:text="공개" th:selected="${event.isOpen()}"></option>
             </select>
           </div>
         </div>
@@ -44,9 +44,9 @@
         <div class="form-group row">
           <label for="ended" class="col-sm-2 col-form-label">진행상태</label>
           <div class="col-sm-10">
-            <select class="custom-select" th:value="${event.getEnded()}" id="ended" name="ended">
-              <option th:value="0" th:text="진행중" th:selected="!${event.getEnded()}"></option>
-              <option th:value="1" th:text="종료" th:selected="${event.getEnded()}"></option>
+            <select class="custom-select" th:value="${event.isEnded()}" id="ended" name="ended">
+              <option th:value="0" th:text="진행중" th:selected="!${event.isEnded()}"></option>
+              <option th:value="1" th:text="종료" th:selected="${event.isEnded()}"></option>
             </select>
           </div>
         </div>
@@ -60,6 +60,19 @@
         </div>
 
         <div class="form-group row">
+          <label for="files" class="col-sm-2 col-form-label">첨부파일</label>
+          <div class="col-sm-10">
+            <input type="file" id="files" name="files" multiple/><br/>
+            <th:block th:each="file : ${files}">
+              <div th:class="${file.getId()}">
+                <a th:href="@{/root/support/download/{id}(id=${file.getId()})}" th:text="${file.getOriginalName()}"></a>
+                <a href="#" style="color: red;" th:onclick="|deleteFile(${file.getId()})|">x</a>,
+              </div>
+            </th:block>
+          </div>
+        </div>
+
+        <div class="form-group row">
           <label for="regDate" class="col-sm-2 col-form-label">작성일</label>
           <div class="col-sm-10">
             <input type="text" readonly class="form-control-plaintext" id="regDate"
@@ -67,7 +80,9 @@
           </div>
         </div>
         <div class="form-group row">
-          <button type="submit" class="btn btn-primary">수정</button>
+          <button type="submit" class="btn btn-primary" onclick="alert('수정이 완료되었습니다.');">수정</button>
+          <a th:href="@{'/root/support/event/delete/' + ${event.getId()}}" onclick="return confirm('삭제하시겠습니까?');"
+             class="btn btn-danger">삭제</a>
         </div>
       </form>
     </div>
@@ -77,26 +92,5 @@
 <a class="scroll-to-top rounded" href="#page-top">
   <i class="fas fa-angle-up"></i>
 </a>
-
-<!-- Logout Modal-->
-<div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-     aria-hidden="true">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">Ready to Leave?</h5>
-        <button class="close" type="button" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">×</span>
-        </button>
-      </div>
-      <div class="modal-body">Select "Logout" below if you are ready to end your current session.</div>
-      <div class="modal-footer">
-        <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
-        <a class="btn btn-primary" href="login.html">Logout</a>
-      </div>
-    </div>
-  </div>
-</div>
-
 
 </html>

@@ -14,6 +14,10 @@ public interface TilService {
 
     Til updateTil(Long id, TilDTO tilDTO);
 
+    Page<TilDTO> getAdminTilList(Pageable pageable);
+
+    TilDTO getTil(Long id);
+
     Page<Til> getTilList(Pageable pageable);
 
     TilCurDTO currentTil(Long userId);

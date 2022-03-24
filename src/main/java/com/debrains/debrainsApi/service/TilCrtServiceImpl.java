@@ -2,6 +2,7 @@ package com.debrains.debrainsApi.service;
 
 import com.debrains.debrainsApi.common.AwsS3Uploader;
 import com.debrains.debrainsApi.dto.TilCrtDTO;
+import com.debrains.debrainsApi.dto.TilCrtFileDTO;
 import com.debrains.debrainsApi.entity.Til;
 import com.debrains.debrainsApi.entity.TilCrt;
 import com.debrains.debrainsApi.entity.TilCrtFile;
@@ -12,6 +13,7 @@ import com.debrains.debrainsApi.repository.TilCrtRepository;
 import com.debrains.debrainsApi.repository.TilRepository;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -72,7 +74,7 @@ public class TilCrtServiceImpl implements TilCrtService {
         tilCrt.changeTilCrt(tilCrtDTO);
 
         if (files != null && !files[0].isEmpty()) {
-            for (MultipartFile file:files) {
+            for (MultipartFile file : files) {
                 String path = awsS3Uploader.upload(file, dirName);
 
                 TilCrtFile tilCrtFile = TilCrtFile.builder()
@@ -111,6 +113,48 @@ public class TilCrtServiceImpl implements TilCrtService {
         TilCrtFile file = fileRepository.findById(id)
                 .orElseThrow(() -> new ApiException(ErrorCode.NOT_FOUND_FILE));
         awsS3Uploader.delete(file.getFileName());
+    }
+
+    @Override
+    public List<TilCrtDTO> getTilCrtById(Long id) {
+        List<TilCrtDTO> tilcrtList = tilCrtRepository.findAllById(id)
+                .stream().map(tilCrt -> modelMapper.map(tilCrt, TilCrtDTO.class)).collect(Collectors.toList());
+        return tilcrtList;
+    }
+
+    @Override
+    public Page<TilCrtDTO> getAdminTilcrtList(Pageable pageable) {
+        Page<TilCrtDTO> tilcrtList = tilCrtRepository.findAll(pageable)
+                .map(tilcrt -> modelMapper.map(tilcrt, TilCrtDTO.class));
+        return tilcrtList;
+    }
+
+    @Override
+    public TilCrtDTO getTilcrt(Long id) {
+        TilCrt entity = tilCrtRepository.findById(id).orElseThrow();
+        TilCrtDTO dto = modelMapper.map(entity, TilCrtDTO.class);
+        return dto;
+    }
+
+    @Override
+    public List<TilCrtFileDTO> getTilcrtFiles(Long id) {
+        List<TilCrtFileDTO> files = fileRepository.findByTilCrtId(id)
+                .stream().map(file -> modelMapper.map(file, TilCrtFileDTO.class)).collect(Collectors.toList());
+        return files;
+    }
+
+    @Override
+    public TilCrtFileDTO getTilCrtFileById(Long id) {
+        TilCrtFile file = fileRepository.findById(id).orElseThrow();
+        TilCrtFileDTO dto = modelMapper.map(file, TilCrtFileDTO.class);
+        return dto;
+    }
+
+    @Override
+    @Transactional
+    public void updateAdminTilCrt(TilCrtDTO tilcrt) {
+        TilCrt entity = tilCrtRepository.findById(tilcrt.getId()).orElseThrow();
+        entity.updateAdminTilCrt(tilcrt);
     }
 
     @Override

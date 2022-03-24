@@ -70,4 +70,9 @@ public class TilCrt extends BaseEntity {
         this.description = tilCrtDTO.getDescription();
     }
 
+    public void updateAdminTilCrt(TilCrtDTO tilCrtDTO){
+        this.denied = tilCrtDTO.isDenied();
+        this.open = tilCrtDTO.isOpen();
+    }
+
 }

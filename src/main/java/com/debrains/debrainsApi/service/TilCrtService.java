@@ -1,9 +1,11 @@
 package com.debrains.debrainsApi.service;
 
 import com.debrains.debrainsApi.dto.TilCrtDTO;
+import com.debrains.debrainsApi.dto.TilCrtFileDTO;
 import com.debrains.debrainsApi.entity.Til;
 import com.debrains.debrainsApi.entity.TilCrt;
 import com.debrains.debrainsApi.entity.User;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -19,6 +21,18 @@ public interface TilCrtService {
     void deleteTilCrt(TilCrt tilCrt);
 
     void deleteTilCrtFile(Long id);
+
+    List<TilCrtDTO> getTilCrtById(Long id);
+
+    Page<TilCrtDTO> getAdminTilcrtList(Pageable pageable);
+
+    TilCrtDTO getTilcrt(Long id);
+
+    List<TilCrtFileDTO> getTilcrtFiles(Long id);
+
+    TilCrtFileDTO getTilCrtFileById(Long id);
+
+    void updateAdminTilCrt(TilCrtDTO tilcrt);
 
     List<TilCrtDTO> tilCrtList(Long userId, Pageable pageable);
 
