@@ -55,6 +55,7 @@ public class AdminSupportController {
         return "redirect:/root/support/notice";
     }
 
+
     @GetMapping("/notice/{id}")
     public String getNoticeInfo(@PathVariable("id") Long id, Model model) {
         NoticeDTO getNotice = supportService.getNotice(id);
@@ -62,6 +63,16 @@ public class AdminSupportController {
         model.addAttribute("notice", getNotice);
         model.addAttribute("files", files);
         return "support/notice_detail";
+    }
+
+    @GetMapping("/notice/delete/{id}")
+    public String deleteNotice(@PathVariable("id") Long id){
+        supportService.deleteNotice(id);
+        List<SupportFileDTO> files = supportService.getAdminSupportFiles(id, SupportType.Notice);
+        for (SupportFileDTO file : files) {
+            supportService.deleteFile(file.getId());
+        }
+        return "redirect:/root/support/notice";
     }
 
 
@@ -102,6 +113,16 @@ public class AdminSupportController {
         return "redirect:/root/support/event";
     }
 
+    @GetMapping("/event/delete/{id}")
+    public String deleteEvent(@PathVariable("id") Long id){
+        supportService.deleteEvent(id);
+        List<SupportFileDTO> files = supportService.getAdminSupportFiles(id, SupportType.Event);
+        for (SupportFileDTO file : files) {
+            supportService.deleteFile(file.getId());
+        }
+        return "redirect:/root/support/event";
+    }
+
     /**
      * QnA
      */
@@ -139,9 +160,9 @@ public class AdminSupportController {
                 .header(HttpHeaders.CONTENT_DISPOSITION, contentDispostion).body(resource);
     }
 
-    @GetMapping("/delete")
+    @GetMapping("/file/{id}")
     @ResponseBody
-    public String fileDelete(@RequestParam Long id) {
+    public String deleteFile(@PathVariable("id") Long id) {
         supportService.deleteFile(id);
         return "succ";
     }

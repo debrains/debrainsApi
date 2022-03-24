@@ -96,29 +96,6 @@
 
       </tbody>
     </table>
-    <nav aria-label="..." style="float: right">
-      <ul class="pagination" th:with="start=${T(Math).floor(tilcrtList.number/10)*10 + 1},
-                                last=(${start + 9 < tilcrtList.totalPages ? start + 9 : tilcrtList.totalPages})">
-        <li class="page-item disabled">
-          <a th:href="${tilcrtList.first} ? '#' : @{/root/til(page=${tilcrtList.number - 1})}"
-             aria-label="Previous">
-            <span class="page-link" aria-hidden="true">&lt;</span>
-          </a>
-        </li>
-        <li th:each="page: ${#numbers.sequence(start, last)}"
-            th:class="${page == tilcrtList.number + 1} ? 'page-item active'">
-          <th:block th:if="${page}">
-            <a class="page-link" th:text="${page}" th:href="@{/root/til(page=${page}-1)}"></a>
-          </th:block>
-        </li>
-        <li th:class="${tilcrtList.last} ? 'disabled'">
-          <a th:href="${tilcrtList.last} ? '#' : @{/root/til(page=${tilList.number + 1})}"
-             aria-label="Next">
-            <span class="page-link" aria-hidden="true">&gt;</span>
-          </a>
-        </li>
-      </ul>
-    </nav>
   </div>
 </div>
 <a class="scroll-to-top rounded" href="#page-top">

@@ -116,9 +116,9 @@ public class TilCrtServiceImpl implements TilCrtService {
     }
 
     @Override
-    public Page<TilCrtDTO> getTilCrtById(Long id, Pageable pageable) {
-        Page<TilCrtDTO> tilcrtList = tilCrtRepository.findAllById(id, pageable)
-                .map(tilCrt -> modelMapper.map(tilCrt, TilCrtDTO.class));
+    public List<TilCrtDTO> getTilCrtById(Long id) {
+        List<TilCrtDTO> tilcrtList = tilCrtRepository.findAllById(id)
+                .stream().map(tilCrt -> modelMapper.map(tilCrt, TilCrtDTO.class)).collect(Collectors.toList());
         return tilcrtList;
     }
 

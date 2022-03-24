@@ -63,6 +63,7 @@ public class SupportServiceImpl implements SupportService {
     }
 
     @Override
+    @Transactional
     public void deleteNotice(Long id) {
         noticeRepository.deleteById(id);
     }
@@ -107,6 +108,7 @@ public class SupportServiceImpl implements SupportService {
     }
 
     @Override
+    @Transactional
     public void deleteEvent(Long id) {
         eventRepository.deleteById(id);
     }

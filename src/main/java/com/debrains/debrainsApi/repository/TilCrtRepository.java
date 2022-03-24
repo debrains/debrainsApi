@@ -10,8 +10,8 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 public interface TilCrtRepository extends JpaRepository<TilCrt, Long> {
-    @Query("select tr from TilCrt tr join tr.til t where t.id = :id")
-    Page<TilCrt> findAllById(@Param("id") Long id, Pageable pageable);
+    @Query("select tr from TilCrt tr join fetch tr.til t where t.id = :id")
+    List<TilCrt> findAllById(@Param("id") Long id);
 
     @Query("SELECT count(t.id) FROM TilCrt t " +
             "WHERE t.user.id=:id and t.til.id=:tilId " +

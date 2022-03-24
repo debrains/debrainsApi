@@ -22,7 +22,7 @@ public interface TilCrtService {
 
     void deleteTilCrtFile(Long id);
 
-    Page<TilCrtDTO> getTilCrtById(Long id, Pageable pageable);
+    List<TilCrtDTO> getTilCrtById(Long id);
 
     Page<TilCrtDTO> getAdminTilcrtList(Pageable pageable);
 

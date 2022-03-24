@@ -50,9 +50,9 @@ public class AdminTilController {
     }
 
     @GetMapping("/{id}")
-    public String tilDetailPage(@PathVariable("id") Long id, Model model, @PageableDefault(page = 0, size = 5, sort = "id", direction = Sort.Direction.DESC) Pageable pageable) {
+    public String tilDetailPage(@PathVariable("id") Long id, Model model) {
         TilDTO getTil = tilService.getTil(id);
-        Page<TilCrtDTO> getTilCrt = tilCrtService.getTilCrtById(getTil.getId(), pageable);
+        List<TilCrtDTO> getTilCrt = tilCrtService.getTilCrtById(getTil.getId());
         model.addAttribute("til", getTil);
         model.addAttribute("tilcrtList", getTilCrt);
         return "til/til_detail";
