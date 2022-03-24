@@ -1,36 +1,33 @@
 package com.debrains.debrainsApi.service;
 
 import com.debrains.debrainsApi.common.AwsS3Uploader;
-import com.debrains.debrainsApi.dto.EventDTO;
+import com.debrains.debrainsApi.dto.MailDTO;
 import com.debrains.debrainsApi.dto.SkillDTO;
 import com.debrains.debrainsApi.dto.SkillReqDTO;
 import com.debrains.debrainsApi.dto.user.ProfileDTO;
 import com.debrains.debrainsApi.dto.user.UserBoardDTO;
 import com.debrains.debrainsApi.dto.user.UserDTO;
 import com.debrains.debrainsApi.dto.user.UserInfoDTO;
+import com.debrains.debrainsApi.entity.Mail;
 import com.debrains.debrainsApi.entity.Profile;
 import com.debrains.debrainsApi.entity.Skill;
-import com.debrains.debrainsApi.entity.SkillReq;
 import com.debrains.debrainsApi.entity.User;
 import com.debrains.debrainsApi.exception.ApiException;
 import com.debrains.debrainsApi.exception.ErrorCode;
-import com.debrains.debrainsApi.repository.ProfileRepository;
-import com.debrains.debrainsApi.repository.SkillRepository;
-import com.debrains.debrainsApi.repository.SkillReqRepository;
-import com.debrains.debrainsApi.repository.UserRepository;
+import com.debrains.debrainsApi.handler.MailHandler;
+import com.debrains.debrainsApi.repository.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.modelmapper.ModelMapper;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Log4j2
 @RequiredArgsConstructor
@@ -42,10 +39,15 @@ public class UserServiceImpl implements UserService {
     private final ProfileRepository profileRepository;
     private final SkillRepository skillRepository;
     private final SkillReqRepository skillReqRepository;
+    private final MailRepository mailRepository;
     private final AwsS3Uploader awsS3Uploader;
     private final ModelMapper modelMapper;
 
+
+    private final JavaMailSender mailSender;
+
     private static String dirName = "user";
+
 
     @Override
     public UserInfoDTO getUserInfo(Long id) {
@@ -155,4 +157,29 @@ public class UserServiceImpl implements UserService {
     public void deleteSkillreq(Long id) {
         skillReqRepository.deleteById(id);
     }
+
+
+    @Override
+    public void sendEmail(MailDTO mail, MultipartFile[] file) {
+        try {
+            MailHandler mailHandler = new MailHandler(mailSender);
+            mailHandler.setTo(mail.getToAddr());
+            mailHandler.setSubject(mail.getTitle());
+            String htmlContent = "<p>" + mail.getContent() + "</p>";
+            mailHandler.setText(htmlContent, true);
+            if (file != null) {
+                for (int i = 0; i < file.length; i++) {
+                    mailHandler.setAttach(file[i].getOriginalFilename(), file[i]);
+                }
+            }
+            mailHandler.send();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        Mail entity = modelMapper.map(mail, Mail.class);
+        mailRepository.save(entity);
+    }
+
+
 }

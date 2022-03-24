@@ -1,5 +1,6 @@
 package com.debrains.debrainsApi.service;
 
+import com.debrains.debrainsApi.dto.MailDTO;
 import com.debrains.debrainsApi.dto.SkillDTO;
 import com.debrains.debrainsApi.dto.SkillReqDTO;
 import com.debrains.debrainsApi.dto.user.ProfileDTO;
@@ -51,7 +52,6 @@ public interface UserService {
                 .build();
     }
 
-
     Page<UserDTO> getUserList(Pageable pageable);
 
     UserDTO getAdminUserInfo(Long id);
@@ -72,4 +72,6 @@ public interface UserService {
     void deleteSkill(Long id);
 
     void deleteSkillreq(Long id);
+
+    void sendEmail(MailDTO mailDTO, MultipartFile[] file);
 }
