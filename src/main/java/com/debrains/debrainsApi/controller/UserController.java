@@ -53,7 +53,7 @@ public class UserController {
     @PatchMapping("/info")
     public ResponseEntity saveUserInfo(@RequestParam(value = "photo", required = false) MultipartFile img,
                                        @CurrentUser CustomUserDetails user,
-                                       @Validated UserInfoDTO dto) throws IOException {
+                                       @RequestBody @Validated UserInfoDTO dto) throws IOException {
         if (dto.getId() != user.getId()) {
             throw new ApiException(ErrorCode.NO_AUTHORIZATION);
         }

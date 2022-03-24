@@ -96,7 +96,8 @@ class UserControllerTest {
                 .andDo(print())
                 .andDo(document("get-userInfo",
                         links(
-                                linkWithRel("self").description("link to self")
+                                linkWithRel("self").description("link to self"),
+                                linkWithRel("profile").description("link to profile")
                         ),
                         requestHeaders(
                                 headerWithName(HttpHeaders.ACCEPT).description("accept header"),
@@ -114,7 +115,9 @@ class UserControllerTest {
                                 fieldWithPath("githubUrl").description("깃허브 URL"),
                                 fieldWithPath("blogUrl").description("블로그 URL"),
                                 fieldWithPath("snsUrl").description("SNS URL"),
-                                fieldWithPath("_links.self.href").description("link to self"))
+                                fieldWithPath("_links.self.href").description("link to self"),
+                                fieldWithPath("_links.profile.href").description("link to profile")
+                        )
                 ));
         verify(userService).getUserInfo(any());
     }
@@ -145,7 +148,8 @@ class UserControllerTest {
                 .andDo(print())
                 .andDo(document("save-userInfo",
                         links(
-                                linkWithRel("self").description("link to self")
+                                linkWithRel("self").description("link to self"),
+                                linkWithRel("profile").description("link to profile")
                         ),
                         requestHeaders(
                                 headerWithName(HttpHeaders.ACCEPT).description("accept header"),
@@ -173,7 +177,8 @@ class UserControllerTest {
                                 fieldWithPath("githubUrl").description("깃허브 URL"),
                                 fieldWithPath("blogUrl").description("블로그 URL"),
                                 fieldWithPath("snsUrl").description("SNS URL"),
-                                fieldWithPath("_links.self.href").description("link to self")
+                                fieldWithPath("_links.self.href").description("link to self"),
+                                fieldWithPath("_links.profile.href").description("link to profile")
                         )
                 ));
     }
@@ -238,7 +243,8 @@ class UserControllerTest {
                 .andDo(print())
                 .andDo(document("get-userProfile",
                         links(
-                                linkWithRel("self").description("link to self")
+                                linkWithRel("self").description("link to self"),
+                                linkWithRel("profile").description("link to profile")
                         ),
                         requestHeaders(
                                 headerWithName(HttpHeaders.ACCEPT).description("accept header"),
@@ -252,7 +258,9 @@ class UserControllerTest {
                                 fieldWithPath("userId").description("유저고유 ID"),
                                 fieldWithPath("purpose").description("목적"),
                                 fieldWithPath("skills").type(JsonFieldType.ARRAY).description("관심 스킬리스트"),
-                                fieldWithPath("_links.self.href").description("link to self"))
+                                fieldWithPath("_links.self.href").description("link to self"),
+                                fieldWithPath("_links.profile.href").description("link to profile")
+                        )
                 ));
         verify(userService).getProfile(any());
     }
@@ -279,7 +287,8 @@ class UserControllerTest {
                 .andDo(print())
                 .andDo(document("save-userProfile",
                         links(
-                                linkWithRel("self").description("link to self")
+                                linkWithRel("self").description("link to self"),
+                                linkWithRel("profile").description("link to profile")
                         ),
                         requestHeaders(
                                 headerWithName(HttpHeaders.ACCEPT).description("accept header"),
@@ -299,7 +308,8 @@ class UserControllerTest {
                                 fieldWithPath("userId").description("유저고유 ID"),
                                 fieldWithPath("purpose").description("목적"),
                                 fieldWithPath("skills").type(JsonFieldType.ARRAY).description("관심 스킬리스트"),
-                                fieldWithPath("_links.self.href").description("link to self")
+                                fieldWithPath("_links.self.href").description("link to self"),
+                                fieldWithPath("_links.profile.href").description("link to profile")
                         )
                 ));
 
@@ -335,7 +345,8 @@ class UserControllerTest {
                 .andDo(print())
                 .andDo(document("get-userBoard",
                         links(
-                                linkWithRel("self").description("link to self")
+                                linkWithRel("self").description("link to self"),
+                                linkWithRel("profile").description("link to profile")
                         ),
                         requestHeaders(
                                 headerWithName(HttpHeaders.ACCEPT).description("accept header"),
@@ -355,7 +366,9 @@ class UserControllerTest {
                                 fieldWithPath("snsUrl").description("SNS URL"),
                                 fieldWithPath("purpose").description("목적"),
                                 fieldWithPath("skills").type(JsonFieldType.ARRAY).description("관심 스킬리스트"),
-                                fieldWithPath("_links.self.href").description("link to self"))
+                                fieldWithPath("_links.self.href").description("link to self"),
+                                fieldWithPath("_links.profile.href").description("link to profile")
+                        )
                 ));
         verify(userService).getUserBoard(any());
     }
@@ -392,7 +405,8 @@ class UserControllerTest {
                 .andDo(print())
                 .andDo(document("get-userQnaList",
                         links(
-                                linkWithRel("self").description("link to self")
+                                linkWithRel("self").description("link to self"),
+                                linkWithRel("profile").description("link to profile")
                         ),
                         requestHeaders(
                                 headerWithName(HttpHeaders.ACCEPT).description("accept header"),
@@ -410,7 +424,8 @@ class UserControllerTest {
                                 fieldWithPath("_embedded.qnaDTOList[].answer").description("작성된 답변 from 관리자"),
                                 fieldWithPath("_embedded.qnaDTOList[].regDate").description("생성날짜"),
                                 fieldWithPath("_embedded.qnaDTOList[]._links.self.href").description("link to QnA"),
-                                fieldWithPath("_links.self.href").description("link to self")
+                                fieldWithPath("_links.self.href").description("link to self"),
+                                fieldWithPath("_links.profile.href").description("link to profile")
                         )
                 ));
         verify(supportService).getQnaListByUserId(id);

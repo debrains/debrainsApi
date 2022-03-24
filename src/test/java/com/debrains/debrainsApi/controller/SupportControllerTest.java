@@ -98,7 +98,8 @@ class SupportControllerTest {
                 .andDo(print())
                 .andDo(document("get-noticeList",
                         links(
-                                linkWithRel("self").description("link to self")
+                                linkWithRel("self").description("link to self"),
+                                linkWithRel("profile").description("link to profile")
                         ),
                         requestHeaders(
                                 headerWithName(HttpHeaders.ACCEPT).description("accept header"),
@@ -116,7 +117,8 @@ class SupportControllerTest {
                                 fieldWithPath("_embedded.noticeDTOList[].top").description("상단고정여부"),
                                 fieldWithPath("_embedded.noticeDTOList[].regDate").description("생성날짜"),
                                 fieldWithPath("_embedded.noticeDTOList[]._links.self.href").description("link to Notice"),
-                                fieldWithPath("_links.self.href").description("link to self")
+                                fieldWithPath("_links.self.href").description("link to self"),
+                                fieldWithPath("_links.profile.href").description("link to profile")
                         )
                 ));
         verify(supportService).getNoticeList();
@@ -150,7 +152,8 @@ class SupportControllerTest {
                 .andDo(document("get-notice",
                         links(
                                 linkWithRel("self").description("link to self"),
-                                linkWithRel("list").description("link to List")
+                                linkWithRel("list").description("link to List"),
+                                linkWithRel("profile").description("link to profile")
                         ),
                         requestHeaders(
                                 headerWithName(HttpHeaders.ACCEPT).description("accept header"),
@@ -168,7 +171,8 @@ class SupportControllerTest {
                                 fieldWithPath("top").description("상단고정여부"),
                                 fieldWithPath("regDate").description("생성날짜"),
                                 fieldWithPath("_links.self.href").description("link to self"),
-                                fieldWithPath("_links.list.href").description("link to List")
+                                fieldWithPath("_links.list.href").description("link to List"),
+                                fieldWithPath("_links.profile.href").description("link to profile")
                         )
                 ));
         verify(supportService).getNotice(any());
@@ -204,7 +208,8 @@ class SupportControllerTest {
                 .andDo(print())
                 .andDo(document("get-eventList",
                         links(
-                            linkWithRel("self").description("link to self")
+                            linkWithRel("self").description("link to self"),
+                            linkWithRel("profile").description("link to profile")
                         ),
                         requestHeaders(
                             headerWithName(HttpHeaders.ACCEPT).description("accept header"),
@@ -222,7 +227,8 @@ class SupportControllerTest {
                             fieldWithPath("_embedded.eventDTOList[].ended").description("종료여부"),
                             fieldWithPath("_embedded.eventDTOList[].regDate").description("생성날짜"),
                             fieldWithPath("_embedded.eventDTOList[]._links.self.href").description("link to Event"),
-                            fieldWithPath("_links.self.href").description("link to self")
+                            fieldWithPath("_links.self.href").description("link to self"),
+                            fieldWithPath("_links.profile.href").description("link to profile")
                         )
                 ));
         verify(supportService).getEventList();
@@ -256,7 +262,8 @@ class SupportControllerTest {
                 .andDo(document("get-event",
                         links(
                             linkWithRel("self").description("link to self"),
-                            linkWithRel("list").description("link to List")
+                            linkWithRel("list").description("link to List"),
+                            linkWithRel("profile").description("link to profile")
                         ),
                         requestHeaders(
                             headerWithName(HttpHeaders.ACCEPT).description("accept header"),
@@ -274,7 +281,8 @@ class SupportControllerTest {
                                 fieldWithPath("ended").description("종료여부"),
                                 fieldWithPath("regDate").description("생성날짜"),
                                 fieldWithPath("_links.self.href").description("link to self"),
-                                fieldWithPath("_links.list.href").description("link to List")
+                                fieldWithPath("_links.list.href").description("link to List"),
+                                fieldWithPath("_links.profile.href").description("link to profile")
                         )
                 ));
         verify(supportService).getEvent(any());
@@ -308,7 +316,8 @@ class SupportControllerTest {
                 .andDo(print())
                 .andDo(document("get-qna",
                         links(
-                                linkWithRel("self").description("link to self")
+                                linkWithRel("self").description("link to self"),
+                                linkWithRel("profile").description("link to profile")
                         ),
                         requestHeaders(
                                 headerWithName(HttpHeaders.ACCEPT).description("accept header"),
@@ -325,7 +334,8 @@ class SupportControllerTest {
                                 fieldWithPath("completed").description("완료여부"),
                                 fieldWithPath("answer").description("작성된 답변 from 관리자"),
                                 fieldWithPath("regDate").description("생성날짜"),
-                                fieldWithPath("_links.self.href").description("link to self")
+                                fieldWithPath("_links.self.href").description("link to self"),
+                                fieldWithPath("_links.profile.href").description("link to profile")
                         )
                 ));
         verify(supportService).getQna(any());
@@ -389,7 +399,8 @@ class SupportControllerTest {
                 .andDo(document("save-qna",
                         links(
                                 linkWithRel("self").description("link to self"),
-                                linkWithRel("create").description("link to create qna")
+                                linkWithRel("create").description("link to create qna"),
+                                linkWithRel("profile").description("link to profile")
                         ),
                         requestHeaders(
                                 headerWithName(HttpHeaders.ACCEPT).description("accept header"),
@@ -413,7 +424,8 @@ class SupportControllerTest {
                                 fieldWithPath("answer").description("작성된 답변 from 관리자"),
                                 fieldWithPath("regDate").description("생성날짜"),
                                 fieldWithPath("_links.self.href").description("link to self"),
-                                fieldWithPath("_links.create.href").description("link to QnA")
+                                fieldWithPath("_links.create.href").description("link to QnA"),
+                                fieldWithPath("_links.profile.href").description("link to profile")
                         )
                 ));
         verify(supportService).saveQna(any());
@@ -440,6 +452,7 @@ class SupportControllerTest {
                                 headerWithName(HttpHeaders.CONTENT_TYPE).description("content type")
                         ),
                         requestFields(
+                                fieldWithPath("id").description("skill request ID"),
                                 fieldWithPath("request").description("skill request")
                         )
                 ));
