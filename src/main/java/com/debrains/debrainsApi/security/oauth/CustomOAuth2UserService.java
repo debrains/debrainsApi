@@ -5,7 +5,8 @@ import com.debrains.debrainsApi.common.UserRole;
 import com.debrains.debrainsApi.common.UserState;
 import com.debrains.debrainsApi.entity.Profile;
 import com.debrains.debrainsApi.entity.User;
-import com.debrains.debrainsApi.exception.OAuthProcessingException;
+import com.debrains.debrainsApi.exception.ApiException;
+import com.debrains.debrainsApi.exception.ErrorCode;
 import com.debrains.debrainsApi.repository.ProfileRepository;
 import com.debrains.debrainsApi.repository.UserRepository;
 import com.debrains.debrainsApi.security.CustomUserDetails;
@@ -40,7 +41,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         OAuth2UserInfo userInfo = OAuth2UserInfoFactory.getOAuth2UserInfo(authProvider, oAuth2User.getAttributes());
 
         if (userInfo.getEmail().isEmpty()) {
-            throw new OAuthProcessingException("Email not found from OAuth2 provider");
+            throw new ApiException(ErrorCode.NO_EMAIL);
         }
         Optional<User> userOptional = userRepository.findByEmail(userInfo.getEmail());
         User user;
@@ -48,7 +49,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         if (userOptional.isPresent()) {
             user = userOptional.get();
             if (authProvider != user.getAuthProvider()) {
-                throw new OAuthProcessingException("Wrong Match Auth Provider");
+                throw new ApiException(ErrorCode.WRONG_MATCH_PROVIDER);
             }
             log.info(user.getEmail() + " 로그인!");
 

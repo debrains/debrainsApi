@@ -1,6 +1,6 @@
 package com.debrains.debrainsApi.service;
 
-import com.debrains.debrainsApi.exception.BadRequestException;
+import com.debrains.debrainsApi.exception.TokenException;
 import com.debrains.debrainsApi.repository.UserRepository;
 import com.debrains.debrainsApi.security.CustomUserDetails;
 import com.debrains.debrainsApi.security.jwt.JwtTokenProvider;
@@ -29,10 +29,10 @@ public class AuthService {
     public String refreshToken(HttpServletRequest request, HttpServletResponse response, String oldAccessToken) {
         // Validation Refresh Token
         String oldRefreshToken = CookieUtil.getCookie(request, cookieKey)
-                .map(Cookie::getValue).orElseThrow(() -> new BadRequestException("No Refresh Token Cookie"));
+                .map(Cookie::getValue).orElseThrow(() -> new TokenException("No Refresh Token Cookie"));
 
         if (!tokenProvider.validateToken(oldRefreshToken)) {
-            throw new BadRequestException("Not Validated Refresh Token");
+            throw new TokenException("Not Validated Refresh Token");
         }
 
         Authentication authentication = tokenProvider.getAuthentication(oldAccessToken);
@@ -42,7 +42,7 @@ public class AuthService {
         String savedToken = userRepository.getRefreshTokenById(id);
 
         if (!savedToken.equals(oldRefreshToken)) {
-            throw new BadRequestException("Not Matched Refresh Token");
+            throw new TokenException("Not Matched Refresh Token");
         }
 
         String accessToken = tokenProvider.createAccessToken(authentication);
