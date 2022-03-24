@@ -94,11 +94,11 @@ public class Til extends BaseEntity {
      */
     public void addCrtCnt() {
         this.crtCnt += 1;
-        user.calExp(100L);
+        this.user.calExp(100L);
     }
 
     public void removeCrtCnt() {
         this.crtCnt -= 1;
-        user.calExp(-100L);
+        this.user.calExp(-100L);
     }
 }

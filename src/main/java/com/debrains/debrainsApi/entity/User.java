@@ -51,7 +51,8 @@ public class User extends BaseEntity {
 
     private String icon;
     private Integer tier;
-    private Long exp;
+    @Builder.Default
+    private Long exp = 0L;
     private String memo;
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime lastLoginDate;

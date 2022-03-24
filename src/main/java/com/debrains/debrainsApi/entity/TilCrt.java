@@ -57,6 +57,7 @@ public class TilCrt extends BaseEntity {
     @JsonSerialize(using = UserSerializer.class)
     private User user;
 
+    @Builder.Default
     @OneToMany(mappedBy = "tilCrt", cascade = CascadeType.ALL)
     private List<TilCrtFile> files = new ArrayList<>();
 
