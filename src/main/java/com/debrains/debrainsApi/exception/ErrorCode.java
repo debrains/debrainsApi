@@ -16,6 +16,11 @@ public enum ErrorCode {
     METHOD_NOT_ALLOWED(HttpStatus.METHOD_NOT_ALLOWED, "CO05", "잘못된 요청입니다."),
     INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "CO06", "서버 에러입니다."),
 
+    // AUTH
+    NO_EMAIL(HttpStatus.BAD_REQUEST, "AU01", "이메일주소를 공개해주세요."),
+    WRONG_MATCH_PROVIDER(HttpStatus.BAD_REQUEST, "AU02", "가입한 플랫폼으로 로그인해주세요."),
+    NO_REFRESH_TOKEN(HttpStatus.BAD_REQUEST, "AU03", "유효한 토큰이 없습니다."),
+
     // DATETIME
     ENDDATE_BEFORE_STARTDATE(HttpStatus.BAD_REQUEST, "DA01", "종료일이 시작일보다 빠를 수 없습니다."),
     ENDDATE_BEFORE_NOW(HttpStatus.BAD_REQUEST, "DA02", "종료일이 현재보다 빠를 수 없습니다."),
@@ -28,7 +33,6 @@ public enum ErrorCode {
     // USER
     USER_NOT_FOUND(HttpStatus.NOT_FOUND, "US01", "존재하지 않는 회원입니다."),
     FOUND_NAME(HttpStatus.CONFLICT, "US02", "이미 존재하는 닉네임입니다."),
-    NO_REFRESH_TOKEN(HttpStatus.BAD_REQUEST, "US03", "유효한 토큰이 없습니다."),
 
     // TIL
     CYCLE_KIND_WRONG(HttpStatus.BAD_REQUEST, "TI01", "인증주기가 잘못됐습니다."),

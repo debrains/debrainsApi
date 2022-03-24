@@ -9,8 +9,6 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-import javax.servlet.http.HttpServletRequest;
-
 @Log4j2
 @RestControllerAdvice
 public class ExceptionAdvice {
@@ -27,13 +25,11 @@ public class ExceptionAdvice {
     }
 
     /*
-     * Custom Bad Request Exception
+     * Custom Token Exception
      */
-    @ExceptionHandler(BadRequestException.class)
-    protected ResponseEntity<ErrorResponse> BadRequestExcetionHandler(final BadRequestException e) {
-        log.error("Bad Request Exception", e);
-        final ErrorResponse response = ErrorResponse.of(ErrorCode.NO_REFRESH_TOKEN);
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+    @ExceptionHandler(TokenException.class)
+    protected void tokenExceptionHandler(final TokenException e) {
+        log.error("Token Exception", e);
     }
 
     /*

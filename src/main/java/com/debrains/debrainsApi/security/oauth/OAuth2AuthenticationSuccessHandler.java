@@ -1,6 +1,6 @@
 package com.debrains.debrainsApi.security.oauth;
 
-import com.debrains.debrainsApi.exception.BadRequestException;
+import com.debrains.debrainsApi.exception.TokenException;
 import com.debrains.debrainsApi.security.jwt.JwtTokenProvider;
 import com.debrains.debrainsApi.util.CookieUtil;
 import lombok.RequiredArgsConstructor;
@@ -49,7 +49,7 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
                 .map(Cookie::getValue);
 
         if (redirectUri.isPresent() && !isAuthorizedRedirectUri(redirectUri.get())) {
-            throw new BadRequestException("redirect URIs are not matched");
+            throw new TokenException("redirect URIs are not matched");
         }
         String targetUrl = redirectUri.orElse(getDefaultTargetUrl());
 
