@@ -212,7 +212,7 @@ public class SupportServiceImpl implements SupportService {
     }
 
     public void saveFile(MultipartFile[] files, Long id, SupportType type) throws IOException {
-        if (!files[0].isEmpty()) {
+        if (files != null && !files[0].isEmpty()) {
             for (MultipartFile file:files) {
                 String path = awsS3Uploader.upload(file, dirName);
 

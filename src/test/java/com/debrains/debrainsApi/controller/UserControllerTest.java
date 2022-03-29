@@ -26,6 +26,8 @@ import org.springframework.context.annotation.Import;
 import org.springframework.hateoas.MediaTypes;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
 import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -136,13 +138,21 @@ class UserControllerTest {
                 .blogUrl("https://devdev.github.io/")
                 .snsUrl("https://www.instagram.com/devdev")
                 .build();
+        MockMultipartFile formPart = new MockMultipartFile("userInfoDTO", "userInfoDTO",
+                MediaType.APPLICATION_JSON_VALUE, objectMapper.writeValueAsString(dto).getBytes());
 
         // when & then
-        mvc.perform(patch("/user/info")
+        mvc.perform(RestDocumentationRequestBuilders.fileUpload("/user/info")
+                        .file(formPart)
+                        .with(request -> {
+                            request.setMethod("PATCH");
+                            return request;
+                            })
                         .with(csrf())
                         .contentType(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.MULTIPART_FORM_DATA_VALUE)
                         .accept(MediaTypes.HAL_JSON)
-                        .content(objectMapper.writeValueAsString(dto)))
+                        )
                 .andExpect(status().isOk())
                 .andExpect(header().string(HttpHeaders.CONTENT_TYPE, MediaTypes.HAL_JSON_VALUE))
                 .andDo(print())
@@ -155,7 +165,8 @@ class UserControllerTest {
                                 headerWithName(HttpHeaders.ACCEPT).description("accept header"),
                                 headerWithName(HttpHeaders.CONTENT_TYPE).description("content type")
                         ),
-                        requestFields(
+                        requestPartFields(
+                                "userInfoDTO",
                                 fieldWithPath("id").description("유저고유 ID"),
                                 fieldWithPath("email").description("이메일 (수정불가)"),
                                 fieldWithPath("name").description("닉네임 (중복불가)"),

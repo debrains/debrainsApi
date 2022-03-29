@@ -45,20 +45,18 @@ public class TilCrtServiceImpl implements TilCrtService {
         TilCrt entity = dtoToEntity(tilCrtDTO, til);
         TilCrt tilCrt = tilCrtRepository.save(entity);
 
-        if (files != null) {
-            if (!files[0].isEmpty()) {
-                for (MultipartFile file : files) {
-                    String path = awsS3Uploader.upload(file, dirName);
+        if (files != null && !files[0].isEmpty()) {
+            for (MultipartFile file : files) {
+                String path = awsS3Uploader.upload(file, dirName);
 
-                    TilCrtFile tilCrtFile = TilCrtFile.builder()
-                            .fileName(path.substring(path.indexOf(dirName)))
-                            .originalName(file.getOriginalFilename())
-                            .path(path)
-                            .size(file.getSize())
-                            .tilCrt(TilCrt.builder().id(tilCrt.getId()).build())
-                            .build();
-                    fileRepository.save(tilCrtFile);
-                }
+                TilCrtFile tilCrtFile = TilCrtFile.builder()
+                        .fileName(path.substring(path.indexOf(dirName)))
+                        .originalName(file.getOriginalFilename())
+                        .path(path)
+                        .size(file.getSize())
+                        .tilCrt(TilCrt.builder().id(tilCrt.getId()).build())
+                        .build();
+                fileRepository.save(tilCrtFile);
             }
         }
 
