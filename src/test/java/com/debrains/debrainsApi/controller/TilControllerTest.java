@@ -94,7 +94,7 @@ class TilControllerTest {
                                 headerWithName(HttpHeaders.ACCEPT).description("accept header"),
                                 headerWithName(HttpHeaders.CONTENT_TYPE).description("content type")
                         ),
-                        requestFields(
+                        relaxedRequestFields(
                                 fieldWithPath("userId").description("작성자 ID"),
                                 fieldWithPath("subject").description("목표"),
                                 fieldWithPath("description").description("목표 상세내용"),
