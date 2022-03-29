@@ -17,6 +17,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.modelmapper.ModelMapper;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
@@ -100,7 +101,7 @@ class SupportServiceTest {
 
     @Test
     @DisplayName("공지사항 저장")
-    void saveNotice() {
+    void saveNotice() throws IOException {
         // given
         NoticeDTO dto = NoticeDTO.builder()
                 .id(1L)
@@ -115,7 +116,7 @@ class SupportServiceTest {
         given(noticeRepository.save(any())).willReturn(entity);
 
         // when
-        Long id = supportService.saveNotice(dto);
+        Long id = supportService.saveNotice(null,dto);
 
         // then
         assertThat(id).isEqualTo(dto.getId());
@@ -156,7 +157,7 @@ class SupportServiceTest {
 
     @Test
     @DisplayName("이벤트 저장")
-    void saveEvent() {
+    void saveEvent() throws IOException {
         // given
         EventDTO dto = EventDTO.builder()
                 .id(1L)
@@ -172,7 +173,7 @@ class SupportServiceTest {
         given(modelMapper.map(any(EventDTO.class), any())).willReturn(entity);
 
         // when
-        Long eventId = supportService.saveEvent(dto);
+        Long eventId = supportService.saveEvent(dto, null);
 
         // then
         assertThat(eventId).isEqualTo(dto.getId());

@@ -51,15 +51,15 @@ public class UserController {
     }
 
     @PatchMapping("/info")
-    public ResponseEntity saveUserInfo(@RequestParam(value = "photo", required = false) MultipartFile img,
+    public ResponseEntity saveUserInfo(@RequestPart(value = "photo", required = false) MultipartFile img,
                                        @CurrentUser CustomUserDetails user,
-                                       @RequestBody @Validated UserInfoDTO dto) throws IOException {
-        if (dto.getId() != user.getId()) {
+                                       @RequestPart @Validated UserInfoDTO userInfoDTO) throws IOException {
+        if (userInfoDTO.getId() != user.getId()) {
             throw new ApiException(ErrorCode.NO_AUTHORIZATION);
         }
-        userService.updateUserInfo(img, dto);
+        userService.updateUserInfo(img, userInfoDTO);
 
-        EntityModel<UserInfoDTO> resource = EntityModel.of(dto);
+        EntityModel<UserInfoDTO> resource = EntityModel.of(userInfoDTO);
         resource.add(linkTo(this.getClass()).slash("/info").withSelfRel());
         resource.add(Link.of("/docs/index.html#resources-user-update").withRel("profile"));
 
