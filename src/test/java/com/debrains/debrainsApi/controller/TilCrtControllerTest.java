@@ -237,7 +237,7 @@ public class TilCrtControllerTest {
                         pathParameters(
                                 parameterWithName("id").description("TIL_CRT ID")
                         ),
-                        responseFields(
+                        relaxedResponseFields(
                                 fieldWithPath("id").description("TIL_CRT ID"),
                                 fieldWithPath("userId").description("작성자 ID"),
                                 fieldWithPath("tilId").description("TIL ID"),
@@ -250,6 +250,8 @@ public class TilCrtControllerTest {
                                 fieldWithPath("endTime3").description("종료일3"),
                                 fieldWithPath("watchTime").description("스탑워치"),
                                 fieldWithPath("filePath").description("파일링크"),
+                                fieldWithPath("open").description("공개여부"),
+                                fieldWithPath("denied").description("관리자승인여부"),
                                 fieldWithPath("_links.self.href").description("link to self"),
                                 fieldWithPath("_links.profile.href").description("link to profile"),
                                 fieldWithPath("_links.update.href").description("link to update")
@@ -320,7 +322,7 @@ public class TilCrtControllerTest {
                         responseHeaders(
                                 headerWithName(HttpHeaders.CONTENT_TYPE).description("content type")
                         ),
-                        responseFields(
+                        relaxedResponseFields(
                                 fieldWithPath("id").description("TIL_CRT ID"),
                                 fieldWithPath("userId").description("작성자 ID"),
                                 fieldWithPath("tilId").description("TIL ID"),
@@ -333,6 +335,8 @@ public class TilCrtControllerTest {
                                 fieldWithPath("endTime3").description("종료일3"),
                                 fieldWithPath("watchTime").description("스탑워치"),
                                 fieldWithPath("filePath").description("파일링크"),
+                                fieldWithPath("open").description("공개여부"),
+                                fieldWithPath("denied").description("관리자승인여부"),
                                 fieldWithPath("_links.self.href").description("link to self"),
                                 fieldWithPath("_links.profile.href").description("link to profile")
                         )
