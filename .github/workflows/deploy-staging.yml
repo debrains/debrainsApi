@@ -10,7 +10,7 @@ jobs:
     defaults:
       run:
         shell: bash
-        working-directory: backend
+
     steps:
       - name: Checkout Github-Actions
         uses: actions/checkout@v2
