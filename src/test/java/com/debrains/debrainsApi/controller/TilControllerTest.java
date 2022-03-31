@@ -164,9 +164,9 @@ class TilControllerTest {
     @DisplayName("til리스트 조회하기")
     public void queryTils() throws Exception {
         //Given
-        IntStream.range(0, 30).forEach(i -> {
-            generateTil(i);
-        });
+//        IntStream.range(0, 30).forEach(i -> {
+//            generateTil(i);
+//        });
 
         //When & Then
         mockMvc.perform(get("/tils")
