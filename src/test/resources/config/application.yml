@@ -8,6 +8,30 @@ spring:
     database-platform: org.hibernate.dialect.H2Dialect
     defer-datasource-initialization: true
 
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: tmp
+            client-secret: tmp
+            redirectUri: tmp
+            scope: profile, email
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: tmp
+    password: tmp
+
+app:
+  auth:
+    token:
+      secret-key: tmp
+      refresh-cookie-key: tmp
+  oauth2:
+    authorizedRedirectUris: tmp
+
+
 cloud:
   aws:
     credentials:
@@ -17,3 +41,5 @@ cloud:
       bucket: debrains-file
     region:
       static: ap-northeast-2
+    stack:
+      auto: false
