@@ -37,6 +37,6 @@ jobs:
         run: aws deploy push --application-name debrainsApi --description "Debraions API Test" --s3-location s3://debrain.co.kr/deploy/debrainsApi-staging.zip --source .
 
       - name: Start Deploy with CodeDeploy
-        run: aws deploy create-deployment --application-name debrainsApi --deployment-config-name CodeDeployDefault.OneAtATime --deployment-group-name debrainsApi-staging --s3-location bucket=debrains.co.kr,bundleType=zip,key=deploy/debrainsApi-staging.zip
+        run: aws deploy create-deployment --application-name debrainsApi --deployment-config-name CodeDeployDefault.OneAtATime --deployment-group-name debrainsApi-staging --s3-location bucket=debrain.co.kr,bundleType=zip,key=deploy/debrainsApi-staging.zip
 
 
