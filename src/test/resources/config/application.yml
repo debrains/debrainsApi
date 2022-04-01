@@ -1,0 +1,19 @@
+spring:
+  datasource:
+    driver-class-name: org.h2.Driver
+    url: jdbc:h2:mem:test
+    username: sa
+    password:
+  jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
+    defer-datasource-initialization: true
+
+cloud:
+  aws:
+    credentials:
+      access-key: tmp
+      secret-key: tmp
+    s3:
+      bucket: debrains-file
+    region:
+      static: ap-northeast-2

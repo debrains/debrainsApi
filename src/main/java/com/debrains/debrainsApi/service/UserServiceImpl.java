@@ -14,7 +14,7 @@ import com.debrains.debrainsApi.entity.Skill;
 import com.debrains.debrainsApi.entity.User;
 import com.debrains.debrainsApi.exception.ApiException;
 import com.debrains.debrainsApi.exception.ErrorCode;
-import com.debrains.debrainsApi.handler.MailHandler;
+import com.debrains.debrainsApi.common.MailHandler;
 import com.debrains.debrainsApi.repository.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
