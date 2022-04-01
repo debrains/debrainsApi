@@ -37,6 +37,6 @@ jobs:
         run: aws deploy push --application-name debrainsApi --description "Debraions API" --s3-location s3://debrain.co.kr/deploy/debrainsApi.zip --source .
 
       - name: Start Deploy with CodeDeploy
-        run: aws deploy create-deployment --application-name debrainsApi --deployment-config-name CodeDeployDefault.OneAtATime --deployment-group-name debrainsApi-production --s3-location bucket=debrains.co.kr,bundleType=zip,key=deploy/debrainsApi.zip
+        run: aws deploy create-deployment --application-name debrainsApi --deployment-config-name CodeDeployDefault.OneAtATime --deployment-group-name debrainsApi-production --s3-location bucket=debrain.co.kr,bundleType=zip,key=deploy/debrainsApi.zip
 
 
