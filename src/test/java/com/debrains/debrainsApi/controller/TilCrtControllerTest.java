@@ -91,7 +91,7 @@ public class TilCrtControllerTest {
 
         // When, Then
         mockMvc.perform(multipart("/til-crts/")
-                .file(files)
+//                .file(files)
                 .file(metadata)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .contentType(MediaType.MULTIPART_FORM_DATA_VALUE)
@@ -114,8 +114,8 @@ public class TilCrtControllerTest {
                                 headerWithName(HttpHeaders.CONTENT_TYPE).description("content type")
                         ),
                         requestParts(
-                                partWithName("tilCrtDTO").description("TIL 인증"),
-                                partWithName("files").description("사진")
+                                partWithName("tilCrtDTO").description("TIL 인증")
+//                                partWithName("files").description("사진")
                         ),
                         relaxedRequestPartFields(
                                 "tilCrtDTO",
@@ -280,7 +280,7 @@ public class TilCrtControllerTest {
         // When, Then
         mockMvc.perform(
                 RestDocumentationRequestBuilders.fileUpload("/til-crts/{id}", tilCrt.getId())
-                        .file(files)
+//                        .file(files)
                         .file(metadata)
                         .with(request -> {
                             request.setMethod("PATCH");
@@ -305,8 +305,8 @@ public class TilCrtControllerTest {
                                 headerWithName(HttpHeaders.CONTENT_TYPE).description("content type")
                         ),
                         requestParts(
-                                partWithName("tilCrtDTO").description("TIL 인증"),
-                                partWithName("files").description("사진")
+                                partWithName("tilCrtDTO").description("TIL 인증")
+//                                partWithName("files").description("사진")
                         ),
                         relaxedRequestPartFields(
                                 "tilCrtDTO",
@@ -394,6 +394,7 @@ public class TilCrtControllerTest {
                 .watchTime(LocalTime.of(5, 0, 0))
                 .build();
 
-        return tilCrtService.createTilCrts(files, tilCrtDTO);
+//        return tilCrtService.createTilCrts(files, tilCrtDTO);
+        return tilCrtService.createTilCrts(null, tilCrtDTO);
     }
 }
