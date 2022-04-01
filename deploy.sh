@@ -21,4 +21,4 @@ else
 fi
 
 echo "> $JAR_PATH Deploy"
-nohup java -jar $JAR_PATH >> /usr/local/debrainsApi/deploy.log 2>&1
+nohup java -jar $JAR_PATH >> /usr/local/debrainsApi/deploy.log 2>&1 &
