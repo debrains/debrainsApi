@@ -37,4 +37,4 @@ out/
 .vscode/
 
 ### 설정파일
-**/*.yml
+**/main/**/*.yml

@@ -6,3 +6,10 @@ CREATE TABLE skill(
    NAME     VARCHAR(100) unique,
    SEQ      INTEGER
 );
+
+CREATE TABLE IF NOT EXISTS user_table
+(
+    user_id         bigint auto_increment
+        primary key,
+    email           varchar(255)  not null
+);

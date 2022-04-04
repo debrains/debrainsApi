@@ -1,4 +1,4 @@
-package com.debrains.debrainsApi.handler;
+package com.debrains.debrainsApi.common;
 
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.mail.javamail.JavaMailSender;

@@ -10,6 +10,10 @@ group = 'com.debrains'
 version = '0.0.1-SNAPSHOT'
 sourceCompatibility = '11'
 
+jar {
+	enabled = false
+}
+
 configurations {
 	compileOnly {
 		extendsFrom annotationProcessor
@@ -60,12 +64,8 @@ dependencies {
 
 }
 
-// Test시 Profile 변수설정
-ext.profile = (!project.hasProperty('profile') || !profile) ? 'dev' : profile
-
 test {
 	useJUnitPlatform()
-	systemProperty 'spring.profiles.active', "${profile}"
 }
 
 
