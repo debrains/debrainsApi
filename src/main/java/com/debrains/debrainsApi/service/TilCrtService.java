@@ -34,7 +34,7 @@ public interface TilCrtService {
 
     void updateAdminTilCrt(TilCrtDTO tilcrt);
 
-    List<TilCrtDTO> tilCrtList(Long userId, Pageable pageable);
+    List<TilCrtDTO> tilCrtList(Long userId, Long tilId, Pageable pageable);
 
     default TilCrt dtoToEntity(TilCrtDTO tilCrtDTO, Til til) {
         User user = User.builder().id(tilCrtDTO.getUserId()).build();
