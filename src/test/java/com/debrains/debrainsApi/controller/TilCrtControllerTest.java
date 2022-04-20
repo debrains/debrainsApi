@@ -80,7 +80,7 @@ public class TilCrtControllerTest {
         MockMultipartFile files = getFiles();
         TilCrtDTO tilCrtDTO = TilCrtDTO.builder()
                 .tilId(til.getId())
-                .description("인증 설명입니다.")
+                .description("tilCrt")
                 .startTime1(LocalDateTime.now().minusHours(4))
                 .endTime1(LocalDateTime.now())
                 .watchTime(LocalTime.of(5, 0, 0))
@@ -172,6 +172,7 @@ public class TilCrtControllerTest {
         });
 
         mockMvc.perform(get("/til-crts/")
+                .param("tilId", til.getId().toString())
                 .param("page", "0") // page는 0부터 시작
                 .param("size", "10")
                 .param("sort", "id,DESC")
@@ -271,7 +272,7 @@ public class TilCrtControllerTest {
 
         TilCrtDTO tilCrtDTO = modelMapper.map(tilCrt, TilCrtDTO.class);
 
-        String description = "수정된 til 인증입니다.";
+        String description = "til Crt modify";
         tilCrtDTO.setDescription(description);
 
         MockMultipartFile metadata = new MockMultipartFile("tilCrtDTO", "tilCrtDTO",

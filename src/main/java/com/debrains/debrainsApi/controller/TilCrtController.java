@@ -99,9 +99,9 @@ public class TilCrtController {
     public ResponseEntity<PagedModel<EntityModel<TilCrtDTO>>> queryTilCrts(
             @CurrentUser CustomUserDetails currentUser,
             @PageableDefault(sort = "id", direction = Sort.Direction.DESC) Pageable pageable,
-            PagedResourcesAssembler<TilCrtDTO> assembler) {
+            PagedResourcesAssembler<TilCrtDTO> assembler, @RequestParam(value = "tilId") Long tilId) {
 
-        List<TilCrtDTO> dto = tilCrtService.tilCrtList(currentUser.getId(), pageable);
+        List<TilCrtDTO> dto = tilCrtService.tilCrtList(currentUser.getId(), tilId, pageable);
 
         int start = (int) pageable.getOffset();
         int end = Math.min((start + pageable.getPageSize()), dto.size());
