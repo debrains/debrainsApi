@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
 import org.springframework.format.annotation.DateTimeFormat;
 
+import javax.persistence.Column;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
@@ -33,8 +34,10 @@ public class TilDTO {
     @NotBlank
     private String cycleStatus;
     private int cycleCnt;
+    private int crtCnt;
+    private int totalCnt;
 
     private boolean expired;
 
-    private LocalDateTime regDate;
+    private LocalDateTime regDate, modDate;
 }

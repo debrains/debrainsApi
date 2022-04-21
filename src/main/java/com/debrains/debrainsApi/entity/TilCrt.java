@@ -1,10 +1,6 @@
 package com.debrains.debrainsApi.entity;
 
 import com.debrains.debrainsApi.dto.TilCrtDTO;
-import com.debrains.debrainsApi.hateoas.TilSerializer;
-import com.debrains.debrainsApi.hateoas.UserSerializer;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import lombok.*;
 
 import javax.persistence.*;
@@ -29,7 +25,6 @@ public class TilCrt extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "til_id")
-    @JsonSerialize(using = TilSerializer.class)
     private Til til;
 
     private LocalDateTime startTime1;
@@ -54,7 +49,6 @@ public class TilCrt extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
-    @JsonSerialize(using = UserSerializer.class)
     private User user;
 
     @Builder.Default

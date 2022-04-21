@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -26,36 +27,40 @@ public class TilServiceImpl implements TilService {
 
     @Override
     @Transactional
-    public Til createTil(TilDTO tilDTO) {
+    public TilDTO createTil(TilDTO tilDTO) {
 
         Til til = dtoToEntity(tilDTO);
         til.totalCrtCount();
         Til newTil = tilRepository.save(til);
 
-        return newTil;
+        return modelMapper.map(newTil, TilDTO.class);
     }
 
     @Override
     @Transactional
-    public Til updateTil(Long id, TilDTO tilDTO) {
+    public TilDTO updateTil(Long id, TilDTO tilDTO) {
         Til til = tilRepository.findById(id)
                 .orElseThrow(() -> new ApiException(ErrorCode.TIL_NOT_FOUND));
 
         til.changeTil(tilDTO);
 
-        return til;
+        return modelMapper.map(til, TilDTO.class);
     }
 
     @Override
     @Transactional
-    public Page<Til> getTilList(Pageable pageable) {
-        Page<Til> page = tilRepository.findAll(pageable);
-        List<Til> tils = page.getContent();
-        for (Til til : tils) {
+    public List<TilDTO> getTilList(Long userId, Pageable pageable) {
+        System.out.println();
+        List<TilDTO> dtoList = tilRepository.findByUserId(userId, pageable)
+                .stream().map(entity -> modelMapper.map(entity, TilDTO.class))
+                .collect(Collectors.toList());
+
+        for (TilDTO dto : dtoList) {
+            Til til = modelMapper.map(dto, Til.class);
             til.expiredCheck();
         }
 
-        return page;
+        return dtoList;
     }
 
     @Override
@@ -83,7 +88,8 @@ public class TilServiceImpl implements TilService {
 
     @Override
     public TilDTO getTil(Long id) {
-        Til entity = tilRepository.findById(id).orElseThrow();
+        Til entity = tilRepository.findById(id)
+                .orElseThrow(() -> new ApiException(ErrorCode.TIL_NOT_FOUND));
         TilDTO dto = modelMapper.map(entity, TilDTO.class);
         return dto;
     }

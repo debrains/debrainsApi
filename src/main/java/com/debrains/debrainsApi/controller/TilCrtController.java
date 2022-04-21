@@ -79,10 +79,10 @@ public class TilCrtController {
         }
 
         tilCrtDTO.setUserId(currentUser.getId());
-        TilCrt newTilCrt = tilCrtService.createTilCrts(files, tilCrtDTO);
+        TilCrtDTO newTilCrt = tilCrtService.createTilCrts(files, tilCrtDTO);
         var selfLinkBuilder = linkTo(TilCrtController.class).slash(newTilCrt.getId());
 
-        EntityModel<TilCrt> resource = EntityModel.of(newTilCrt);
+        EntityModel<TilCrtDTO> resource = EntityModel.of(newTilCrt);
         URI createdUri = selfLinkBuilder.toUri();
         resource.add(linkTo(TilCrtController.class).slash(newTilCrt.getId()).withSelfRel());
         resource.add(linkTo(TilCrtController.class).withRel("til-crts"));

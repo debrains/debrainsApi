@@ -14,7 +14,7 @@ import java.util.List;
 
 public interface TilCrtService {
 
-    TilCrt createTilCrts(MultipartFile[] files, TilCrtDTO tilCrtDTO) throws IOException;
+    TilCrtDTO createTilCrts(MultipartFile[] files, TilCrtDTO tilCrtDTO) throws IOException;
 
     TilCrtDTO updateTilCrt(Long id, MultipartFile[] files, TilCrtDTO tilCrtDTO) throws IOException;
 
