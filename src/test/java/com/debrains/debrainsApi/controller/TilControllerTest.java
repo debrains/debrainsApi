@@ -109,7 +109,7 @@ class TilControllerTest {
                         ),
                         relaxedResponseFields(
                                 fieldWithPath("id").description("TIL ID"),
-                                fieldWithPath("user.id").description("작성자 ID"),
+                                fieldWithPath("userId").description("작성자 ID"),
                                 fieldWithPath("subject").description("목표"),
                                 fieldWithPath("description").description("목표 상세내용"),
                                 fieldWithPath("startDate").description("시작일"),
@@ -170,48 +170,40 @@ class TilControllerTest {
 
         //When & Then
         mockMvc.perform(get("/tils")
-                .param("page", "1") // page는 0부터 시작
+                .param("page", "0") // page는 0부터 시작
                 .param("size", "10")
                 .param("sort", "id,DESC")
         )
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("page").exists())
-                .andExpect(jsonPath("_embedded.tilList[0]._links.self").exists())
+                .andExpect(jsonPath("_embedded.tilDTOList[0]._links.self").exists())
                 .andExpect(jsonPath("_links.self").exists())
                 .andExpect(jsonPath("_links.profile").exists())
                 .andDo(document("get-tilList",
                         links(
-                                linkWithRel("first").description("처음 페이지"),
-                                linkWithRel("prev").description("이전 페이지"),
                                 linkWithRel("self").description("현재 페이지"),
-                                linkWithRel("next").description("다음 페이지"),
-                                linkWithRel("last").description("마지막 페이지"),
                                 linkWithRel("profile").description("link to profile")
                         ),
                         responseHeaders(
                                 headerWithName(HttpHeaders.CONTENT_TYPE).description("content type")
                         ),
                         responseFields(
-                                fieldWithPath("_embedded.tilList[].id").description("TIL ID"),
-                                fieldWithPath("_embedded.tilList[].user.id").description("작성자 ID"),
-                                fieldWithPath("_embedded.tilList[].subject").description("목표"),
-                                fieldWithPath("_embedded.tilList[].description").description("목표 상세내용"),
-                                fieldWithPath("_embedded.tilList[].startDate").description("시작일"),
-                                fieldWithPath("_embedded.tilList[].endDate").description("종료일"),
-                                fieldWithPath("_embedded.tilList[].cycleStatus").description("종류(EVERYDAY, WEEK)"),
-                                fieldWithPath("_embedded.tilList[].cycleCnt").description("인증 횟수"),
-                                fieldWithPath("_embedded.tilList[].crtCnt").description("현재 인증 횟수"),
-                                fieldWithPath("_embedded.tilList[].totalCnt").description("완료해야하는 총 인증 횟수"),
-                                fieldWithPath("_embedded.tilList[].expired").description("만료여부"),
-                                fieldWithPath("_embedded.tilList[].regDate").description("생성날짜"),
-                                fieldWithPath("_embedded.tilList[].modDate").description("수정날짜"),
-                                fieldWithPath("_embedded.tilList[]._links.self.href").description("link to self"),
-                                fieldWithPath("_links.first.href").description("처음 페이지"),
-                                fieldWithPath("_links.prev.href").description("이전 페이지"),
+                                fieldWithPath("_embedded.tilDTOList[].id").description("TIL ID"),
+                                fieldWithPath("_embedded.tilDTOList[].userId").description("작성자 ID"),
+                                fieldWithPath("_embedded.tilDTOList[].subject").description("목표"),
+                                fieldWithPath("_embedded.tilDTOList[].description").description("목표 상세내용"),
+                                fieldWithPath("_embedded.tilDTOList[].startDate").description("시작일"),
+                                fieldWithPath("_embedded.tilDTOList[].endDate").description("종료일"),
+                                fieldWithPath("_embedded.tilDTOList[].cycleStatus").description("종류(EVERYDAY, WEEK)"),
+                                fieldWithPath("_embedded.tilDTOList[].cycleCnt").description("인증 횟수"),
+                                fieldWithPath("_embedded.tilDTOList[].crtCnt").description("현재 인증 횟수"),
+                                fieldWithPath("_embedded.tilDTOList[].totalCnt").description("완료해야하는 총 인증 횟수"),
+                                fieldWithPath("_embedded.tilDTOList[].expired").description("만료여부"),
+                                fieldWithPath("_embedded.tilDTOList[].regDate").description("생성날짜"),
+                                fieldWithPath("_embedded.tilDTOList[].modDate").description("수정날짜"),
+                                fieldWithPath("_embedded.tilDTOList[]._links.self.href").description("link to self"),
                                 fieldWithPath("_links.self.href").description("현재 페이지"),
-                                fieldWithPath("_links.next.href").description("다음 페이지"),
-                                fieldWithPath("_links.last.href").description("마지막 페이지"),
                                 fieldWithPath("_links.profile.href").description("link to profile"),
                                 fieldWithPath("page.size").description("한 페이지 당 게시물 개수"),
                                 fieldWithPath("page.totalElements").description("총 게시물 수"),
@@ -225,7 +217,7 @@ class TilControllerTest {
     @WithAuthUser
     @DisplayName("기존의 til을 하나 조회하기")
     public void getTil() throws Exception {
-        Til til = generateTil(1);
+        TilDTO til = generateTil(1);
 
         mockMvc.perform(RestDocumentationRequestBuilders.get("/tils/{id}", til.getId()))
                 .andDo(print())
@@ -248,7 +240,7 @@ class TilControllerTest {
                         ),
                         responseFields(
                                 fieldWithPath("id").description("TIL ID"),
-                                fieldWithPath("user.id").description("작성자 ID"),
+                                fieldWithPath("userId").description("작성자 ID"),
                                 fieldWithPath("subject").description("목표"),
                                 fieldWithPath("description").description("목표 상세내용"),
                                 fieldWithPath("startDate").description("시작일"),
@@ -280,13 +272,12 @@ class TilControllerTest {
     @DisplayName("til 수정")
     public void updateTil() throws Exception {
         // Given
-        Til til = generateTil(1);
-        TilDTO tilDTO = modelMapper.map(til, TilDTO.class);
+        TilDTO tilDTO = generateTil(1);
         String tilSubject = "Updated Til";
         tilDTO.setSubject(tilSubject);
 
         // When & Then
-        mockMvc.perform(RestDocumentationRequestBuilders.patch("/tils/{id}", til.getId())
+        mockMvc.perform(RestDocumentationRequestBuilders.patch("/tils/{id}", tilDTO.getId())
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaTypes.HAL_JSON)
                 .content(objectMapper.writeValueAsString(tilDTO)))
@@ -316,7 +307,7 @@ class TilControllerTest {
                         ),
                         responseFields(
                                 fieldWithPath("id").description("TIL ID"),
-                                fieldWithPath("user.id").description("작성자 ID"),
+                                fieldWithPath("userId").description("작성자 ID"),
                                 fieldWithPath("subject").description("목표"),
                                 fieldWithPath("description").description("목표 상세내용"),
                                 fieldWithPath("startDate").description("시작일"),
@@ -337,7 +328,7 @@ class TilControllerTest {
     @WithAuthUser
     @DisplayName("til 삭제")
     void deleteTil() throws Exception {
-        Til til = generateTil(1);
+        TilDTO til = generateTil(1);
 
         mockMvc.perform(RestDocumentationRequestBuilders.delete("/tils/{id}", til.getId())
                 .contentType(MediaType.APPLICATION_JSON)
@@ -362,7 +353,7 @@ class TilControllerTest {
                 .andDo(document("current-til"));
     }
 
-    private Til generateTil(int index) {
+    private TilDTO generateTil(int index) {
 
         TilDTO tilDTO = TilDTO.builder()
                 .userId(1L)

@@ -1,20 +1,21 @@
 package com.debrains.debrainsApi.entity;
 
 import com.debrains.debrainsApi.dto.TilDTO;
-import com.debrains.debrainsApi.hateoas.UserSerializer;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import lombok.*;
 
 import javax.persistence.*;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
 @Getter
-@ToString(exclude = "user")
+@Setter
+@ToString(exclude = {"user", "tilCrts"})
 public class Til extends BaseEntity {
 
     @Id
@@ -24,8 +25,11 @@ public class Til extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
-    @JsonSerialize(using = UserSerializer.class)
     private User user;
+
+    @Builder.Default
+    @OneToMany(mappedBy = "til", cascade = CascadeType.ALL)
+    private List<TilCrt> tilCrts = new ArrayList<>();
 
     @Column(nullable = false)
     private String subject;
