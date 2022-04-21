@@ -5,7 +5,6 @@ import com.debrains.debrainsApi.config.WithAuthUser;
 import com.debrains.debrainsApi.dto.TilCrtDTO;
 import com.debrains.debrainsApi.dto.TilDTO;
 import com.debrains.debrainsApi.entity.CycleStatus;
-import com.debrains.debrainsApi.entity.Til;
 import com.debrains.debrainsApi.entity.TilCrt;
 import com.debrains.debrainsApi.service.TilCrtService;
 import com.debrains.debrainsApi.service.TilService;
@@ -75,7 +74,7 @@ public class TilCrtControllerTest {
     void createTilCrt() throws Exception {
 
         // Given
-        Til til = createTil();
+        TilDTO til = createTil();
 
         MockMultipartFile files = getFiles();
         TilCrtDTO tilCrtDTO = TilCrtDTO.builder()
@@ -133,10 +132,10 @@ public class TilCrtControllerTest {
                                 headerWithName(HttpHeaders.LOCATION).description("location header"),
                                 headerWithName(HttpHeaders.CONTENT_TYPE).description("content type")
                         ),
-                        responseFields(
+                        relaxedResponseFields(
                                 fieldWithPath("id").description("TIL_CRT ID"),
-                                fieldWithPath("user.id").description("작성자 ID"),
-                                fieldWithPath("til.id").description("TIL ID"),
+                                fieldWithPath("userId").description("작성자 ID"),
+                                fieldWithPath("tilId").description("TIL ID"),
                                 fieldWithPath("description").description("인증 상세내용"),
                                 fieldWithPath("startTime1").description("시작일1"),
                                 fieldWithPath("endTime1").description("종료일1"),
@@ -147,7 +146,7 @@ public class TilCrtControllerTest {
                                 fieldWithPath("watchTime").description("스탑워치"),
                                 fieldWithPath("open").description("공개여부(0: 비공개, 1: 공개)"),
                                 fieldWithPath("denied").description("관리자 승인(0: 승인, 1: 반려)"),
-                                fieldWithPath("files").description("사진"),
+                                fieldWithPath("filePath").description("사진"),
                                 fieldWithPath("regDate").description("생성날짜"),
                                 fieldWithPath("modDate").description("수정날짜"),
                                 fieldWithPath("_links.self.href").description("link to self"),
@@ -162,7 +161,7 @@ public class TilCrtControllerTest {
     @DisplayName("til_인증_조회")
     @WithAuthUser
     public void queryTilCrts() throws Exception {
-        Til til = createTil();
+        TilDTO til = createTil();
         IntStream.range(0, 5).forEach(i -> {
             try {
                 createTilCrt(til.getId());
@@ -220,8 +219,8 @@ public class TilCrtControllerTest {
     @DisplayName("til_인증_상세보기")
     @WithAuthUser
     public void getTilCrts() throws Exception {
-        Til til = createTil();
-        TilCrt tilCrt = createTilCrt(til.getId());
+        TilDTO til = createTil();
+        TilCrtDTO tilCrt = createTilCrt(til.getId());
 
         mockMvc.perform(RestDocumentationRequestBuilders.get("/til-crts/{id}", tilCrt.getId()))
                 .andDo(print())
@@ -266,11 +265,9 @@ public class TilCrtControllerTest {
     public void updateTilCrts() throws Exception {
 
         // Given
-        Til til = createTil();
-        TilCrt tilCrt = createTilCrt(til.getId());
+        TilDTO til = createTil();
+        TilCrtDTO tilCrtDTO = createTilCrt(til.getId());
         MockMultipartFile files = getFiles();
-
-        TilCrtDTO tilCrtDTO = modelMapper.map(tilCrt, TilCrtDTO.class);
 
         String description = "til Crt modify";
         tilCrtDTO.setDescription(description);
@@ -280,7 +277,7 @@ public class TilCrtControllerTest {
 
         // When, Then
         mockMvc.perform(
-                RestDocumentationRequestBuilders.fileUpload("/til-crts/{id}", tilCrt.getId())
+                RestDocumentationRequestBuilders.fileUpload("/til-crts/{id}", tilCrtDTO.getId())
 //                        .file(files)
                         .file(metadata)
                         .with(request -> {
@@ -348,8 +345,8 @@ public class TilCrtControllerTest {
     @DisplayName("til_인증_삭제")
     @WithAuthUser
     public void deleteTilCrts() throws Exception {
-        Til til = createTil();
-        TilCrt tilCrt = createTilCrt(til.getId());
+        TilDTO til = createTil();
+        TilCrtDTO tilCrt = createTilCrt(til.getId());
 
         mockMvc.perform(RestDocumentationRequestBuilders.delete("/til-crts/{id}", tilCrt.getId())
                 .contentType(MediaType.APPLICATION_JSON)
@@ -366,7 +363,7 @@ public class TilCrtControllerTest {
         return new MockMultipartFile("files", "test1.PNG", MediaType.IMAGE_PNG_VALUE, "test1".getBytes());
     }
 
-    private Til createTil() {
+    private TilDTO createTil() {
         TilDTO tilDTO = TilDTO.builder()
                 .userId(1L)
                 .subject("TIL subject 입니다.")
@@ -380,7 +377,7 @@ public class TilCrtControllerTest {
         return tilService.createTil(tilDTO);
     }
 
-    private TilCrt createTilCrt(Long tilId) throws IOException {
+    private TilCrtDTO createTilCrt(Long tilId) throws IOException {
 
         MultipartFile[] files = new MockMultipartFile[]{
                 new MockMultipartFile("files", "test1.PNG", MediaType.IMAGE_PNG_VALUE, "test1".getBytes())

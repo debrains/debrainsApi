@@ -1,14 +1,8 @@
 package com.debrains.debrainsApi.entity;
 
-import com.debrains.debrainsApi.hateoas.TilSerializer;
-import com.debrains.debrainsApi.hateoas.UserSerializer;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import lombok.*;
-import org.codehaus.groovy.util.StringUtil;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
 
 
 @Getter
@@ -17,7 +11,7 @@ import java.util.List;
 @AllArgsConstructor
 @Builder
 @Entity
-public class Mail extends BaseEntity{
+public class Mail extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

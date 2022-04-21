@@ -37,7 +37,7 @@ public class TilCrtServiceImpl implements TilCrtService {
 
     @Override
     @Transactional
-    public TilCrt createTilCrts(MultipartFile[] files, TilCrtDTO tilCrtDTO) throws IOException {
+    public TilCrtDTO createTilCrts(MultipartFile[] files, TilCrtDTO tilCrtDTO) throws IOException {
         Til til = tilRepository.findById(tilCrtDTO.getTilId())
                 .orElseThrow(() -> new ApiException(ErrorCode.TIL_NOT_FOUND));
         til.addCrtCnt();
@@ -60,7 +60,7 @@ public class TilCrtServiceImpl implements TilCrtService {
             }
         }
 
-        return tilCrt;
+        return modelMapper.map(tilCrt, TilCrtDTO.class);
     }
 
     @Override

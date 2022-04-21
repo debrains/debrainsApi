@@ -8,17 +8,19 @@ import com.debrains.debrainsApi.entity.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import java.util.List;
+
 public interface TilService {
 
-    Til createTil(TilDTO tilDTO);
+    TilDTO createTil(TilDTO tilDTO);
 
-    Til updateTil(Long id, TilDTO tilDTO);
+    TilDTO updateTil(Long id, TilDTO tilDTO);
 
     Page<TilDTO> getAdminTilList(Pageable pageable);
 
     TilDTO getTil(Long id);
 
-    Page<Til> getTilList(Pageable pageable);
+    List<TilDTO> getTilList(Long userId, Pageable pageable);
 
     TilCurDTO currentTil(Long userId);
 
