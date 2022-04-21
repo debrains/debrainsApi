@@ -1,6 +1,5 @@
 package com.debrains.debrainsApi.service;
 
-import com.debrains.debrainsApi.dto.TilCrtDTO;
 import com.debrains.debrainsApi.dto.TilCurDTO;
 import com.debrains.debrainsApi.dto.TilDTO;
 import com.debrains.debrainsApi.entity.Til;
@@ -51,7 +50,8 @@ public class TilServiceImpl implements TilService {
     @Override
     @Transactional
     public List<TilDTO> getTilList(Long userId, Pageable pageable) {
-        List<TilDTO> dtoList = tilRepository.findTilByUser_Id(userId, pageable)
+        System.out.println();
+        List<TilDTO> dtoList = tilRepository.findByUserId(userId, pageable)
                 .stream().map(entity -> modelMapper.map(entity, TilDTO.class))
                 .collect(Collectors.toList());
 

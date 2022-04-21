@@ -18,5 +18,5 @@ public interface TilCrtRepository extends JpaRepository<TilCrt, Long> {
             "and t.regDate>=:start and t.regDate<=:end and t.denied=false")
     Long tilCrtCount(@Param("id") Long userId, Long tilId, LocalDateTime start, LocalDateTime end);
 
-    List<TilCrt> findTilCrtByUser_IdAndTil_Id(Long userId, Long tilId, Pageable pageable);
+    List<TilCrt> findByUserIdAndTilId(Long userId, Long tilId, Pageable pageable);
 }
