@@ -40,4 +40,6 @@ public class TilCrtDTO {
     private String name;
 
     private List<String> filePath;
+
+    private LocalDateTime regDate, modDate;
 }
