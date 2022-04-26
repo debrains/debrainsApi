@@ -1,5 +1,6 @@
 package com.debrains.debrainsApi.security.jwt;
 
+import com.debrains.debrainsApi.util.CookieUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.security.core.Authentication;
@@ -10,9 +11,11 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Optional;
 
 @Log4j2
 @Component
@@ -24,6 +27,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         String token = parseBearerToken(request);
+        Optional<String> adminToken = parseAdminCookie(request);
+
+        if (adminToken.isPresent()) {
+            token = adminToken.get();
+        }
 
         // Validation Access Token
         if (StringUtils.hasText(token) && tokenProvider.validateToken(token)) {
@@ -44,5 +52,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             return bearerToken.substring(7);
         }
         return null;
+    }
+
+    private Optional<String> parseAdminCookie(HttpServletRequest request) {
+        return CookieUtil.getCookie(request, "accessToken")
+                .map(Cookie::getValue);
     }
 }
