@@ -25,10 +25,10 @@
                   <h1 class="h4 text-gray-900 mb-4">Debrain</h1>
                 </div>
                 <form class="user">
-                  <a href="/oauth2/authorization/google?redirect_uri=http://localhost:8080/auth/redirect" class="btn btn-google btn-user btn-block">
+                  <a id="google" onclick="login(this)" class="btn btn-google btn-user btn-block">
                     <i class="fab fa-google fa-fw"></i> Login with Google
                   </a>
-                  <a href="/oauth2/authorization/github?redirect_uri=http://localhost:8080/auth/redirect" class="btn btn-primary btn-user btn-block">
+                  <a id="github" onclick="login(this)" class="btn btn-primary btn-user btn-block">
                     <i class="fab fa-github fa-fw"></i> Login with Github
                   </a>
                 </form>
@@ -47,6 +47,20 @@
 
 <th:block th:replace="fragments/script::script"></th:block>
 
+<script>
+    let origin = window.location.origin;
+
+    function login(e) {
+      const provider = e.id;
+      let loginUrl = "https://api.debrain.co.kr/oauth2/authorization/" + provider + "?redirect_uri=" + origin + "/auth/redirect";
+
+      if (provider === "google" && origin === "http://localhost:8080") {
+        loginUrl = origin + "/oauth2/authorization/" + provider + "?redirect_uri=" + origin + "/auth/redirect"
+      }
+
+      window.location.href = loginUrl;
+  }
+</script>
 </body>
 
 </html>
