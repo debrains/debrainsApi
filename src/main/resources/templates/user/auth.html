@@ -12,7 +12,9 @@
     let token = param.get('accessToken');
 
     if (token) {
-        localStorage.setItem("accessToken", token);
+        let now = new Date();
+        now.setTime(now.getTime()+3600000)
+        document.cookie = "accessToken=" + token + ";expires=" + now.toUTCString() +  ";path=/";
     }
     location.href = "/root/user";
 </script>
