@@ -7,6 +7,7 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Builder
@@ -39,7 +40,7 @@ public class TilCrtDTO {
 
     private String name;
 
-    private List<String> filePath;
+    private List<TilCrtFileDTO> fileList;
 
     private LocalDateTime regDate, modDate;
 }
