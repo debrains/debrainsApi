@@ -171,7 +171,7 @@ public class TilCrtController {
 
     @DeleteMapping("/{id}/file")
     public ResponseEntity deleteTilCrtFile(@CurrentUser CustomUserDetails user,
-                                           @PathVariable Long id, Long fileId) {
+                                           @PathVariable Long id, @RequestParam(value = "fileId") Long fileId) {
         TilCrt tilCrt = tilCrtRepository.findById(id)
                 .orElseThrow(() -> new ApiException(ErrorCode.TILCRT_NOT_FOUND));
 

@@ -29,6 +29,7 @@ public class TilCrtServiceImpl implements TilCrtService {
 
     private final TilRepository tilRepository;
     private final TilCrtRepository tilCrtRepository;
+    private final TilCrtFileRepository tilCrtFileRepository;
     private final TilCrtFileRepository fileRepository;
     private final AwsS3Uploader awsS3Uploader;
     private final ModelMapper modelMapper;
@@ -88,10 +89,10 @@ public class TilCrtServiceImpl implements TilCrtService {
 
         TilCrtDTO dto = modelMapper.map(tilCrt, TilCrtDTO.class);
 
-        List<String> filePath = fileRepository.findTilCrtFile(dto.getId());
-        if (!filePath.isEmpty()) {
-            dto.setFilePath(filePath);
-        }
+        List<TilCrtFileDTO> fileList = fileRepository.findByTilCrtId(id)
+                .stream().map(file -> modelMapper.map(file, TilCrtFileDTO.class)).collect(Collectors.toList());
+
+        dto.setFileList(fileList);
 
         return dto;
     }
@@ -111,6 +112,7 @@ public class TilCrtServiceImpl implements TilCrtService {
         TilCrtFile file = fileRepository.findById(id)
                 .orElseThrow(() -> new ApiException(ErrorCode.NOT_FOUND_FILE));
         awsS3Uploader.delete(file.getFileName());
+        tilCrtFileRepository.delete(file);
     }
 
     @Override
@@ -162,10 +164,10 @@ public class TilCrtServiceImpl implements TilCrtService {
                 .collect(Collectors.toList());
 
         for (TilCrtDTO dto : dtoList) {
-            List<String> filePath = fileRepository.findTilCrtFile(dto.getId());
-            if (!filePath.isEmpty()) {
-                dto.setFilePath(filePath);
-            }
+            List<TilCrtFileDTO> fileList = fileRepository.findByTilCrtId(dto.getId())
+                    .stream().map(file -> modelMapper.map(file, TilCrtFileDTO.class)).collect(Collectors.toList());
+
+            dto.setFileList(fileList);
         }
 
         return dtoList;
@@ -178,10 +180,10 @@ public class TilCrtServiceImpl implements TilCrtService {
 
         TilCrtDTO dto = modelMapper.map(tilCrt, TilCrtDTO.class);
 
-        List<String> filePath = fileRepository.findTilCrtFile(dto.getId());
-        if (!filePath.isEmpty()) {
-            dto.setFilePath(filePath);
-        }
+        List<TilCrtFileDTO> fileList = fileRepository.findByTilCrtId(dto.getId())
+                .stream().map(file -> modelMapper.map(file, TilCrtFileDTO.class)).collect(Collectors.toList());
+
+        dto.setFileList(fileList);
 
         return dto;
     }

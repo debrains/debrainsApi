@@ -5,7 +5,6 @@ import com.debrains.debrainsApi.config.WithAuthUser;
 import com.debrains.debrainsApi.dto.TilCrtDTO;
 import com.debrains.debrainsApi.dto.TilDTO;
 import com.debrains.debrainsApi.entity.CycleStatus;
-import com.debrains.debrainsApi.entity.TilCrt;
 import com.debrains.debrainsApi.service.TilCrtService;
 import com.debrains.debrainsApi.service.TilService;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -146,7 +145,7 @@ public class TilCrtControllerTest {
                                 fieldWithPath("watchTime").description("스탑워치"),
                                 fieldWithPath("open").description("공개여부(0: 비공개, 1: 공개)"),
                                 fieldWithPath("denied").description("관리자 승인(0: 승인, 1: 반려)"),
-                                fieldWithPath("filePath").description("사진"),
+                                fieldWithPath("fileList").description("인증사진"),
                                 fieldWithPath("regDate").description("생성날짜"),
                                 fieldWithPath("modDate").description("수정날짜"),
                                 fieldWithPath("_links.self.href").description("link to self"),
@@ -195,7 +194,6 @@ public class TilCrtControllerTest {
                                 fieldWithPath("_embedded.tilCrtDTOList[].userId").description("작성자 ID"),
                                 fieldWithPath("_embedded.tilCrtDTOList[].tilId").description("TIL ID"),
                                 fieldWithPath("_embedded.tilCrtDTOList[].description").description("인증 상세내용"),
-
                                 fieldWithPath("_embedded.tilCrtDTOList[].startTime1").description("시작일1").optional(),
                                 fieldWithPath("_embedded.tilCrtDTOList[].endTime1").description("종료일1").optional(),
                                 fieldWithPath("_embedded.tilCrtDTOList[].startTime2").description("시작일2").optional(),
@@ -203,7 +201,7 @@ public class TilCrtControllerTest {
                                 fieldWithPath("_embedded.tilCrtDTOList[].startTime3").description("시작일3").optional(),
                                 fieldWithPath("_embedded.tilCrtDTOList[].endTime3").description("종료일3").optional(),
                                 fieldWithPath("_embedded.tilCrtDTOList[].watchTime").description("스탑워치").optional(),
-                                fieldWithPath("_embedded.tilCrtDTOList[].filePath").description("파일링크").optional(),
+                                fieldWithPath("_embedded.tilCrtDTOList[].fileList[]").description("인증파일").optional(),
                                 fieldWithPath("_embedded.tilCrtDTOList[]._links.self.href").description("link to self"),
                                 fieldWithPath("_links.self.href").description("link to self"),
                                 fieldWithPath("_links.profile.href").description("link to profile"),
@@ -249,7 +247,7 @@ public class TilCrtControllerTest {
                                 fieldWithPath("startTime3").description("시작일3"),
                                 fieldWithPath("endTime3").description("종료일3"),
                                 fieldWithPath("watchTime").description("스탑워치"),
-                                fieldWithPath("filePath").description("파일링크"),
+                                fieldWithPath("fileList[]").description("인증파일").optional(),
                                 fieldWithPath("open").description("공개여부"),
                                 fieldWithPath("denied").description("관리자승인여부"),
                                 fieldWithPath("_links.self.href").description("link to self"),
@@ -332,7 +330,7 @@ public class TilCrtControllerTest {
                                 fieldWithPath("startTime3").description("시작일3"),
                                 fieldWithPath("endTime3").description("종료일3"),
                                 fieldWithPath("watchTime").description("스탑워치"),
-                                fieldWithPath("filePath").description("파일링크"),
+                                fieldWithPath("fileList[]").description("인증파일").optional(),
                                 fieldWithPath("open").description("공개여부"),
                                 fieldWithPath("denied").description("관리자승인여부"),
                                 fieldWithPath("_links.self.href").description("link to self"),
