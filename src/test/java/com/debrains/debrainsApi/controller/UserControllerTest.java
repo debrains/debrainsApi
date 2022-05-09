@@ -138,12 +138,15 @@ class UserControllerTest {
                 .blogUrl("https://devdev.github.io/")
                 .snsUrl("https://www.instagram.com/devdev")
                 .build();
-        MockMultipartFile formPart = new MockMultipartFile("userInfoDTO", "userInfoDTO",
+        MockMultipartFile form = new MockMultipartFile("userInfoDTO", "userInfoDTO",
                 MediaType.APPLICATION_JSON_VALUE, objectMapper.writeValueAsString(dto).getBytes());
+        MockMultipartFile image = new MockMultipartFile("photo", "image.png",
+                MediaType.IMAGE_PNG_VALUE, "image".getBytes());
 
         // when & then
-        mvc.perform(RestDocumentationRequestBuilders.fileUpload("/user/info")
-                        .file(formPart)
+        mvc.perform(multipart("/user/info")
+                        .file(form)
+                        .file(image)
                         .with(request -> {
                             request.setMethod("PATCH");
                             return request;
