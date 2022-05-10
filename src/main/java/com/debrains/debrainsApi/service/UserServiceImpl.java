@@ -39,15 +39,10 @@ public class UserServiceImpl implements UserService {
     private final ProfileRepository profileRepository;
     private final SkillRepository skillRepository;
     private final SkillReqRepository skillReqRepository;
-    private final MailRepository mailRepository;
     private final AwsS3Uploader awsS3Uploader;
     private final ModelMapper modelMapper;
 
-
-    private final JavaMailSender mailSender;
-
     private static String dirName = "user";
-
 
     @Override
     public UserInfoDTO getUserInfo(Long id) {
@@ -157,29 +152,5 @@ public class UserServiceImpl implements UserService {
     public void deleteSkillreq(Long id) {
         skillReqRepository.deleteById(id);
     }
-
-
-    @Override
-    public void sendEmail(MailDTO mail, MultipartFile[] file) {
-        try {
-            MailHandler mailHandler = new MailHandler(mailSender);
-            mailHandler.setTo(mail.getToAddr());
-            mailHandler.setSubject(mail.getTitle());
-            String htmlContent = "<p>" + mail.getContent() + "</p>";
-            mailHandler.setText(htmlContent, true);
-            if (file != null) {
-                for (int i = 0; i < file.length; i++) {
-                    mailHandler.setAttach(file[i].getOriginalFilename(), file[i]);
-                }
-            }
-            mailHandler.send();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        Mail entity = modelMapper.map(mail, Mail.class);
-        mailRepository.save(entity);
-    }
-
 
 }

@@ -12,6 +12,7 @@ import com.debrains.debrainsApi.repository.UserRepository;
 import com.debrains.debrainsApi.security.CustomUserDetails;
 import com.debrains.debrainsApi.security.oauth.user.OAuth2UserInfo;
 import com.debrains.debrainsApi.security.oauth.user.OAuth2UserInfoFactory;
+import com.debrains.debrainsApi.service.MailService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
@@ -28,6 +29,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 
     private final UserRepository userRepository;
     private final ProfileRepository profileRepository;
+    private final MailService mailService;
 
     @Override
     public OAuth2User loadUser(OAuth2UserRequest oAuth2UserRequest) throws OAuth2AuthenticationException {
@@ -55,6 +57,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 
         } else {
             user = createUser(userInfo, authProvider);
+            mailService.sendWelcomeMail(user);
             log.info(user.getEmail() + " 가입 완료!");
         }
         return CustomUserDetails.create(user, oAuth2User.getAttributes());
