@@ -1,4 +1,4 @@
-INSERT INTO user_table(user_id, email) VALUES (1, 'debrains.team@google.com');
+INSERT INTO user_table(user_id, email, consent) VALUES (1, 'debrains.team@google.com', true);
 
 INSERT INTO skill(category, name, seq) VALUES ('프론트엔드', 'HTML', 1);
 INSERT INTO skill(category, name, seq) VALUES ('프론트엔드', 'CSS', 1);
