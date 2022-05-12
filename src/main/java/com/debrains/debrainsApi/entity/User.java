@@ -48,6 +48,8 @@ public class User extends BaseEntity {
     private String githubUrl;
     private String blogUrl;
     private String snsUrl;
+    @Builder.Default
+    private boolean consent = true;
 
     private String icon;
     private Integer tier;
@@ -72,6 +74,7 @@ public class User extends BaseEntity {
         this.githubUrl = dto.getGithubUrl();
         this.blogUrl = dto.getBlogUrl();
         this.snsUrl = dto.getSnsUrl();
+        this.consent = dto.isConsent();
         if (dto.getImg() != null) {
             this.img = dto.getImg();
         }

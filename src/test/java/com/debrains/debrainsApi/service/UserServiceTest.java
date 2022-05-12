@@ -59,6 +59,7 @@ class UserServiceTest {
                 .githubUrl("http://github.com/devdev")
                 .blogUrl("https://devdev.github.io/")
                 .snsUrl("https://www.instagram.com/devdev")
+                .consent(true)
                 .build();
 
         userInfoDto = UserInfoDTO.builder()
@@ -69,6 +70,7 @@ class UserServiceTest {
                 .githubUrl("http://github.com/devdev")
                 .blogUrl("https://devdev.github.io/")
                 .snsUrl("https://www.instagram.com/devdev")
+                .consent(true)
                 .build();
     }
 
