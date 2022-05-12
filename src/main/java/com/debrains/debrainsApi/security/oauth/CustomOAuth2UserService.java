@@ -72,6 +72,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
                 .authProvider(authProvider)
                 .blogUrl(userInfo.getBlogUrl())
                 .githubUrl(userInfo.getGithubUrl())
+                .consent(true)
                 .tier(1)
                 .exp(0L)
                 .build();

@@ -21,4 +21,5 @@ public class UserInfoDTO {
     private String githubUrl;
     private String blogUrl;
     private String snsUrl;
+    private boolean consent;
 }

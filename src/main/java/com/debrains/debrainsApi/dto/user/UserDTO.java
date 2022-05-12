@@ -23,6 +23,7 @@ public class UserDTO {
     private String githubUrl;
     private String blogUrl;
     private String snsUrl;
+    private boolean consent;
 
     private String icon;
     private Integer tier;
