@@ -18,8 +18,7 @@ public enum ErrorCode {
 
     // AUTH
     NO_EMAIL(HttpStatus.BAD_REQUEST, "AU01", "이메일주소를 공개해주세요."),
-    WRONG_MATCH_PROVIDER(HttpStatus.BAD_REQUEST, "AU02", "가입한 플랫폼으로 로그인해주세요."),
-    NO_REFRESH_TOKEN(HttpStatus.BAD_REQUEST, "AU03", "유효한 토큰이 없습니다."),
+    NO_REFRESH_TOKEN(HttpStatus.BAD_REQUEST, "AU02", "유효한 토큰이 없습니다."),
 
     // DATETIME
     ENDDATE_BEFORE_STARTDATE(HttpStatus.BAD_REQUEST, "DA01", "종료일이 시작일보다 빠를 수 없습니다."),

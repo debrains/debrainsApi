@@ -50,9 +50,6 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 
         if (userOptional.isPresent()) {
             user = userOptional.get();
-            if (authProvider != user.getAuthProvider()) {
-                throw new ApiException(ErrorCode.WRONG_MATCH_PROVIDER);
-            }
             log.info(user.getEmail() + " 로그인!");
 
         } else {
