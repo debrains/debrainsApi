@@ -117,6 +117,7 @@ class UserControllerTest {
                                 fieldWithPath("githubUrl").description("깃허브 URL"),
                                 fieldWithPath("blogUrl").description("블로그 URL"),
                                 fieldWithPath("snsUrl").description("SNS URL"),
+                                fieldWithPath("consent").description("정보제공동의"),
                                 fieldWithPath("_links.self.href").description("link to self"),
                                 fieldWithPath("_links.profile.href").description("link to profile")
                         )
@@ -177,7 +178,8 @@ class UserControllerTest {
                                 fieldWithPath("img").description("프로필사진"),
                                 fieldWithPath("githubUrl").description("깃허브 URL"),
                                 fieldWithPath("blogUrl").description("블로그 URL"),
-                                fieldWithPath("snsUrl").description("SNS URL")
+                                fieldWithPath("snsUrl").description("SNS URL"),
+                                fieldWithPath("consent").description("정보제공동의")
                         ),
                         responseHeaders(
                                 headerWithName(HttpHeaders.CONTENT_TYPE).description("content type")
@@ -191,6 +193,7 @@ class UserControllerTest {
                                 fieldWithPath("githubUrl").description("깃허브 URL"),
                                 fieldWithPath("blogUrl").description("블로그 URL"),
                                 fieldWithPath("snsUrl").description("SNS URL"),
+                                fieldWithPath("consent").description("정보제공동의"),
                                 fieldWithPath("_links.self.href").description("link to self"),
                                 fieldWithPath("_links.profile.href").description("link to profile")
                         )
