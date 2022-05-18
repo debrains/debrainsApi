@@ -25,7 +25,7 @@ public class AdminUserController {
     private final SkillRepository skillRepository;
 
     @GetMapping("")
-    public String userList(@PageableDefault(page = 0, size = 10, sort = "id") Pageable pageable, Model model) {
+    public String userList(@PageableDefault(page = 0, size = 10, sort = "id", direction = Sort.Direction.DESC) Pageable pageable, Model model) {
         Page<UserDTO> page = userService.getUserList(pageable);
         model.addAttribute("userList", page);
         return "user/user_list";
