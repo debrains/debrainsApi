@@ -87,10 +87,7 @@ public class Til extends BaseEntity {
      * TIL 유효한지 확인
      */
     public void expiredCheck() {
-        LocalDate now = LocalDate.now();
-        if (this.endDate.isBefore(now)) {
-            this.expired = true;
-        }
+        this.expired = true;
     }
 
     /**
