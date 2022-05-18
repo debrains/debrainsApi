@@ -23,7 +23,7 @@ public class TilCrtDTO {
     @NotNull
     private Long tilId;
 
-    @NotBlank
+    @NotBlank(message = "내용은 공백일 수 없습니다.")
     private String description;
 
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
