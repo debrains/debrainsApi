@@ -17,18 +17,18 @@
         <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
           <thead>
           <tr>
-            <th>Name</th>
+            <th>no</th>
             <th>email</th>
             <th>state</th>
             <th>created date</th>
           </tr>
           </thead>
           <tbody>
-          <tr th:each="user : ${userList}">
-            <td><a th:href="@{/root/user/{id}(id=${user.getId()})}" th:text="${user.getName()}"></a></td>
-            <td th:text="${user.getEmail()}"></td>
+          <tr th:each="user, index : ${userList}">
+            <td th:text="${(userList.getNumber() * userList.getSize() + 1) + index.index}"></td>
+            <td><a th:href="@{/root/user/{id}(id=${user.getId()})}" th:text="${user.getEmail()}"></a></td>
             <td th:text="${user.getState()}"></td>
-            <td>-</td>
+            <td th:text="${#temporals.format(user.getRegDate(), 'yyyy-MM-dd HH:mm:ss')}"></td>
           </tr>
 
           </tbody>
