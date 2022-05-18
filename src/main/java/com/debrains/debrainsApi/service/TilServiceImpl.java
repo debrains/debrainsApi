@@ -14,7 +14,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -56,8 +58,11 @@ public class TilServiceImpl implements TilService {
                 .collect(Collectors.toList());
 
         for (TilDTO dto : dtoList) {
-            Til til = modelMapper.map(dto, Til.class);
-            til.expiredCheck();
+            LocalDate now = LocalDate.now();
+            if (dto.getEndDate().isBefore(now)) {
+                Optional<Til> til = tilRepository.findById(dto.getId());
+                til.get().expiredCheck();
+            }
         }
 
         return dtoList;

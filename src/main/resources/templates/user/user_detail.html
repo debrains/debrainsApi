@@ -107,8 +107,8 @@
           <label for="role" class="col-sm-2 col-form-label">권한</label>
           <div class="col-sm-10">
             <select class="custom-select" th:value="${user.getRole()}" id="role" name="role">
-              <option th:value="ADMIN" th:text="ADMIN" th:selected="${user.getRole()} == 'ADMIN'"></option>
-              <option th:value="USER" th:text="USER" th:selected="${user.getRole()} == 'USER'"></option>
+              <option th:value="ADMIN" th:text="ADMIN" th:selected="${user.getRole()} == 'ROLE_ADMIN'"></option>
+              <option th:value="USER" th:text="USER" th:selected="${user.getRole()} == 'ROLE_USER'"></option>
             </select>
           </div>
         </div>
