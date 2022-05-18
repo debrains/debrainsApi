@@ -28,8 +28,9 @@ public class ExceptionAdvice {
      * Custom Token Exception
      */
     @ExceptionHandler(TokenException.class)
-    protected void tokenExceptionHandler(final TokenException e) {
-        log.error("Token Exception", e);
+    protected ResponseEntity<String> tokenExceptionHandler(final TokenException e) {
+        log.error("Token Exception", e.getMessage());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
     }
 
     /*
@@ -37,7 +38,7 @@ public class ExceptionAdvice {
     */
     @ExceptionHandler(MethodArgumentNotValidException.class)
     protected ResponseEntity<ErrorResponse> methodArgumentNotValidExceptionHandler(MethodArgumentNotValidException e) {
-        log.error("handleMethodArgumentNotValidException", e);
+        log.error("handleMethodArgumentNotValidException", e.getMessage());
         final ErrorResponse response = ErrorResponse.of(ErrorCode.INVALID_INPUT_VALUE, e.getBindingResult());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
     }
@@ -47,7 +48,7 @@ public class ExceptionAdvice {
      */
     @ExceptionHandler(BindException.class)
     protected ResponseEntity<ErrorResponse> bindExceptionHandler(BindException e) {
-        log.error("handleBindException", e);
+        log.error("handleBindException", e.getMessage());
         final ErrorResponse response = ErrorResponse.of(ErrorCode.INVALID_INPUT_VALUE, e.getBindingResult());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
     }
@@ -57,7 +58,7 @@ public class ExceptionAdvice {
     */
     @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
     protected ResponseEntity<ErrorResponse> httpRequestMethodNotSupportedExceptionHandler(HttpRequestMethodNotSupportedException e) {
-        log.error("handleHttpRequestMethodNotSupportedException", e);
+        log.error("handleHttpRequestMethodNotSupportedException", e.getMessage());
         final ErrorResponse response = ErrorResponse.of(ErrorCode.METHOD_NOT_ALLOWED);
         return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED).body(response);
     }
@@ -65,7 +66,7 @@ public class ExceptionAdvice {
 
     @ExceptionHandler(Exception.class)
     protected ResponseEntity<ErrorResponse> exceptionHandler(Exception e) {
-        log.error("handleException", e);
+        log.error("handleException", e.getMessage());
         final ErrorResponse response = ErrorResponse.of(ErrorCode.INTERNAL_SERVER_ERROR);
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
     }
