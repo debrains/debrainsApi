@@ -4,7 +4,6 @@ import com.debrains.debrainsApi.config.RestDocsConfigurate;
 import com.debrains.debrainsApi.config.WithAuthUser;
 import com.debrains.debrainsApi.dto.TilDTO;
 import com.debrains.debrainsApi.entity.CycleStatus;
-import com.debrains.debrainsApi.entity.Til;
 import com.debrains.debrainsApi.service.TilService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.DisplayName;
@@ -183,7 +182,10 @@ class TilControllerTest {
                 .andDo(document("get-tilList",
                         links(
                                 linkWithRel("self").description("현재 페이지"),
-                                linkWithRel("profile").description("link to profile")
+                                linkWithRel("profile").description("link to profile"),
+                                linkWithRel("first").description("첫번째 페이지"),
+                                linkWithRel("next").description("다음 페이지"),
+                                linkWithRel("last").description("마지막 페이지")
                         ),
                         responseHeaders(
                                 headerWithName(HttpHeaders.CONTENT_TYPE).description("content type")
@@ -205,6 +207,9 @@ class TilControllerTest {
                                 fieldWithPath("_embedded.tilDTOList[]._links.self.href").description("link to self"),
                                 fieldWithPath("_links.self.href").description("현재 페이지"),
                                 fieldWithPath("_links.profile.href").description("link to profile"),
+                                fieldWithPath("_links.first.href").description("첫번째 페이지"),
+                                fieldWithPath("_links.next.href").description("다음 페이지"),
+                                fieldWithPath("_links.last.href").description("마지막 페이지"),
                                 fieldWithPath("page.size").description("한 페이지 당 게시물 개수"),
                                 fieldWithPath("page.totalElements").description("총 게시물 수"),
                                 fieldWithPath("page.totalPages").description("총 페이지 수"),

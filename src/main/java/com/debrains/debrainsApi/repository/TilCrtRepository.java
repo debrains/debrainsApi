@@ -14,9 +14,9 @@ public interface TilCrtRepository extends JpaRepository<TilCrt, Long> {
     List<TilCrt> findAllById(@Param("id") Long id);
 
     @Query("SELECT count(t.id) FROM TilCrt t " +
-            "WHERE t.user.id=:id and t.til.id=:tilId " +
+            "WHERE t.user.id=:userId and t.til.id=:tilId " +
             "and t.regDate>=:start and t.regDate<=:end and t.denied=false")
-    Long tilCrtCount(@Param("id") Long userId, Long tilId, LocalDateTime start, LocalDateTime end);
+    Long tilCrtCount(Long userId, Long tilId, LocalDateTime start, LocalDateTime end);
 
     List<TilCrt> findByUserIdAndTilId(Long userId, Long tilId, Pageable pageable);
 }

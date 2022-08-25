@@ -77,13 +77,10 @@ public class TilController {
             @PageableDefault(sort = "id", direction = Sort.Direction.DESC) Pageable pageable,
             PagedResourcesAssembler<TilDTO> assembler) {
 
-        List<TilDTO> dto = tilService.getTilList(currentUser.getId(), pageable);
+        Page<TilDTO> page = tilService.getTilList(currentUser.getId(), pageable);
 
-        int start = (int) pageable.getOffset();
-        int end = Math.min((start + pageable.getPageSize()), dto.size());
-        Page<TilDTO> page = new PageImpl<>(dto.subList(start, end), pageable, dto.size());
-        PagedModel<EntityModel<TilDTO>> resource = PagedModelUtil.getEntityModels(assembler, page,
-                linkTo(TilController.class), TilDTO::getId);
+        PagedModel<EntityModel<TilDTO>> resource = PagedModelUtil
+                .getEntityModels(assembler, page, linkTo(TilController.class), TilDTO::getId);
         resource.add(Link.of("/docs/index.html#resources-tils-list").withRel("profile"));
 
         return ResponseEntity.ok(resource);
