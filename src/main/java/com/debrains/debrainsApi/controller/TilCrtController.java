@@ -15,7 +15,6 @@ import com.debrains.debrainsApi.validator.TilCrtValidator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
@@ -35,7 +34,6 @@ import java.net.URI;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.List;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 
@@ -101,13 +99,10 @@ public class TilCrtController {
             @PageableDefault(sort = "id", direction = Sort.Direction.DESC) Pageable pageable,
             PagedResourcesAssembler<TilCrtDTO> assembler, @RequestParam(value = "tilId") Long tilId) {
 
-        List<TilCrtDTO> dto = tilCrtService.tilCrtList(currentUser.getId(), tilId, pageable);
+        Page<TilCrtDTO> page = tilCrtService.tilCrtList(currentUser.getId(), tilId, pageable);
 
-        int start = (int) pageable.getOffset();
-        int end = Math.min((start + pageable.getPageSize()), dto.size());
-        Page<TilCrtDTO> page = new PageImpl<>(dto.subList(start, end), pageable, dto.size());
-        PagedModel<EntityModel<TilCrtDTO>> resource = PagedModelUtil.getEntityModels(assembler, page,
-                linkTo(TilCrtController.class), TilCrtDTO::getId);
+        PagedModel<EntityModel<TilCrtDTO>> resource = PagedModelUtil
+                .getEntityModels(assembler, page, linkTo(TilCrtController.class), TilCrtDTO::getId);
 
         resource.add(Link.of("/docs/index.html#resources-til-crts-list").withRel("profile"));
 

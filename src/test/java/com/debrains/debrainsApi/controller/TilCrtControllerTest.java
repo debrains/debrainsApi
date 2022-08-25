@@ -90,11 +90,11 @@ public class TilCrtControllerTest {
         // When, Then
         mockMvc.perform(multipart("/til-crts/")
 //                .file(files)
-                .file(metadata)
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .contentType(MediaType.MULTIPART_FORM_DATA_VALUE)
-                .accept(MediaTypes.HAL_JSON)
-                .characterEncoding("UTF-8"))
+                        .file(metadata)
+                        .contentType(MediaType.APPLICATION_JSON_VALUE)
+                        .contentType(MediaType.MULTIPART_FORM_DATA_VALUE)
+                        .accept(MediaTypes.HAL_JSON)
+                        .characterEncoding("UTF-8"))
                 .andDo(print())
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("id").exists())
@@ -161,7 +161,7 @@ public class TilCrtControllerTest {
     @WithAuthUser
     public void queryTilCrts() throws Exception {
         TilDTO til = createTil();
-        IntStream.range(0, 5).forEach(i -> {
+        IntStream.range(0, 23).forEach(i -> {
             try {
                 createTilCrt(til.getId());
             } catch (IOException e) {
@@ -170,11 +170,11 @@ public class TilCrtControllerTest {
         });
 
         mockMvc.perform(get("/til-crts/")
-                .param("tilId", til.getId().toString())
-                .param("page", "0") // page는 0부터 시작
-                .param("size", "10")
-                .param("sort", "id,DESC")
-        )
+                        .param("tilId", til.getId().toString())
+                        .param("page", "0") // page는 0부터 시작
+                        .param("size", "10")
+                        .param("sort", "id,DESC")
+                )
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("page").exists())
@@ -184,7 +184,10 @@ public class TilCrtControllerTest {
                 .andDo(document("get-tilcrtList",
                         links(
                                 linkWithRel("self").description("link to self"),
-                                linkWithRel("profile").description("link to profile")
+                                linkWithRel("profile").description("link to profile"),
+                                linkWithRel("first").description("첫번째 페이지"),
+                                linkWithRel("next").description("다음 페이지"),
+                                linkWithRel("last").description("마지막 페이지")
                         ),
                         responseHeaders(
                                 headerWithName(HttpHeaders.CONTENT_TYPE).description("content type")
@@ -201,10 +204,14 @@ public class TilCrtControllerTest {
                                 fieldWithPath("_embedded.tilCrtDTOList[].startTime3").description("시작일3").optional(),
                                 fieldWithPath("_embedded.tilCrtDTOList[].endTime3").description("종료일3").optional(),
                                 fieldWithPath("_embedded.tilCrtDTOList[].watchTime").description("스탑워치").optional(),
-                                fieldWithPath("_embedded.tilCrtDTOList[].fileList[]").description("인증파일").optional(),
+// TODO: 2022/08/25 파일 수정 후 이부분 주석 풀어야 함
+//                                fieldWithPath("_embedded.tilCrtDTOList[].fileList[]").description("인증파일").optional(),
                                 fieldWithPath("_embedded.tilCrtDTOList[]._links.self.href").description("link to self"),
                                 fieldWithPath("_links.self.href").description("link to self"),
                                 fieldWithPath("_links.profile.href").description("link to profile"),
+                                fieldWithPath("_links.first.href").description("첫번째 페이지"),
+                                fieldWithPath("_links.next.href").description("다음 페이지"),
+                                fieldWithPath("_links.last.href").description("마지막 페이지"),
                                 fieldWithPath("page.size").description("한 페이지 당 게시물 개수"),
                                 fieldWithPath("page.totalElements").description("총 게시물 수"),
                                 fieldWithPath("page.totalPages").description("총 페이지 수"),
@@ -275,17 +282,17 @@ public class TilCrtControllerTest {
 
         // When, Then
         mockMvc.perform(
-                RestDocumentationRequestBuilders.fileUpload("/til-crts/{id}", tilCrtDTO.getId())
+                        RestDocumentationRequestBuilders.fileUpload("/til-crts/{id}", tilCrtDTO.getId())
 //                        .file(files)
-                        .file(metadata)
-                        .with(request -> {
-                            request.setMethod("PATCH");
-                            return request;
-                        })
-                        .contentType(MediaType.APPLICATION_JSON_VALUE)
-                        .contentType(MediaType.MULTIPART_FORM_DATA_VALUE)
-                        .accept(MediaTypes.HAL_JSON)
-                        .characterEncoding("UTF-8"))
+                                .file(metadata)
+                                .with(request -> {
+                                    request.setMethod("PATCH");
+                                    return request;
+                                })
+                                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                                .contentType(MediaType.MULTIPART_FORM_DATA_VALUE)
+                                .accept(MediaTypes.HAL_JSON)
+                                .characterEncoding("UTF-8"))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andDo(document("update-tilcrt",
@@ -347,8 +354,8 @@ public class TilCrtControllerTest {
         TilCrtDTO tilCrt = createTilCrt(til.getId());
 
         mockMvc.perform(RestDocumentationRequestBuilders.delete("/til-crts/{id}", tilCrt.getId())
-                .contentType(MediaType.APPLICATION_JSON)
-                .accept(MediaTypes.HAL_JSON))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaTypes.HAL_JSON))
                 .andDo(print())
                 .andExpect(status().isNoContent())
                 .andDo(document("delete-tilcrt",

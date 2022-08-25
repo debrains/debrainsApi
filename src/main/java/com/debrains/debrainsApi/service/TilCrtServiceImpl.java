@@ -157,20 +157,10 @@ public class TilCrtServiceImpl implements TilCrtService {
     }
 
     @Override
-    public List<TilCrtDTO> tilCrtList(Long userId, Long tilId, Pageable pageable) {
-        // TODO:: default_batch_fetch_size 사용
-        List<TilCrtDTO> dtoList = tilCrtRepository.findByUserIdAndTilId(userId, tilId, pageable)
-                .stream().map(entity -> modelMapper.map(entity, TilCrtDTO.class))
-                .collect(Collectors.toList());
+    public Page<TilCrtDTO> tilCrtList(Long userId, Long tilId, Pageable pageable) {
+        Page<TilCrt> tilCrts = tilCrtRepository.findByUserIdAndTilId(userId, tilId, pageable);
 
-        for (TilCrtDTO dto : dtoList) {
-            List<TilCrtFileDTO> fileList = fileRepository.findByTilCrtId(dto.getId())
-                    .stream().map(file -> modelMapper.map(file, TilCrtFileDTO.class)).collect(Collectors.toList());
-
-            dto.setFileList(fileList);
-        }
-
-        return dtoList;
+        return tilCrts.map(entity -> modelMapper.map(entity, TilCrtDTO.class));
     }
 
     @Override

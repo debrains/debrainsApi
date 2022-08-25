@@ -1,6 +1,7 @@
 package com.debrains.debrainsApi.repository;
 
 import com.debrains.debrainsApi.entity.TilCrt;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -18,5 +19,5 @@ public interface TilCrtRepository extends JpaRepository<TilCrt, Long> {
             "and t.regDate>=:start and t.regDate<=:end and t.denied=false")
     Long tilCrtCount(Long userId, Long tilId, LocalDateTime start, LocalDateTime end);
 
-    List<TilCrt> findByUserIdAndTilId(Long userId, Long tilId, Pageable pageable);
+    Page<TilCrt> findByUserIdAndTilId(Long userId, Long tilId, Pageable pageable);
 }
