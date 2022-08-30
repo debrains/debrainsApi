@@ -29,7 +29,6 @@ public class TilCrtServiceImpl implements TilCrtService {
 
     private final TilRepository tilRepository;
     private final TilCrtRepository tilCrtRepository;
-    private final TilCrtFileRepository tilCrtFileRepository;
     private final TilCrtFileRepository fileRepository;
     private final AwsS3Uploader awsS3Uploader;
     private final ModelMapper modelMapper;
@@ -112,7 +111,7 @@ public class TilCrtServiceImpl implements TilCrtService {
         TilCrtFile file = fileRepository.findById(id)
                 .orElseThrow(() -> new ApiException(ErrorCode.NOT_FOUND_FILE));
         awsS3Uploader.delete(file.getFileName());
-        tilCrtFileRepository.delete(file);
+        fileRepository.delete(file);
     }
 
     @Override
@@ -158,23 +157,15 @@ public class TilCrtServiceImpl implements TilCrtService {
     }
 
     @Override
-    public List<TilCrtDTO> tilCrtList(Long userId, Long tilId, Pageable pageable) {
-        List<TilCrtDTO> dtoList = tilCrtRepository.findByUserIdAndTilId(userId, tilId, pageable)
-                .stream().map(entity -> modelMapper.map(entity, TilCrtDTO.class))
-                .collect(Collectors.toList());
+    public Page<TilCrtDTO> tilCrtList(Long userId, Long tilId, Pageable pageable) {
+        Page<TilCrt> tilCrts = tilCrtRepository.findByUserIdAndTilId(userId, tilId, pageable);
 
-        for (TilCrtDTO dto : dtoList) {
-            List<TilCrtFileDTO> fileList = fileRepository.findByTilCrtId(dto.getId())
-                    .stream().map(file -> modelMapper.map(file, TilCrtFileDTO.class)).collect(Collectors.toList());
-
-            dto.setFileList(fileList);
-        }
-
-        return dtoList;
+        return tilCrts.map(entity -> modelMapper.map(entity, TilCrtDTO.class));
     }
 
     @Override
     public TilCrtDTO getTilCrt(Long id) {
+        // TODO:: default_batch_fetch_size 사용
         TilCrt tilCrt = tilCrtRepository.findById(id)
                 .orElseThrow(() -> new ApiException(ErrorCode.TILCRT_NOT_FOUND));
 

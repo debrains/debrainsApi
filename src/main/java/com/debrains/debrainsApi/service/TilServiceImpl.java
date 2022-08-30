@@ -15,9 +15,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -51,21 +48,17 @@ public class TilServiceImpl implements TilService {
 
     @Override
     @Transactional
-    public List<TilDTO> getTilList(Long userId, Pageable pageable) {
-        System.out.println();
-        List<TilDTO> dtoList = tilRepository.findByUserId(userId, pageable)
-                .stream().map(entity -> modelMapper.map(entity, TilDTO.class))
-                .collect(Collectors.toList());
+    public Page<TilDTO> getTilList(Long userId, Pageable pageable) {
+        Page<Til> tilList = tilRepository.findByUserId(userId, pageable);
 
-        for (TilDTO dto : dtoList) {
+        for (Til til : tilList.getContent()) {
             LocalDate now = LocalDate.now();
-            if (dto.getEndDate().isBefore(now)) {
-                Optional<Til> til = tilRepository.findById(dto.getId());
-                til.get().expiredCheck();
+            if (til.getEndDate().isBefore(now)) {
+                til.expiredCheck();
             }
         }
 
-        return dtoList;
+        return tilList.map(entity -> modelMapper.map(entity, TilDTO.class));
     }
 
     @Override
