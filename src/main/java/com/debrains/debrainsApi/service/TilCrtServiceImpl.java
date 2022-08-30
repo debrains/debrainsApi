@@ -160,15 +160,8 @@ public class TilCrtServiceImpl implements TilCrtService {
     @Override
     public List<TilCrtDTO> tilCrtList(Long userId, Long tilId, Pageable pageable) {
         List<TilCrtDTO> dtoList = tilCrtRepository.findByUserIdAndTilId(userId, tilId, pageable)
-                .stream().map(entity -> modelMapper.map(entity, TilCrtDTO.class))
+                .stream().map(TilCrtDTO::new)
                 .collect(Collectors.toList());
-
-        for (TilCrtDTO dto : dtoList) {
-            List<TilCrtFileDTO> fileList = fileRepository.findByTilCrtId(dto.getId())
-                    .stream().map(file -> modelMapper.map(file, TilCrtFileDTO.class)).collect(Collectors.toList());
-
-            dto.setFileList(fileList);
-        }
 
         return dtoList;
     }

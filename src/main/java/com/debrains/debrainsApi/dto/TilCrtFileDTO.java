@@ -1,5 +1,6 @@
 package com.debrains.debrainsApi.dto;
 
+import com.debrains.debrainsApi.entity.TilCrtFile;
 import lombok.*;
 
 @Builder
@@ -17,4 +18,10 @@ public class TilCrtFileDTO {
 
     private String path;
 
+    public TilCrtFileDTO(TilCrtFile tilcrt) {
+        id = tilcrt.getId();
+        originalName = tilcrt.getOriginalName();
+        fileName = tilcrt.getFileName();
+        path = tilcrt.getPath();
+    }
 }
